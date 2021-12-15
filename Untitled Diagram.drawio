@@ -1,6 +1,6 @@
-<mxfile host="app.diagrams.net" modified="2021-12-15T23:29:32.338Z" agent="5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/96.0.4664.110 Safari/537.36 Edg/96.0.1054.57" etag="kf91HOsrev0r212tq5iZ" version="15.9.5" type="github">
+<mxfile host="app.diagrams.net" modified="2021-12-15T23:37:53.350Z" agent="5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/96.0.4664.110 Safari/537.36 Edg/96.0.1054.57" etag="fk31ucHXLOErSEFrTKDX" version="15.9.5" type="github">
   <diagram id="Htl5RmSVC9RBOnccd8LR" name="Page-1">
-    <mxGraphModel dx="1185" dy="628" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
+    <mxGraphModel dx="2031" dy="1077" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
       <root>
         <mxCell id="0" />
         <mxCell id="1" parent="0" />
@@ -57,7 +57,7 @@
         <mxCell id="Q8NiT6dRRh63ptE_Egzm-13" value="SchoolRegistry&lt;br&gt;Approved" style="ellipse;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;" parent="1" vertex="1">
           <mxGeometry x="360" y="530" width="135" height="80" as="geometry" />
         </mxCell>
-        <mxCell id="Q8NiT6dRRh63ptE_Egzm-14" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;endArrow=classic;endFill=1;" parent="1" source="Q8NiT6dRRh63ptE_Egzm-15" target="Q8NiT6dRRh63ptE_Egzm-42" edge="1">
+        <mxCell id="Q8NiT6dRRh63ptE_Egzm-14" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;endArrow=classic;endFill=1;fillColor=#f8cecc;strokeColor=#b85450;" parent="1" source="Q8NiT6dRRh63ptE_Egzm-15" target="Q8NiT6dRRh63ptE_Egzm-42" edge="1">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
         <mxCell id="Q8NiT6dRRh63ptE_Egzm-15" value="DocReviewNeeded" style="ellipse;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;" parent="1" vertex="1">
@@ -155,14 +155,20 @@
         <mxCell id="Q8NiT6dRRh63ptE_Egzm-41" value="School Registry**" style="whiteSpace=wrap;html=1;aspect=fixed;fillColor=#dae8fc;strokeColor=#6c8ebf;" parent="1" vertex="1">
           <mxGeometry x="515" y="330" width="80" height="80" as="geometry" />
         </mxCell>
-        <mxCell id="Q8NiT6dRRh63ptE_Egzm-42" value="Document upload**" style="whiteSpace=wrap;html=1;aspect=fixed;fillColor=#dae8fc;strokeColor=#6c8ebf;" parent="1" vertex="1">
-          <mxGeometry x="515" y="630" width="80" height="80" as="geometry" />
+        <mxCell id="Q8NiT6dRRh63ptE_Egzm-42" value="sheer id reject" style="whiteSpace=wrap;html=1;aspect=fixed;fillColor=#e1d5e7;strokeColor=#9673a6;" parent="1" vertex="1">
+          <mxGeometry x="755" y="630" width="80" height="80" as="geometry" />
         </mxCell>
         <mxCell id="Q8NiT6dRRh63ptE_Egzm-44" value="** follow link to same&amp;nbsp;bubble &lt;br&gt;in new user flow" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;" parent="1" vertex="1">
           <mxGeometry x="40" y="1060" width="170" height="30" as="geometry" />
         </mxCell>
         <mxCell id="bJW2fjCjPbbXh4AyBN2F-1" value="* get latest user risk status" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;" vertex="1" parent="1">
           <mxGeometry x="40" y="1020" width="160" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="bJW2fjCjPbbXh4AyBN2F-2" value="" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;opacity=40;" vertex="1" parent="1">
+          <mxGeometry x="310" y="720" width="530" height="400" as="geometry" />
+        </mxCell>
+        <mxCell id="bJW2fjCjPbbXh4AyBN2F-3" value="Out of scope for Part 1" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;" vertex="1" parent="1">
+          <mxGeometry x="695" y="1090" width="140" height="20" as="geometry" />
         </mxCell>
       </root>
     </mxGraphModel>
