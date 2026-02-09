@@ -1,16 +1,20 @@
-### Hi there 👋
+﻿# Hey, I'm Saurav 👋
 
-<!--
-**sauravbhattacharya001/sauravbhattacharya001** is a ✨ _special_ ✨ repository because its `README.md` (this file) appears on your GitHub profile.
+Software Engineer at Microsoft · Researcher · Builder
 
-Here are some ideas to get you started:
+### What I'm working on
 
-🔭 I’m currently working on my AI repository
-🌱 I’m currently learning Artificial Intelligence, classical singing and piano
-👯 I’m looking to collaborate on AI repository
-- 🤔 I’m looking for help with 
-💬 Ask me about web development, devOps and reliability
-📫 How to reach me: online.saurav@gmail.com
-😄 Pronouns: He/Him/His
-- ⚡ Fun fact: ...
--->
+- **[sauravcode](https://github.com/sauravbhattacharya001/sauravcode)** — a programming language with minimal syntax. No parens, no commas, no semicolons. Comes with an interpreter and a compiler (.srv → C → native).
+- **[AgentBox](https://sauravbhattacharya001.github.io/getagentbox/)** — AI agents as a service. Personal AI assistants accessible via messaging.
+- **AI safety & governance** — research on agent identity, accountability, and distributed systems.
+
+### Background
+
+- ICGIS Conference Editor/Chair
+- CSA AI Safety Working Group
+- Academic publishing (IEEE, Springer)
+- Seattle, WA
+
+### Get in touch
+
+📧 online.saurav@gmail.com
