@@ -6,7 +6,7 @@
 
 [![LinkedIn](https://img.shields.io/badge/LinkedIn-0A66C2?style=flat&logo=linkedin&logoColor=white)](https://www.linkedin.com/in/sauravbhattacharya001/)
 [![Email](https://img.shields.io/badge/Email-EA4335?style=flat&logo=gmail&logoColor=white)](mailto:online.saurav@gmail.com)
-[![ICGIS](https://img.shields.io/badge/ICGIS_Conference-Editor%2FChair-4B0082?style=flat)](https://icgis.org)
+[![ICGIS](https://img.shields.io/badge/ICGIS_2026-June_6--7-4B0082?style=flat)](https://icgis.org)
 [![AgentBox](https://img.shields.io/badge/AgentBox-Live-00C853?style=flat&logo=probot&logoColor=white)](https://sauravbhattacharya001.github.io/getagentbox/)
 [![GitHub Stars](https://img.shields.io/github/stars/sauravbhattacharya001?style=flat&label=Total%20Stars&color=yellow)](https://github.com/sauravbhattacharya001)
 
@@ -26,17 +26,17 @@ I build software at Microsoft, research AI agent governance, and create tools fo
 
 | Project | What it does | Release | Live |
 |---|---|---|---|
-| **[AgentLens](https://github.com/sauravbhattacharya001/agentlens)** | Observability & explainability platform for AI agents — trace, debug, and understand agent behavior at scale. | [![v1.0.0](https://img.shields.io/badge/release-v1.0.0-blue?style=flat)](https://github.com/sauravbhattacharya001/agentlens/releases/tag/v1.0.0) | [📄 Docs](https://sauravbhattacharya001.github.io/agentlens/) |
-| **[AgentBox](https://github.com/sauravbhattacharya001/getagentbox)** | AI agents as a service — personal AI assistants accessible via messaging. | — | [🌐 Site](https://sauravbhattacharya001.github.io/getagentbox/) |
-| **[AgenticChat](https://github.com/sauravbhattacharya001/agenticchat)** | Agentic conversation framework for multi-agent collaboration. | — | — |
-| **[AI Safety Research](https://github.com/sauravbhattacharya001/ai)** | Contract-enforced sandbox for studying AI agent self-replication safety. | [![v1.0.0](https://img.shields.io/badge/release-v1.0.0-blue?style=flat)](https://github.com/sauravbhattacharya001/ai/releases/tag/v1.0.0) | — |
+| **[AgentLens](https://github.com/sauravbhattacharya001/agentlens)** | Observability & explainability platform for AI agents — trace, debug, and understand agent behavior at scale. Python SDK + Node.js backend + dashboard. | [![v1.0.0](https://img.shields.io/badge/release-v1.0.0-blue?style=flat)](https://github.com/sauravbhattacharya001/agentlens/releases/tag/v1.0.0) | [📄 Docs](https://sauravbhattacharya001.github.io/agentlens/) |
+| **[AgentBox](https://github.com/sauravbhattacharya001/getagentbox)** | AI agents as a service — personal AI assistants accessible via messaging. Open access, 20 msg/day free tier. | — | [🌐 Site](https://sauravbhattacharya001.github.io/getagentbox/) |
+| **[AgenticChat](https://github.com/sauravbhattacharya001/agenticchat)** | Agentic conversation framework for multi-agent collaboration. | — | [🌐 Demo](https://sauravbhattacharya001.github.io/agenticchat/) |
+| **[AI Safety Research](https://github.com/sauravbhattacharya001/ai)** | Contract-enforced sandbox for studying AI agent self-replication safety. | [![v1.0.0](https://img.shields.io/badge/release-v1.0.0-blue?style=flat)](https://github.com/sauravbhattacharya001/ai/releases/tag/v1.0.0) | [📄 Site](https://sauravbhattacharya001.github.io/ai/) |
 
 #### Languages & Tools
 
 | Project | What it does | Release | Live |
 |---|---|---|---|
 | **[sauravcode](https://github.com/sauravbhattacharya001/sauravcode)** | A programming language with zero noise — no parens, no commas, no semicolons. Interpreter + compiler (.srv → C → native). | [![v2.0.0](https://img.shields.io/badge/release-v2.0.0_Compiler-blue?style=flat)](https://github.com/sauravbhattacharya001/sauravcode/releases/tag/v2.0.0) | [📄 Docs](https://sauravbhattacharya001.github.io/sauravcode/) |
-| **[prompt](https://github.com/sauravbhattacharya001/prompt)** | Prompt engineering toolkit. | — | — |
+| **[prompt](https://github.com/sauravbhattacharya001/prompt)** | Prompt engineering toolkit for crafting reliable LLM interactions. | [![v2.0.0](https://img.shields.io/badge/release-v2.0.0-blue?style=flat)](https://github.com/sauravbhattacharya001/prompt/releases/tag/v2.0.0) | [📄 Site](https://sauravbhattacharya001.github.io/prompt/) |
 
 #### Visualization & Data
 
@@ -47,14 +47,14 @@ I build software at Microsoft, research AI agent governance, and create tools fo
 
 #### Apps & More
 
-| Project | What it does | Release |
-|---|---|---|
-| **[everything](https://github.com/sauravbhattacharya001/everything)** | Full-stack Flutter/Dart application. | [![v1.0.0](https://img.shields.io/badge/release-v1.0.0-blue?style=flat)](https://github.com/sauravbhattacharya001/everything/releases/tag/v1.0.0) |
-| **[FeedReader](https://github.com/sauravbhattacharya001/FeedReader)** | RSS feed reader for top Reuters feeds (Swift/iOS). | — |
-| **[BioBots](https://github.com/sauravbhattacharya001/BioBots)** | 3D printer run statistics and monitoring tool. | — |
-| **[Vidly](https://github.com/sauravbhattacharya001/Vidly)** | Video rental management app (C# / .NET). | — |
-| **[gif-captcha](https://github.com/sauravbhattacharya001/gif-captcha)** | Animated GIF-based CAPTCHA system. | [🌐 Demo](https://sauravbhattacharya001.github.io/gif-captcha/) |
-| **[OCaml Samples](https://github.com/sauravbhattacharya001/Ocaml-sample-code)** | Functional programming examples in OCaml. | — |
+| Project | What it does | Release | Live |
+|---|---|---|---|
+| **[everything](https://github.com/sauravbhattacharya001/everything)** | Full-stack Flutter/Dart application. | [![v1.0.0](https://img.shields.io/badge/release-v1.0.0-blue?style=flat)](https://github.com/sauravbhattacharya001/everything/releases/tag/v1.0.0) | [🌐 App](https://sauravbhattacharya001.github.io/everything/) |
+| **[FeedReader](https://github.com/sauravbhattacharya001/FeedReader)** | RSS feed reader for top Reuters feeds (Swift/iOS). | [![v1.0.0](https://img.shields.io/badge/release-v1.0.0-blue?style=flat)](https://github.com/sauravbhattacharya001/FeedReader/releases/tag/v1.0.0) | — |
+| **[BioBots](https://github.com/sauravbhattacharya001/BioBots)** | 3D printer run statistics and monitoring tool. | [![v1.0.0](https://img.shields.io/badge/release-v1.0.0-blue?style=flat)](https://github.com/sauravbhattacharya001/BioBots/releases/tag/v1.0.0) | [🌐 Site](https://sauravbhattacharya001.github.io/BioBots/) |
+| **[Vidly](https://github.com/sauravbhattacharya001/Vidly)** | Video rental management app (C# / .NET). | [![v1.0.0](https://img.shields.io/badge/release-v1.0.0-blue?style=flat)](https://github.com/sauravbhattacharya001/Vidly/releases/tag/v1.0.0) | [🌐 Site](https://sauravbhattacharya001.github.io/Vidly/) |
+| **[gif-captcha](https://github.com/sauravbhattacharya001/gif-captcha)** | Animated GIF-based CAPTCHA system. | [![v1.0.0](https://img.shields.io/badge/release-v1.0.0-blue?style=flat)](https://github.com/sauravbhattacharya001/gif-captcha/releases/tag/v1.0.0) | [🌐 Demo](https://sauravbhattacharya001.github.io/gif-captcha/) |
+| **[OCaml Samples](https://github.com/sauravbhattacharya001/Ocaml-sample-code)** | Functional programming examples in OCaml. | [![v1.0.0](https://img.shields.io/badge/release-v1.0.0-blue?style=flat)](https://github.com/sauravbhattacharya001/Ocaml-sample-code/releases/tag/v1.0.0) | [📄 Site](https://sauravbhattacharya001.github.io/Ocaml-sample-code/) |
 
 ---
 
@@ -62,7 +62,8 @@ I build software at Microsoft, research AI agent governance, and create tools fo
 
 - **AI Agent Identity & Accountability** — frameworks for governing autonomous agents in distributed systems
 - **AI Self-Replication Safety** — contract-enforced sandboxes to study and contain agent replication behaviors
-- **ICGIS Conference** Editor & Chair — International Conference on Global Innovations and Solutions
+- **ICGIS 2026** Editor & Chair — June 6–7, 2026 · [icgis.org](https://icgis.org)
+  - ICGIS 2025: 49 papers accepted · [Springer proceedings](https://link.springer.com/book/10.1007/978-3-032-02853-2)
 - Published in **IEEE** and **Springer**
 - **CSA AI Safety Working Group** — contributing to cloud security standards for AI
 
@@ -109,7 +110,7 @@ I build software at Microsoft, research AI agent governance, and create tools fo
 
 <div align="center">
 
-**16 public repositories** · **5 releases** · **4 live sites**
+**16 public repositories** · **13 releases** · **12 live sites**
 
 **Interests:** AI Agents · Distributed Systems · Cybersecurity · Programming Languages · Mindfulness & Consciousness
 
