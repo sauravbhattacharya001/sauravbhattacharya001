@@ -1,0 +1,124 @@
+name: README CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  schedule:
+    - cron: '0 9 * * 1'  # Weekly Monday 9am UTC — catch stale links
+
+permissions:
+  contents: read
+
+jobs:
+  markdown-lint:
+    name: Markdown Lint
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Lint README.md
+        uses: DavidAnson/markdownlint-cli2-action@v19
+        with:
+          globs: '**/*.md'
+          config: '.markdownlint.json'
+
+  link-check:
+    name: Link Validation
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Check links in README
+        uses: lycheeverse/lychee-action@v2
+        with:
+          args: >-
+            --verbose
+            --no-progress
+            --accept 200,204,301,302,403,429
+            --exclude 'https://github-readme-stats.vercel.app'
+            --exclude 'https://github-readme-streak-stats.herokuapp.com'
+            --exclude 'https://img.shields.io'
+            --timeout 30
+            --max-retries 3
+            --retry-wait 5
+            README.md
+          fail: true
+
+  badge-check:
+    name: Badge Validation
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Extract and validate badge URLs
+        run: |
+          echo "=== Checking badge image URLs ==="
+          # Extract shield.io badge URLs from README
+          grep -oP 'https://img\.shields\.io[^)]+' README.md | sort -u > badge_urls.txt
+          echo "Found $(wc -l < badge_urls.txt) badge URLs"
+          cat badge_urls.txt
+
+          FAILED=0
+          while IFS= read -r url; do
+            STATUS=$(curl -s -o /dev/null -w "%{http_code}" --max-time 15 "$url" 2>/dev/null || echo "000")
+            if [ "$STATUS" -ge 400 ] && [ "$STATUS" -ne 403 ]; then
+              echo "❌ BROKEN ($STATUS): $url"
+              FAILED=1
+            else
+              echo "✅ OK ($STATUS): $url"
+            fi
+          done < badge_urls.txt
+
+          if [ "$FAILED" -eq 1 ]; then
+            echo "::error::Some badge URLs returned errors"
+            exit 1
+          fi
+          echo "All badges validated successfully"
+
+  structure-check:
+    name: Structure Validation
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Validate README structure
+        run: |
+          echo "=== Checking README structure ==="
+
+          # Must exist
+          if [ ! -f README.md ]; then
+            echo "::error::README.md not found"
+            exit 1
+          fi
+
+          # Check minimum sections
+          SECTIONS=0
+          for heading in "What I'm Building" "Research" "Tech Stack" "GitHub Stats"; do
+            if grep -qi "$heading" README.md; then
+              echo "✅ Section found: $heading"
+              SECTIONS=$((SECTIONS + 1))
+            else
+              echo "⚠️ Section missing: $heading"
+            fi
+          done
+
+          if [ "$SECTIONS" -lt 3 ]; then
+            echo "::error::README is missing key sections ($SECTIONS/4 found)"
+            exit 1
+          fi
+
+          # Check file size (profile READMEs should be reasonable)
+          SIZE=$(wc -c < README.md)
+          echo "README size: $SIZE bytes"
+          if [ "$SIZE" -gt 50000 ]; then
+            echo "::warning::README is very large ($SIZE bytes). Consider trimming."
+          fi
+
+          # Check for broken markdown table syntax
+          if grep -P '^\|.*\|$' README.md | grep -vP '^\|(\s*---+\s*\|)+$' | grep -P '\|{2,}' > /dev/null 2>&1; then
+            echo "::warning::Possible malformed table rows detected"
+          fi
+
+          echo "Structure validation passed"
