@@ -14,8 +14,8 @@
 
 ![Repos](https://img.shields.io/badge/Repos-16-blue?style=flat-square)
 ![Releases](https://img.shields.io/badge/Releases-13-green?style=flat-square)
-![Commits](https://img.shields.io/badge/Commits-530+-purple?style=flat-square)
-![Live Sites](https://img.shields.io/badge/Live_Sites-13-orange?style=flat-square)
+![Commits](https://img.shields.io/badge/Commits-536+-purple?style=flat-square)
+![Live Sites](https://img.shields.io/badge/Live_Sites-14-orange?style=flat-square)
 [![GitHub Stars](https://img.shields.io/github/stars/sauravbhattacharya001?style=flat-square&label=Stars&color=yellow)](https://github.com/sauravbhattacharya001)
 
 </div>
@@ -121,7 +121,7 @@ I build software at Microsoft, research AI agent governance, and create tools fo
 
 <div align="center">
 
-**16 public repositories** · **530+ commits** · **13 releases** · **13 live sites** · **[Detailed Portfolio →](./PROJECTS.md)**
+**16 public repositories** · **536+ commits** · **13 releases** · **14 live sites** · **[Detailed Portfolio →](./PROJECTS.md)**
 
 **Interests:** AI Agents · Distributed Systems · Cybersecurity · Programming Languages · Mindfulness & Consciousness
 
