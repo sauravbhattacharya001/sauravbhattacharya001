@@ -14,7 +14,7 @@
 
 ![Repos](https://img.shields.io/badge/Repos-16-blue?style=flat-square)
 ![Releases](https://img.shields.io/badge/Releases-13-green?style=flat-square)
-![Commits](https://img.shields.io/badge/Commits-536+-purple?style=flat-square)
+![Commits](https://img.shields.io/badge/Commits-546+-purple?style=flat-square)
 ![Live Sites](https://img.shields.io/badge/Live_Sites-14-orange?style=flat-square)
 [![GitHub Stars](https://img.shields.io/github/stars/sauravbhattacharya001?style=flat-square&label=Stars&color=yellow)](https://github.com/sauravbhattacharya001)
 
@@ -60,7 +60,7 @@ I build software at Microsoft, research AI agent governance, and create tools fo
 | Project | What it does | Release | Live |
 |---|---|---|---|
 | **[everything](https://github.com/sauravbhattacharya001/everything)** | Full-stack Flutter/Dart app — event management with BLoC pattern, SQLite persistence, Material Design 3. | [![v1.0.0](https://img.shields.io/badge/release-v1.0.0-blue?style=flat)](https://github.com/sauravbhattacharya001/everything/releases/tag/v1.0.0) | [🌐 App](https://sauravbhattacharya001.github.io/everything/) |
-| **[FeedReader](https://github.com/sauravbhattacharya001/FeedReader)** | RSS feed reader for BBC World News (Swift/iOS). Async image loading, bookmarks, search, hardened ATS. | [![v1.0.0](https://img.shields.io/badge/release-v1.0.0-blue?style=flat)](https://github.com/sauravbhattacharya001/FeedReader/releases/tag/v1.0.0) | [🌐 Site](https://sauravbhattacharya001.github.io/FeedReader/) |
+| **[FeedReader](https://github.com/sauravbhattacharya001/FeedReader)** | RSS feed reader for Reuters (Swift/iOS). Async image loading, bookmarks, search, hardened ATS. | [![v1.0.0](https://img.shields.io/badge/release-v1.0.0-blue?style=flat)](https://github.com/sauravbhattacharya001/FeedReader/releases/tag/v1.0.0) | [🌐 Site](https://sauravbhattacharya001.github.io/FeedReader/) |
 | **[BioBots](https://github.com/sauravbhattacharya001/BioBots)** | 3D bioprinter analytics — 11 metrics, interactive data explorer with histograms, scatter plots, regression, and CSV export. | [![v1.0.0](https://img.shields.io/badge/release-v1.0.0-blue?style=flat)](https://github.com/sauravbhattacharya001/BioBots/releases/tag/v1.0.0) | [🌐 Site](https://sauravbhattacharya001.github.io/BioBots/) |
 | **[Vidly](https://github.com/sauravbhattacharya001/Vidly)** | Video rental management (C# / ASP.NET MVC) — CRUD, 4-tier membership, rental checkout/returns, late fees. | [![v1.0.0](https://img.shields.io/badge/release-v1.0.0-blue?style=flat)](https://github.com/sauravbhattacharya001/Vidly/releases/tag/v1.0.0) | [🌐 Site](https://sauravbhattacharya001.github.io/Vidly/) |
 | **[OCaml Samples](https://github.com/sauravbhattacharya001/Ocaml-sample-code)** | Progressive functional programming — 7-stage path from basics to graph algorithms and priority queues. | [![v1.0.0](https://img.shields.io/badge/release-v1.0.0-blue?style=flat)](https://github.com/sauravbhattacharya001/Ocaml-sample-code/releases/tag/v1.0.0) | [📄 Site](https://sauravbhattacharya001.github.io/Ocaml-sample-code/) |
@@ -121,7 +121,7 @@ I build software at Microsoft, research AI agent governance, and create tools fo
 
 <div align="center">
 
-**16 public repositories** · **536+ commits** · **13 releases** · **14 live sites** · **[Detailed Portfolio →](./PROJECTS.md)**
+**16 public repositories** · **546+ commits** · **13 releases** · **14 live sites** · **[Detailed Portfolio →](./PROJECTS.md)**
 
 **Interests:** AI Agents · Distributed Systems · Cybersecurity · Programming Languages · Mindfulness & Consciousness
 
