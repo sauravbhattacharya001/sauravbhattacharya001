@@ -29,6 +29,7 @@ I build software at Microsoft, research AI agent governance, and create tools fo
 | **[AgentLens](https://github.com/sauravbhattacharya001/agentlens)** | Observability & explainability platform for AI agents — trace, debug, and understand agent behavior at scale. Python SDK + Node.js backend + dashboard. | [![v1.0.0](https://img.shields.io/badge/release-v1.0.0-blue?style=flat)](https://github.com/sauravbhattacharya001/agentlens/releases/tag/v1.0.0) | [📄 Docs](https://sauravbhattacharya001.github.io/agentlens/) |
 | **[AgentBox](https://github.com/sauravbhattacharya001/getagentbox)** | AI agents as a service — personal AI assistants accessible via messaging. Open access, 20 msg/day free tier. | — | [🌐 Site](https://sauravbhattacharya001.github.io/getagentbox/) |
 | **[AgenticChat](https://github.com/sauravbhattacharya001/agenticchat)** | Agentic conversation framework for multi-agent collaboration and orchestration. | [![v1.0.0](https://img.shields.io/badge/release-v1.0.0-blue?style=flat)](https://github.com/sauravbhattacharya001/agenticchat/releases/tag/v1.0.0) | [🌐 Demo](https://sauravbhattacharya001.github.io/agenticchat/) |
+| **[Zalenix Memory](https://github.com/sauravbhattacharya001/zalenix-memory)** | Zalenix AI agent memory and workspace files — persistent memory layer for intelligent agent systems. | — | — |
 | **[AI Safety Research](https://github.com/sauravbhattacharya001/ai)** | Contract-enforced sandbox for studying AI agent self-replication safety. Explores containment strategies for autonomous systems. | [![v1.0.0](https://img.shields.io/badge/release-v1.0.0-blue?style=flat)](https://github.com/sauravbhattacharya001/ai/releases/tag/v1.0.0) | [📄 Site](https://sauravbhattacharya001.github.io/ai/) |
 
 #### Languages & Tools
@@ -43,7 +44,7 @@ I build software at Microsoft, research AI agent governance, and create tools fo
 
 | Project | What it does | Release | Live |
 |---|---|---|---|
-| **[VoronoiMap](https://github.com/sauravbhattacharya001/VoronoiMap)** ⭐ 3 | Voronoi diagram generation and spatial partitioning toolkit for 2D geometric spaces. | [![v1.0.0](https://img.shields.io/badge/release-v1.0.0-blue?style=flat)](https://github.com/sauravbhattacharya001/VoronoiMap/releases/tag/v1.0.0) | [🌐 Demo](https://sauravbhattacharya001.github.io/VoronoiMap/) |
+| **[VoronoiMap](https://github.com/sauravbhattacharya001/VoronoiMap)** ⭐ 3 | Voronoi diagram generation and spatial partitioning toolkit for 2D geometric spaces. | — | [🌐 Demo](https://sauravbhattacharya001.github.io/VoronoiMap/) |
 | **[GraphVisual](https://github.com/sauravbhattacharya001/GraphVisual)** | Graph visualization for studying community evolution patterns in student networks. | [![v1.0.0](https://img.shields.io/badge/release-v1.0.0-blue?style=flat)](https://github.com/sauravbhattacharya001/GraphVisual/releases/tag/v1.0.0) | [🌐 Site](https://sauravbhattacharya001.github.io/GraphVisual/) |
 
 #### Apps & More
@@ -111,7 +112,7 @@ I build software at Microsoft, research AI agent governance, and create tools fo
 
 <div align="center">
 
-**16 public repositories** · **13 releases** · **14 live sites** · **[Detailed Portfolio →](./PROJECTS.md)**
+**16 public repositories** · **12 releases** · **14 live sites** · **[Detailed Portfolio →](./PROJECTS.md)**
 
 **Interests:** AI Agents · Distributed Systems · Cybersecurity · Programming Languages · Mindfulness & Consciousness
 
