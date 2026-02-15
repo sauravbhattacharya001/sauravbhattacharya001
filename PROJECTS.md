@@ -61,6 +61,7 @@ Detailed technical overview of all public repositories. For a quick summary, see
 |---|---|
 | **Language** | JavaScript (vanilla, no frameworks) |
 | **Architecture** | Modular ES6 (ChatConfig, ConversationManager, ApiKeyManager, UIController, SandboxRunner) |
+| **Release** | [v1.0.0](https://github.com/sauravbhattacharya001/agenticchat/releases/tag/v1.0.0) |
 | **Demo** | [sauravbhattacharya001.github.io/agenticchat](https://sauravbhattacharya001.github.io/agenticchat/) |
 
 **What it does:**
@@ -102,7 +103,7 @@ Detailed technical overview of all public repositories. For a quick summary, see
 |---|---|
 | **Language** | Python (interpreter + compiler) |
 | **Architecture** | Lexer → Parser → AST → Tree-walk Interpreter *or* C code generator → GCC → native binary |
-| **Release** | [v2.1.0](https://github.com/sauravbhattacharya001/sauravcode/releases) |
+| **Release** | [v2.0.0](https://github.com/sauravbhattacharya001/sauravcode/releases/tag/v2.0.0) |
 | **Docs** | [sauravbhattacharya001.github.io/sauravcode](https://sauravbhattacharya001.github.io/sauravcode/) |
 
 **What it does:**
@@ -126,7 +127,7 @@ Detailed technical overview of all public repositories. For a quick summary, see
 |---|---|
 | **Language** | C# / .NET 8 |
 | **Architecture** | `AzureLLM` client → Azure OpenAI → retry/streaming/conversation management |
-| **Release** | [v3.1.0](https://github.com/sauravbhattacharya001/prompt/releases) |
+| **Release** | [v2.0.0](https://github.com/sauravbhattacharya001/prompt/releases/tag/v2.0.0) |
 | **Docs** | [sauravbhattacharya001.github.io/prompt](https://sauravbhattacharya001.github.io/prompt/) |
 
 **What it does:**

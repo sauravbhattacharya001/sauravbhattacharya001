@@ -110,7 +110,7 @@ I build software at Microsoft, research AI agent governance, and create tools fo
 
 <div align="center">
 
-**15 public repositories** · **14 releases** · **14 live sites** · **[Detailed Portfolio →](./PROJECTS.md)**
+**15 public repositories** · **12 releases** · **14 live sites** · **[Detailed Portfolio →](./PROJECTS.md)**
 
 **Interests:** AI Agents · Distributed Systems · Cybersecurity · Programming Languages · Mindfulness & Consciousness
 
