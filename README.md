@@ -13,8 +13,9 @@
 <br/>
 
 ![Repos](https://img.shields.io/badge/Repos-16-blue?style=flat-square)
-![Releases](https://img.shields.io/badge/Releases-12-green?style=flat-square)
-![Live Sites](https://img.shields.io/badge/Live_Sites-14-orange?style=flat-square)
+![Releases](https://img.shields.io/badge/Releases-13-green?style=flat-square)
+![Commits](https://img.shields.io/badge/Commits-530+-purple?style=flat-square)
+![Live Sites](https://img.shields.io/badge/Live_Sites-13-orange?style=flat-square)
 [![GitHub Stars](https://img.shields.io/github/stars/sauravbhattacharya001?style=flat-square&label=Stars&color=yellow)](https://github.com/sauravbhattacharya001)
 
 </div>
@@ -35,34 +36,34 @@ I build software at Microsoft, research AI agent governance, and create tools fo
 |---|---|---|---|
 | **[AgentLens](https://github.com/sauravbhattacharya001/agentlens)** | Observability & explainability platform for AI agents — trace, debug, and understand agent behavior at scale. Python SDK + Node.js backend + dashboard. | [![v1.0.0](https://img.shields.io/badge/release-v1.0.0-blue?style=flat)](https://github.com/sauravbhattacharya001/agentlens/releases/tag/v1.0.0) | [📄 Docs](https://sauravbhattacharya001.github.io/agentlens/) |
 | **[AgentBox](https://github.com/sauravbhattacharya001/getagentbox)** | AI agents as a service — personal AI assistants accessible via messaging. Open access, 20 msg/day free tier. | — | [🌐 Site](https://sauravbhattacharya001.github.io/getagentbox/) |
-| **[AgenticChat](https://github.com/sauravbhattacharya001/agenticchat)** | Agentic conversation framework for multi-agent collaboration and orchestration. | [![v1.0.0](https://img.shields.io/badge/release-v1.0.0-blue?style=flat)](https://github.com/sauravbhattacharya001/agenticchat/releases/tag/v1.0.0) | [🌐 Demo](https://sauravbhattacharya001.github.io/agenticchat/) |
+| **[AgenticChat](https://github.com/sauravbhattacharya001/agenticchat)** | Agentic conversation framework — client-side GPT-4o chat with sandboxed code execution, 15 prompt templates, and conversation export. | [![v1.0.0](https://img.shields.io/badge/release-v1.0.0-blue?style=flat)](https://github.com/sauravbhattacharya001/agenticchat/releases/tag/v1.0.0) | [🌐 Demo](https://sauravbhattacharya001.github.io/agenticchat/) |
 | **[AI Safety Research](https://github.com/sauravbhattacharya001/ai)** | Contract-enforced sandbox for studying AI agent self-replication safety. Explores containment strategies for autonomous systems. | [![v1.0.0](https://img.shields.io/badge/release-v1.0.0-blue?style=flat)](https://github.com/sauravbhattacharya001/ai/releases/tag/v1.0.0) | [📄 Site](https://sauravbhattacharya001.github.io/ai/) |
-| **[Zalenix Memory](https://github.com/sauravbhattacharya001/zalenix-memory)** | AI agent memory and workspace management — persistent context and state for autonomous agents. | — | — |
+| **[Zalenix Memory](https://github.com/sauravbhattacharya001/zalenix-memory)** | AI agent memory and workspace — persistent context, state management, and continuity for autonomous agents. | — | — |
 
 ### Languages & Tools
 
 | Project | What it does | Release | Live |
 |---|---|---|---|
-| **[sauravcode](https://github.com/sauravbhattacharya001/sauravcode)** | A programming language with zero noise — no parens, no commas, no semicolons. Interpreter + compiler (.srv → C → native executables). | [![v2.0.0](https://img.shields.io/badge/release-v2.0.0_Compiler-blue?style=flat)](https://github.com/sauravbhattacharya001/sauravcode/releases/tag/v2.0.0) | [📄 Docs](https://sauravbhattacharya001.github.io/sauravcode/) |
-| **[prompt](https://github.com/sauravbhattacharya001/prompt)** | Prompt engineering toolkit for crafting reliable, structured LLM interactions. | [![v2.0.0](https://img.shields.io/badge/release-v2.0.0-blue?style=flat)](https://github.com/sauravbhattacharya001/prompt/releases/tag/v2.0.0) | [📄 Site](https://sauravbhattacharya001.github.io/prompt/) |
-| **[gif-captcha](https://github.com/sauravbhattacharya001/gif-captcha)** | Animated GIF-based CAPTCHA system — a creative alternative to traditional bot detection. | [![v1.0.0](https://img.shields.io/badge/release-v1.0.0-blue?style=flat)](https://github.com/sauravbhattacharya001/gif-captcha/releases/tag/v1.0.0) | [🌐 Demo](https://sauravbhattacharya001.github.io/gif-captcha/) |
+| **[sauravcode](https://github.com/sauravbhattacharya001/sauravcode)** | A programming language with zero noise — no parens, no commas, no semicolons. Interpreter + compiler (.srv → C → native executables). 212+ tests. | [![v2.0.0](https://img.shields.io/badge/release-v2.0.0_Compiler-blue?style=flat)](https://github.com/sauravbhattacharya001/sauravcode/releases/tag/v2.0.0) | [📄 Docs](https://sauravbhattacharya001.github.io/sauravcode/) |
+| **[prompt](https://github.com/sauravbhattacharya001/prompt)** | .NET 8 prompt engineering toolkit — Azure OpenAI client, multi-turn conversations, template engine with `{{variable}}` placeholders. | [![v2.0.0](https://img.shields.io/badge/release-v2.0.0-blue?style=flat)](https://github.com/sauravbhattacharya001/prompt/releases/tag/v2.0.0) | [📄 Site](https://sauravbhattacharya001.github.io/prompt/) |
+| **[gif-captcha](https://github.com/sauravbhattacharya001/gif-captcha)** | GIF-based CAPTCHA research — animated visual puzzles with 10-challenge quiz, human vs AI comparison dashboard. | [![v1.0.0](https://img.shields.io/badge/release-v1.0.0-blue?style=flat)](https://github.com/sauravbhattacharya001/gif-captcha/releases/tag/v1.0.0) | [🌐 Demo](https://sauravbhattacharya001.github.io/gif-captcha/) |
 
 ### Visualization & Data
 
 | Project | What it does | Release | Live |
 |---|---|---|---|
-| **[VoronoiMap](https://github.com/sauravbhattacharya001/VoronoiMap)** ⭐ 3 | Voronoi diagram generation and spatial partitioning toolkit for 2D geometric spaces. | — | [🌐 Demo](https://sauravbhattacharya001.github.io/VoronoiMap/) |
+| **[VoronoiMap](https://github.com/sauravbhattacharya001/VoronoiMap)** ⭐ 3 | Voronoi diagram generation and spatial partitioning toolkit for 2D spaces. 6 color schemes, interactive HTML, GeoJSON export, 143 tests. | — | [🌐 Demo](https://sauravbhattacharya001.github.io/VoronoiMap/) |
 | **[GraphVisual](https://github.com/sauravbhattacharya001/GraphVisual)** | Graph visualization for studying community evolution patterns in student networks. | [![v1.0.0](https://img.shields.io/badge/release-v1.0.0-blue?style=flat)](https://github.com/sauravbhattacharya001/GraphVisual/releases/tag/v1.0.0) | [🌐 Site](https://sauravbhattacharya001.github.io/GraphVisual/) |
 
 ### Apps & More
 
 | Project | What it does | Release | Live |
 |---|---|---|---|
-| **[everything](https://github.com/sauravbhattacharya001/everything)** | Full-stack Flutter/Dart application. | [![v1.0.0](https://img.shields.io/badge/release-v1.0.0-blue?style=flat)](https://github.com/sauravbhattacharya001/everything/releases/tag/v1.0.0) | [🌐 App](https://sauravbhattacharya001.github.io/everything/) |
-| **[FeedReader](https://github.com/sauravbhattacharya001/FeedReader)** | RSS feed reader for top Reuters news feeds (Swift/iOS). | [![v1.0.0](https://img.shields.io/badge/release-v1.0.0-blue?style=flat)](https://github.com/sauravbhattacharya001/FeedReader/releases/tag/v1.0.0) | [🌐 Site](https://sauravbhattacharya001.github.io/FeedReader/) |
-| **[BioBots](https://github.com/sauravbhattacharya001/BioBots)** | 3D printer run statistics and monitoring tool. | [![v1.0.0](https://img.shields.io/badge/release-v1.0.0-blue?style=flat)](https://github.com/sauravbhattacharya001/BioBots/releases/tag/v1.0.0) | [🌐 Site](https://sauravbhattacharya001.github.io/BioBots/) |
-| **[Vidly](https://github.com/sauravbhattacharya001/Vidly)** | Video rental management app (C# / .NET). | [![v1.0.0](https://img.shields.io/badge/release-v1.0.0-blue?style=flat)](https://github.com/sauravbhattacharya001/Vidly/releases/tag/v1.0.0) | [🌐 Site](https://sauravbhattacharya001.github.io/Vidly/) |
-| **[OCaml Samples](https://github.com/sauravbhattacharya001/Ocaml-sample-code)** | Functional programming examples in OCaml. | [![v1.0.0](https://img.shields.io/badge/release-v1.0.0-blue?style=flat)](https://github.com/sauravbhattacharya001/Ocaml-sample-code/releases/tag/v1.0.0) | [📄 Site](https://sauravbhattacharya001.github.io/Ocaml-sample-code/) |
+| **[everything](https://github.com/sauravbhattacharya001/everything)** | Full-stack Flutter/Dart app — event management with BLoC pattern, SQLite persistence, Material Design 3. | [![v1.0.0](https://img.shields.io/badge/release-v1.0.0-blue?style=flat)](https://github.com/sauravbhattacharya001/everything/releases/tag/v1.0.0) | [🌐 App](https://sauravbhattacharya001.github.io/everything/) |
+| **[FeedReader](https://github.com/sauravbhattacharya001/FeedReader)** | RSS feed reader for BBC World News (Swift/iOS). Async image loading, bookmarks, search, hardened ATS. | [![v1.0.0](https://img.shields.io/badge/release-v1.0.0-blue?style=flat)](https://github.com/sauravbhattacharya001/FeedReader/releases/tag/v1.0.0) | [🌐 Site](https://sauravbhattacharya001.github.io/FeedReader/) |
+| **[BioBots](https://github.com/sauravbhattacharya001/BioBots)** | 3D bioprinter analytics — 11 metrics, interactive data explorer with histograms, scatter plots, regression, and CSV export. | [![v1.0.0](https://img.shields.io/badge/release-v1.0.0-blue?style=flat)](https://github.com/sauravbhattacharya001/BioBots/releases/tag/v1.0.0) | [🌐 Site](https://sauravbhattacharya001.github.io/BioBots/) |
+| **[Vidly](https://github.com/sauravbhattacharya001/Vidly)** | Video rental management (C# / ASP.NET MVC) — CRUD, 4-tier membership, rental checkout/returns, late fees. | [![v1.0.0](https://img.shields.io/badge/release-v1.0.0-blue?style=flat)](https://github.com/sauravbhattacharya001/Vidly/releases/tag/v1.0.0) | [🌐 Site](https://sauravbhattacharya001.github.io/Vidly/) |
+| **[OCaml Samples](https://github.com/sauravbhattacharya001/Ocaml-sample-code)** | Progressive functional programming — 7-stage path from basics to graph algorithms and priority queues. | [![v1.0.0](https://img.shields.io/badge/release-v1.0.0-blue?style=flat)](https://github.com/sauravbhattacharya001/Ocaml-sample-code/releases/tag/v1.0.0) | [📄 Site](https://sauravbhattacharya001.github.io/Ocaml-sample-code/) |
 
 ---
 
@@ -120,7 +121,7 @@ I build software at Microsoft, research AI agent governance, and create tools fo
 
 <div align="center">
 
-**16 public repositories** · **12 releases** · **14 live sites** · **[Detailed Portfolio →](./PROJECTS.md)**
+**16 public repositories** · **530+ commits** · **13 releases** · **13 live sites** · **[Detailed Portfolio →](./PROJECTS.md)**
 
 **Interests:** AI Agents · Distributed Systems · Cybersecurity · Programming Languages · Mindfulness & Consciousness
 
