@@ -6,7 +6,7 @@
 
 [![LinkedIn](https://img.shields.io/badge/LinkedIn-0A66C2?style=flat&logo=linkedin&logoColor=white)](https://www.linkedin.com/in/sauravbhattacharya001/)
 [![Email](https://img.shields.io/badge/Email-EA4335?style=flat&logo=gmail&logoColor=white)](mailto:online.saurav@gmail.com)
-[![ICGIS](https://img.shields.io/badge/ICGIS_2026-June_6--7-4B0082?style=flat)](https://icgis.org)
+[![ICGIS](https://img.shields.io/badge/ICGIS_2026-June_6--7-4B0082?style=flat)](#research--publications)
 [![AgentBox](https://img.shields.io/badge/AgentBox-Live-00C853?style=flat&logo=probot&logoColor=white)](https://sauravbhattacharya001.github.io/getagentbox/)
 [![GitHub Stars](https://img.shields.io/github/stars/sauravbhattacharya001?style=flat&label=Total%20Stars&color=yellow)](https://github.com/sauravbhattacharya001)
 
@@ -50,7 +50,7 @@ I build software at Microsoft, research AI agent governance, and create tools fo
 | Project | What it does | Release | Live |
 |---|---|---|---|
 | **[everything](https://github.com/sauravbhattacharya001/everything)** | Full-stack Flutter/Dart application. | [![v1.0.0](https://img.shields.io/badge/release-v1.0.0-blue?style=flat)](https://github.com/sauravbhattacharya001/everything/releases/tag/v1.0.0) | [🌐 App](https://sauravbhattacharya001.github.io/everything/) |
-| **[FeedReader](https://github.com/sauravbhattacharya001/FeedReader)** | RSS feed reader for top Reuters feeds (Swift/iOS). | [![v1.0.0](https://img.shields.io/badge/release-v1.0.0-blue?style=flat)](https://github.com/sauravbhattacharya001/FeedReader/releases/tag/v1.0.0) | — |
+| **[FeedReader](https://github.com/sauravbhattacharya001/FeedReader)** | RSS feed reader for BBC World News feeds (Swift/iOS). | [![v1.0.0](https://img.shields.io/badge/release-v1.0.0-blue?style=flat)](https://github.com/sauravbhattacharya001/FeedReader/releases/tag/v1.0.0) | — |
 | **[BioBots](https://github.com/sauravbhattacharya001/BioBots)** | 3D printer run statistics and monitoring tool. | [![v1.0.0](https://img.shields.io/badge/release-v1.0.0-blue?style=flat)](https://github.com/sauravbhattacharya001/BioBots/releases/tag/v1.0.0) | [🌐 Site](https://sauravbhattacharya001.github.io/BioBots/) |
 | **[Vidly](https://github.com/sauravbhattacharya001/Vidly)** | Video rental management app (C# / .NET). | [![v1.0.0](https://img.shields.io/badge/release-v1.0.0-blue?style=flat)](https://github.com/sauravbhattacharya001/Vidly/releases/tag/v1.0.0) | [🌐 Site](https://sauravbhattacharya001.github.io/Vidly/) |
 | **[gif-captcha](https://github.com/sauravbhattacharya001/gif-captcha)** | Animated GIF-based CAPTCHA system. | [![v1.0.0](https://img.shields.io/badge/release-v1.0.0-blue?style=flat)](https://github.com/sauravbhattacharya001/gif-captcha/releases/tag/v1.0.0) | [🌐 Demo](https://sauravbhattacharya001.github.io/gif-captcha/) |
@@ -62,7 +62,7 @@ I build software at Microsoft, research AI agent governance, and create tools fo
 
 - **AI Agent Identity & Accountability** — frameworks for governing autonomous agents in distributed systems
 - **AI Self-Replication Safety** — contract-enforced sandboxes to study and contain agent replication behaviors
-- **ICGIS 2026** Editor & Chair — June 6–7, 2026 · [icgis.org](https://icgis.org)
+- **ICGIS 2026** Editor & Chair — June 6–7, 2026
   - ICGIS 2025: 49 papers accepted · [Springer proceedings](https://link.springer.com/book/10.1007/978-3-032-02853-2)
 - Published in **IEEE** and **Springer**
 - **CSA AI Safety Working Group** — contributing to cloud security standards for AI
