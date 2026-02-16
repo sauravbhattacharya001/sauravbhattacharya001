@@ -2,9 +2,9 @@ name: README CI
 
 on:
   push:
-    branches: [main]
+    branches: [master]
   pull_request:
-    branches: [main]
+    branches: [master]
   schedule:
     - cron: '0 9 * * 1'  # Weekly Monday 9am UTC — catch stale links
 
@@ -39,7 +39,10 @@ jobs:
             --accept 200,204,301,302,403,429
             --exclude 'https://github-readme-stats.vercel.app'
             --exclude 'https://github-readme-streak-stats.herokuapp.com'
+            --exclude 'https://github-readme-activity-graph.vercel.app'
+            --exclude 'https://readme-typing-svg.demolab.com'
             --exclude 'https://img.shields.io'
+            --exclude 'https://github-profile-trophy.vercel.app'
             --timeout 30
             --max-retries 3
             --retry-wait 5
