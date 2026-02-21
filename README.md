@@ -13,8 +13,8 @@
 <br/>
 
 ![Repos](https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Fapi.github.com%2Fusers%2Fsauravbhattacharya001&query=%24.public_repos&label=Repos&color=blue&style=flat-square)
-![Releases](https://img.shields.io/badge/Releases-13-green?style=flat-square)
-![Commits](https://img.shields.io/badge/Commits-570+-purple?style=flat-square)
+![Releases](https://img.shields.io/badge/Releases-14-green?style=flat-square)
+![Commits](https://img.shields.io/badge/Commits-760+-purple?style=flat-square)
 ![Live Sites](https://img.shields.io/badge/Live_Sites-14-orange?style=flat-square)
 [![GitHub Stars](https://img.shields.io/github/stars/sauravbhattacharya001?style=flat-square&label=Stars&color=yellow)](https://github.com/sauravbhattacharya001)
 ![Profile Views](https://komarev.com/ghpvc/?username=sauravbhattacharya001&color=brightgreen&style=flat-square&label=Profile+Views)
@@ -49,6 +49,12 @@ I build software at Microsoft, research AI agent governance, and create tools fo
 | **[AgentBox](https://github.com/sauravbhattacharya001/getagentbox)** | AI agents as a service — personal AI assistants accessible via messaging. Open access, 20 msg/day free tier. | — | [🌐 Site](https://sauravbhattacharya001.github.io/getagentbox/) |
 | **[AgenticChat](https://github.com/sauravbhattacharya001/agenticchat)** | Agentic conversation framework — client-side GPT-4o chat with sandboxed code execution, 15 prompt templates, and conversation export. | [![v1.0.0](https://img.shields.io/badge/release-v1.0.0-blue?style=flat)](https://github.com/sauravbhattacharya001/agenticchat/releases/tag/v1.0.0) | [🌐 Demo](https://sauravbhattacharya001.github.io/agenticchat/) |
 | **[AI Safety Research](https://github.com/sauravbhattacharya001/ai)** | Contract-enforced sandbox for studying AI agent self-replication safety. Explores containment strategies for autonomous systems. | [![v1.0.0](https://img.shields.io/badge/release-v1.0.0-blue?style=flat)](https://github.com/sauravbhattacharya001/ai/releases/tag/v1.0.0) | [📄 Site](https://sauravbhattacharya001.github.io/ai/) |
+
+### Security
+
+| Project | What it does | Release | Live |
+|---|---|---|---|
+| **[WinSentinel](https://github.com/sauravbhattacharya001/WinSentinel)** | Always-on Windows security agent — real-time monitoring, AI-powered threat detection, auto-remediation, 13 audit modules, compliance profiles & finding suppression. | [![v1.1.0](https://img.shields.io/badge/release-v1.1.0-blue?style=flat)](https://github.com/sauravbhattacharya001/WinSentinel/releases/tag/v1.1.0) | [📄 Docs](https://sauravbhattacharya001.github.io/WinSentinel/) |
 
 ### Languages & Tools
 
