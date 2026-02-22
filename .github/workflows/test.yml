@@ -126,3 +126,58 @@ jobs:
           docker stop test-portfolio
           docker rm test-portfolio
           echo "Docker test passed ✓"
+
+  lighthouse:
+    name: Lighthouse CI
+    runs-on: ubuntu-latest
+    needs: docker-build
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Install Lighthouse CI
+        run: npm install -g @lhci/cli
+
+      - name: Build Docker image
+        run: docker build -t portfolio-lh .
+
+      - name: Start container
+        run: |
+          docker run -d --name lh-portfolio -p 9080:80 portfolio-lh
+          sleep 3
+          # Verify container is up
+          curl -sf http://localhost:9080 > /dev/null || { echo "Container failed to start"; exit 1; }
+
+      - name: Run Lighthouse
+        run: |
+          lhci collect \
+            --url="http://localhost:9080" \
+            --numberOfRuns=3 \
+            --settings.chromeFlags="--no-sandbox --headless"
+
+      - name: Assert quality thresholds
+        run: |
+          lhci assert \
+            --preset="lighthouse:recommended" \
+            --assert.assertions.categories:performance=off \
+            --assert.assertions.categories:accessibility="error; minScore=0.85" \
+            --assert.assertions.categories:best-practices="warn; minScore=0.8" \
+            --assert.assertions.categories:seo="error; minScore=0.85"
+
+      - name: Upload Lighthouse report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: lighthouse-report
+          path: .lighthouseci/
+          retention-days: 14
+
+      - name: Cleanup
+        if: always()
+        run: docker stop lh-portfolio && docker rm lh-portfolio || true

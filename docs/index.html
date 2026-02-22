@@ -6,11 +6,33 @@
     <title>Saurav Bhattacharya — Software Engineer &amp; AI Safety Researcher</title>
     <meta name="description" content="Software Engineer at Microsoft, AI Safety Researcher, and Programming Language Designer. Building observable, accountable, and safe intelligent systems.">
     <meta name="author" content="Saurav Bhattacharya">
+    <meta name="theme-color" content="#0d1117">
     <meta property="og:title" content="Saurav Bhattacharya — Portfolio">
     <meta property="og:description" content="Software Engineer at Microsoft · AI Safety Researcher · Language Designer">
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://sauravbhattacharya001.github.io/sauravbhattacharya001/">
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:title" content="Saurav Bhattacharya — Portfolio">
+    <meta name="twitter:description" content="Software Engineer at Microsoft · AI Safety Researcher · Language Designer">
     <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🚀</text></svg>">
+    <link rel="canonical" href="https://sauravbhattacharya001.github.io/sauravbhattacharya001/">
+    <link rel="preconnect" href="https://github.com" crossorigin>
+    <link rel="dns-prefetch" href="https://github.com">
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "Person",
+        "name": "Saurav Bhattacharya",
+        "url": "https://sauravbhattacharya001.github.io/sauravbhattacharya001/",
+        "jobTitle": "Software Engineer",
+        "worksFor": { "@type": "Organization", "name": "Microsoft" },
+        "sameAs": [
+            "https://github.com/sauravbhattacharya001",
+            "https://www.linkedin.com/in/sauravbhattacharya001/"
+        ],
+        "knowsAbout": ["AI Safety", "Agent Systems", "Programming Language Design", "Distributed Systems"]
+    }
+    </script>
     <style>
         :root {
             --bg: #0d1117;
@@ -193,6 +215,24 @@
             .nav-links { display: none; }
             .hero { padding: 3rem 1rem 2rem; }
             .section { padding: 2rem 1rem; }
+        }
+
+        /* Performance: defer rendering of off-screen sections */
+        #research, #tech, .footer {
+            content-visibility: auto;
+            contain-intrinsic-size: auto 500px;
+        }
+
+        /* Performance: hint GPU compositing for interactive cards */
+        .card { will-change: transform; }
+
+        /* Print styles */
+        @media print {
+            .nav, .hero-links, .card-links, .footer-links { display: none; }
+            body { background: #fff; color: #000; }
+            a { color: #000; text-decoration: underline; }
+            .card, .stat, .research-item { border: 1px solid #ccc; break-inside: avoid; }
+            .section { padding: 1rem 0; }
         }
     </style>
 </head>
