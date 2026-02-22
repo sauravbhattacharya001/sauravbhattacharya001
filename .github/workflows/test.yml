@@ -29,7 +29,7 @@ jobs:
       - name: Check required files exist
         run: |
           echo "Checking required files..."
-          for f in README.md PROJECTS.md SECURITY.md docs/index.html Dockerfile .dockerignore; do
+          for f in README.md PROJECTS.md SECURITY.md docs/index.html docs/style.css docs/app.js Dockerfile .dockerignore; do
             if [ ! -f "$f" ]; then
               echo "❌ Missing: $f"
               exit 1
