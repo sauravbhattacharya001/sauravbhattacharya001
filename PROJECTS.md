@@ -109,9 +109,10 @@ Detailed technical overview of all public repositories. For a quick summary, see
 **What it does:**
 - **Dual execution**: `saurav.py` (tree-walk interpreter) and `sauravcc.py` (compiler: `.srv` → C → GCC → native `.exe`)
 - **27 built-in functions**: string ops, math, utilities — all user-overridable
+- **Module imports**: `import` statement for `.srv` files with circular dependency detection and diamond dependency handling
 - **Interactive REPL** with persistent state, multi-line blocks, command history
 - **Standard library**: upper/lower/trim/replace/split/join/contains, abs/round/floor/ceil/sqrt/power, type_of/to_string/range/sort
-- **212+ tests** covering interpreter, compiler, and REPL
+- **540+ tests** covering interpreter, compiler, REPL, and module imports
 
 **Full language specification:** [docs/LANGUAGE.md](https://github.com/sauravbhattacharya001/sauravcode/blob/master/docs/LANGUAGE.md) with EBNF grammar.
 
@@ -182,6 +183,11 @@ Detailed technical overview of all public repositories. For a quick summary, see
 - **Meeting extraction algorithm** from PostgreSQL communication data
 - **Relationship classification** with configurable thresholds
 - **Timeline visualization** for community evolution
+- **Minimum spanning tree** — Kruskal and Prim algorithms with visual highlighting
+- **Graph coloring** — greedy coloring with chromatic number analysis
+- **Community detection** — modularity-based community identification
+- **Shortest path finder** — BFS (hop-optimal) and Dijkstra (weight-optimal) with path visualization
+- **GraphML export** — standard graph format for interoperability with Gephi, NetworkX, etc.
 
 **Infrastructure:** CI (Java 11/17), CodeQL, Dependabot, auto-labeler, branch protection.
 
@@ -286,8 +292,9 @@ Detailed technical overview of all public repositories. For a quick summary, see
 | **Demo** | [sauravbhattacharya001.github.io/gif-captcha](https://sauravbhattacharya001.github.io/gif-captcha/) |
 
 **What it does:**
-- **10-challenge interactive quiz** — users describe GIF "unexpected events," compared against GPT-4 responses
-- **Research analysis dashboard** — 6-category CAPTCHA taxonomy, human vs AI radar chart, multi-model comparison
+- **7 interactive research tools**: visual puzzle demo, research analysis dashboard, AI response simulator, temporal challenge explorer, benchmark suite, cognitive load analyzer (6-dimension complexity scoring), CAPTCHA generator
+- **Research analysis** — 6-category CAPTCHA taxonomy, human vs AI radar chart, multi-model comparison
+- **Cognitive load analysis** — visual processing, temporal reasoning, cultural context, humor/irony, spatial awareness, narrative comprehension scoring
 - **Security**: CSP headers, noopener/noreferrer, nginx hardened config, non-root Docker container
 
 **Infrastructure:** CI (HTML validation + security audit), Docker workflow (nginx:alpine), Dependabot, branch protection.
@@ -307,10 +314,11 @@ Detailed technical overview of all public repositories. For a quick summary, see
 | **Docs** | [sauravbhattacharya001.github.io/Ocaml-sample-code](https://sauravbhattacharya001.github.io/Ocaml-sample-code/) |
 
 **What it does:**
-- **7-stage learning path**: hello world → pattern matching → recursion → higher-order functions → modules/functors → graph algorithms → priority queue
-- **Graph algorithms module**: BFS, DFS, shortest path, components, cycle detection, topological sort
-- **Priority queue**: leftist min-heap with merge-based API, heap sort, top-k, ASCII visualization
-- **Tail-recursive merge sort** with parameterized comparators
+- **17 modules** covering the full spectrum of functional programming
+- **Data structures**: BST, trie, functional hashmap (persistent/immutable), bloom filter (probabilistic set membership), red-black trees (balanced BST), union-find (disjoint sets), leftist heap (priority queue)
+- **Algorithms**: graph algorithms (BFS, DFS, shortest path, components, cycle detection, topological sort), merge sort (tail-recursive), sorting algorithms, regex engine (Thompson's NFA construction)
+- **Functional patterns**: lazy streams, parser combinators, higher-order functions
+- **Learning path**: basics → recursion → pattern matching → modules/functors → advanced data structures → graph algorithms
 
 **Infrastructure:** CodeQL, Docker (multi-stage, native binaries), docs site with syntax-highlighted code.
 
