@@ -17,6 +17,7 @@
 ![Commits](https://img.shields.io/badge/Commits-800+-purple?style=flat-square)
 ![Live Sites](https://img.shields.io/badge/Live_Sites-15-orange?style=flat-square)
 [![GitHub Stars](https://img.shields.io/github/stars/sauravbhattacharya001?style=flat-square&label=Stars&color=yellow)](https://github.com/sauravbhattacharya001)
+[![License: MIT](https://img.shields.io/badge/License-MIT-brightgreen?style=flat-square)](LICENSE)
 ![Profile Views](https://komarev.com/ghpvc/?username=sauravbhattacharya001&color=brightgreen&style=flat-square&label=Profile+Views)
 
 </div>
