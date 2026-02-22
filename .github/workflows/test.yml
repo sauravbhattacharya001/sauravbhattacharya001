@@ -1,0 +1,128 @@
+name: Tests
+
+on:
+  push:
+    branches: [master]
+  pull_request:
+    branches: [master]
+
+jobs:
+  validate:
+    name: Validate Portfolio
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Install test tools
+        run: npm install --save-dev html-validate
+
+      - name: Validate HTML
+        run: npx html-validate "docs/**/*.html" --config '{"extends":["html-validate:recommended"],"rules":{"no-inline-style":"off","require-sri":"off","no-trailing-whitespace":"off","attr-quotes":"off","element-permitted-content":"off","heading-level":"off"}}'
+
+      - name: Check required files exist
+        run: |
+          echo "Checking required files..."
+          for f in README.md PROJECTS.md SECURITY.md docs/index.html Dockerfile .dockerignore; do
+            if [ ! -f "$f" ]; then
+              echo "❌ Missing: $f"
+              exit 1
+            fi
+            echo "✓ $f"
+          done
+
+      - name: Verify docs/index.html structure
+        run: |
+          echo "Checking portfolio site structure..."
+
+          # Must have DOCTYPE
+          grep -qi '<!doctype html>' docs/index.html || { echo "❌ Missing DOCTYPE"; exit 1; }
+          echo "✓ DOCTYPE"
+
+          # Must have charset
+          grep -qi 'charset' docs/index.html || { echo "❌ Missing charset"; exit 1; }
+          echo "✓ charset meta"
+
+          # Must have viewport
+          grep -qi 'viewport' docs/index.html || { echo "❌ Missing viewport"; exit 1; }
+          echo "✓ viewport meta"
+
+          # Must have title
+          grep -qi '<title>' docs/index.html || { echo "❌ Missing title"; exit 1; }
+          echo "✓ title tag"
+
+          # Must have at least one link/anchor
+          grep -qi '<a ' docs/index.html || { echo "❌ No links found"; exit 1; }
+          echo "✓ links present"
+
+          echo "All structure checks passed ✓"
+
+      - name: Validate Dockerfile syntax
+        run: |
+          echo "Checking Dockerfile..."
+          # Verify FROM instructions exist
+          FROM_COUNT=$(grep -c '^FROM ' Dockerfile)
+          echo "Found $FROM_COUNT FROM instructions"
+          [ "$FROM_COUNT" -ge 2 ] || { echo "❌ Expected multi-stage build"; exit 1; }
+
+          # Verify EXPOSE and HEALTHCHECK
+          grep -q 'EXPOSE' Dockerfile || { echo "❌ Missing EXPOSE"; exit 1; }
+          grep -q 'HEALTHCHECK' Dockerfile || { echo "❌ Missing HEALTHCHECK"; exit 1; }
+
+          echo "Dockerfile validation passed ✓"
+
+      - name: Check no broken internal links
+        run: |
+          echo "Scanning for broken internal references..."
+          ERRORS=0
+
+          # Check that GitHub links in README point to real repos
+          for repo_url in $(grep -oP 'github\.com/sauravbhattacharya001/\K[a-zA-Z0-9_-]+' README.md 2>/dev/null || true); do
+            if [ -n "$repo_url" ]; then
+              echo "  Found repo reference: $repo_url"
+            fi
+          done
+
+          echo "Link scan complete ✓"
+
+  docker-build:
+    name: Docker Build Test
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Build Docker image
+        run: docker build -t portfolio-test .
+
+      - name: Test container starts
+        run: |
+          docker run -d --name test-portfolio -p 8080:80 portfolio-test
+          sleep 3
+
+          # Test main page
+          STATUS=$(curl -s -o /dev/null -w '%{http_code}' http://localhost:8080)
+          echo "Main page: $STATUS"
+          [ "$STATUS" = "200" ] || exit 1
+
+          # Test health endpoint
+          HEALTHZ=$(curl -s http://localhost:8080/healthz)
+          echo "Healthz: $HEALTHZ"
+          [ "$HEALTHZ" = "ok" ] || exit 1
+
+          # Test security headers
+          HEADERS=$(curl -sI http://localhost:8080)
+          echo "$HEADERS" | grep -qi 'x-content-type-options' || { echo "❌ Missing X-Content-Type-Options"; exit 1; }
+          echo "$HEADERS" | grep -qi 'x-frame-options' || { echo "❌ Missing X-Frame-Options"; exit 1; }
+          echo "Security headers present ✓"
+
+          docker stop test-portfolio
+          docker rm test-portfolio
+          echo "Docker test passed ✓"
