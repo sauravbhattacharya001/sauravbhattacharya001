@@ -155,6 +155,6 @@ I build software at Microsoft, research AI agent governance, and create tools fo
 
 *Building tools that make intelligent systems observable, accountable, and safe.*
 
-**[📂 Full Portfolio →](./PROJECTS.md)**
+**[📂 Full Portfolio →](./PROJECTS.md)** · **[🌐 Portfolio Site →](https://sauravbhattacharya001.github.io/sauravbhattacharya001/)**
 
 </div>

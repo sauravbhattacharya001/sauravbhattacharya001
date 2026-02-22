@@ -1,0 +1,591 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Saurav Bhattacharya — Software Engineer &amp; AI Safety Researcher</title>
+    <meta name="description" content="Software Engineer at Microsoft, AI Safety Researcher, and Programming Language Designer. Building observable, accountable, and safe intelligent systems.">
+    <meta name="author" content="Saurav Bhattacharya">
+    <meta property="og:title" content="Saurav Bhattacharya — Portfolio">
+    <meta property="og:description" content="Software Engineer at Microsoft · AI Safety Researcher · Language Designer">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://sauravbhattacharya001.github.io/sauravbhattacharya001/">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🚀</text></svg>">
+    <style>
+        :root {
+            --bg: #0d1117;
+            --surface: #161b22;
+            --border: #30363d;
+            --text: #e6edf3;
+            --text-secondary: #8b949e;
+            --accent: #58a6ff;
+            --accent-hover: #79c0ff;
+            --green: #3fb950;
+            --orange: #d29922;
+            --purple: #bc8cff;
+            --red: #f85149;
+        }
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+        html { scroll-behavior: smooth; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Noto Sans, Helvetica, Arial, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+        a { color: var(--accent); text-decoration: none; transition: color 0.2s; }
+        a:hover { color: var(--accent-hover); }
+
+        /* Navigation */
+        .nav {
+            position: sticky; top: 0; z-index: 100;
+            background: rgba(13, 17, 23, 0.85);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid var(--border);
+            padding: 0.75rem 2rem;
+        }
+        .nav-inner {
+            max-width: 1100px; margin: 0 auto;
+            display: flex; align-items: center; justify-content: space-between;
+        }
+        .nav-brand { font-weight: 700; font-size: 1.1rem; }
+        .nav-links { display: flex; gap: 1.5rem; list-style: none; }
+        .nav-links a { color: var(--text-secondary); font-size: 0.9rem; }
+        .nav-links a:hover { color: var(--text); }
+
+        /* Hero */
+        .hero {
+            max-width: 1100px; margin: 0 auto;
+            padding: 5rem 2rem 3rem;
+            text-align: center;
+        }
+        .hero h1 { font-size: 2.8rem; font-weight: 800; margin-bottom: 0.5rem; }
+        .hero h1 span { color: var(--accent); }
+        .hero .subtitle {
+            font-size: 1.2rem; color: var(--text-secondary);
+            margin-bottom: 1.5rem;
+        }
+        .hero-links { display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; }
+        .hero-links a {
+            padding: 0.5rem 1.2rem; border-radius: 6px;
+            font-size: 0.9rem; font-weight: 600;
+            transition: all 0.2s;
+        }
+        .btn-primary {
+            background: var(--accent); color: #fff !important;
+        }
+        .btn-primary:hover { background: var(--accent-hover); }
+        .btn-outline {
+            border: 1px solid var(--border); color: var(--text) !important;
+        }
+        .btn-outline:hover { border-color: var(--accent); color: var(--accent) !important; }
+
+        /* Sections */
+        .section {
+            max-width: 1100px; margin: 0 auto;
+            padding: 3rem 2rem;
+        }
+        .section-title {
+            font-size: 1.5rem; font-weight: 700;
+            margin-bottom: 1.5rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid var(--border);
+        }
+        .section-title span { color: var(--accent); margin-right: 0.5rem; }
+
+        /* Project cards */
+        .projects-grid {
+            display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 1.25rem;
+        }
+        .card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 1.25rem;
+            transition: border-color 0.2s, transform 0.2s;
+        }
+        .card:hover { border-color: var(--accent); transform: translateY(-2px); }
+        .card-header { display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.5rem; }
+        .card-icon { font-size: 1.3rem; }
+        .card h3 { font-size: 1rem; font-weight: 600; }
+        .card h3 a { color: var(--text); }
+        .card h3 a:hover { color: var(--accent); }
+        .card p { font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 0.75rem; line-height: 1.5; }
+        .card-tags { display: flex; flex-wrap: wrap; gap: 0.4rem; }
+        .tag {
+            font-size: 0.7rem; padding: 0.15rem 0.5rem;
+            border-radius: 99px;
+            background: rgba(88, 166, 255, 0.1);
+            color: var(--accent);
+            border: 1px solid rgba(88, 166, 255, 0.2);
+        }
+        .card-links { display: flex; gap: 0.75rem; margin-top: 0.75rem; }
+        .card-links a { font-size: 0.8rem; color: var(--text-secondary); }
+        .card-links a:hover { color: var(--accent); }
+
+        /* Category labels */
+        .category { margin-bottom: 2rem; }
+        .category-label {
+            font-size: 0.8rem; font-weight: 600; text-transform: uppercase;
+            letter-spacing: 0.08em; color: var(--text-secondary);
+            margin-bottom: 0.75rem;
+        }
+
+        /* Tech stack */
+        .tech-grid {
+            display: flex; flex-wrap: wrap; gap: 0.5rem;
+            justify-content: center;
+        }
+        .tech-badge {
+            padding: 0.4rem 0.8rem;
+            border-radius: 6px;
+            font-size: 0.85rem; font-weight: 500;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            transition: border-color 0.2s;
+        }
+        .tech-badge:hover { border-color: var(--accent); }
+
+        /* Research */
+        .research-item {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 1.25rem;
+            margin-bottom: 1rem;
+        }
+        .research-item h3 { font-size: 1rem; margin-bottom: 0.4rem; }
+        .research-item p { font-size: 0.85rem; color: var(--text-secondary); }
+        .highlight { color: var(--green); font-weight: 600; }
+
+        /* Stats */
+        .stats-grid {
+            display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 1rem; text-align: center;
+        }
+        .stat {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 1.25rem 0.75rem;
+        }
+        .stat-number { font-size: 1.8rem; font-weight: 800; color: var(--accent); }
+        .stat-label { font-size: 0.8rem; color: var(--text-secondary); margin-top: 0.25rem; }
+
+        /* Footer */
+        .footer {
+            max-width: 1100px; margin: 0 auto;
+            padding: 2rem; text-align: center;
+            border-top: 1px solid var(--border);
+            color: var(--text-secondary); font-size: 0.85rem;
+        }
+        .footer-links { display: flex; gap: 1.5rem; justify-content: center; margin-bottom: 0.75rem; }
+
+        @media (max-width: 768px) {
+            .hero h1 { font-size: 2rem; }
+            .nav-links { gap: 1rem; }
+            .projects-grid { grid-template-columns: 1fr; }
+            .stats-grid { grid-template-columns: repeat(2, 1fr); }
+        }
+        @media (max-width: 480px) {
+            .nav-links { display: none; }
+            .hero { padding: 3rem 1rem 2rem; }
+            .section { padding: 2rem 1rem; }
+        }
+    </style>
+</head>
+<body>
+
+<nav class="nav">
+    <div class="nav-inner">
+        <div class="nav-brand">Saurav <span style="color: var(--accent)">Bhattacharya</span></div>
+        <ul class="nav-links">
+            <li><a href="#projects">Projects</a></li>
+            <li><a href="#research">Research</a></li>
+            <li><a href="#tech">Tech Stack</a></li>
+            <li><a href="https://github.com/sauravbhattacharya001" target="_blank" rel="noopener">GitHub ↗</a></li>
+        </ul>
+    </div>
+</nav>
+
+<header class="hero">
+    <h1>Hey, I'm <span>Saurav</span> 👋</h1>
+    <p class="subtitle">Software Engineer @ Microsoft · AI Safety Researcher · Language Designer</p>
+    <p style="color: var(--text-secondary); max-width: 650px; margin: 0 auto 1.5rem; font-size: 0.95rem;">
+        I build software at Microsoft, research AI agent governance, and create tools for
+        the next generation of intelligent systems. I also designed my own programming language — because why not.
+    </p>
+    <div class="hero-links">
+        <a href="https://github.com/sauravbhattacharya001" class="btn-primary" target="_blank" rel="noopener">GitHub Profile</a>
+        <a href="https://www.linkedin.com/in/sauravbhattacharya001/" class="btn-outline" target="_blank" rel="noopener">LinkedIn</a>
+        <a href="mailto:online.saurav@gmail.com" class="btn-outline">Contact</a>
+    </div>
+</header>
+
+<!-- Stats -->
+<section class="section">
+    <div class="stats-grid">
+        <div class="stat">
+            <div class="stat-number">16</div>
+            <div class="stat-label">Repositories</div>
+        </div>
+        <div class="stat">
+            <div class="stat-number">16</div>
+            <div class="stat-label">Releases</div>
+        </div>
+        <div class="stat">
+            <div class="stat-number">800+</div>
+            <div class="stat-label">Commits</div>
+        </div>
+        <div class="stat">
+            <div class="stat-number">15</div>
+            <div class="stat-label">Live Sites</div>
+        </div>
+        <div class="stat">
+            <div class="stat-number">10+</div>
+            <div class="stat-label">Languages</div>
+        </div>
+    </div>
+</section>
+
+<!-- Projects -->
+<section class="section" id="projects">
+    <h2 class="section-title"><span>🚀</span> Projects</h2>
+
+    <div class="category">
+        <div class="category-label">AI &amp; Agents</div>
+        <div class="projects-grid">
+            <div class="card">
+                <div class="card-header">
+                    <span class="card-icon">🔍</span>
+                    <h3><a href="https://github.com/sauravbhattacharya001/agentlens" target="_blank" rel="noopener">AgentLens</a></h3>
+                </div>
+                <p>Observability &amp; explainability platform for AI agents — trace, debug, and understand agent behavior at scale. Python SDK + Node.js backend + dashboard.</p>
+                <div class="card-tags">
+                    <span class="tag">Python</span>
+                    <span class="tag">Node.js</span>
+                    <span class="tag">Observability</span>
+                    <span class="tag">AI Agents</span>
+                </div>
+                <div class="card-links">
+                    <a href="https://github.com/sauravbhattacharya001/agentlens" target="_blank" rel="noopener">Code</a>
+                    <a href="https://sauravbhattacharya001.github.io/agentlens/" target="_blank" rel="noopener">Docs</a>
+                    <a href="https://github.com/sauravbhattacharya001/agentlens/releases/tag/v1.0.0" target="_blank" rel="noopener">v1.0.0</a>
+                </div>
+            </div>
+            <div class="card">
+                <div class="card-header">
+                    <span class="card-icon">🤖</span>
+                    <h3><a href="https://github.com/sauravbhattacharya001/getagentbox" target="_blank" rel="noopener">AgentBox</a></h3>
+                </div>
+                <p>AI agents as a service — personal AI assistants accessible via messaging. Open access, 20 msg/day free tier.</p>
+                <div class="card-tags">
+                    <span class="tag">JavaScript</span>
+                    <span class="tag">AI Agents</span>
+                    <span class="tag">SaaS</span>
+                </div>
+                <div class="card-links">
+                    <a href="https://github.com/sauravbhattacharya001/getagentbox" target="_blank" rel="noopener">Code</a>
+                    <a href="https://sauravbhattacharya001.github.io/getagentbox/" target="_blank" rel="noopener">Live</a>
+                </div>
+            </div>
+            <div class="card">
+                <div class="card-header">
+                    <span class="card-icon">💬</span>
+                    <h3><a href="https://github.com/sauravbhattacharya001/agenticchat" target="_blank" rel="noopener">AgenticChat</a></h3>
+                </div>
+                <p>Agentic conversation framework — GPT-4o chat with sandboxed code execution, voice input, dark/light themes, keyboard shortcuts.</p>
+                <div class="card-tags">
+                    <span class="tag">JavaScript</span>
+                    <span class="tag">GPT-4o</span>
+                    <span class="tag">Code Execution</span>
+                </div>
+                <div class="card-links">
+                    <a href="https://github.com/sauravbhattacharya001/agenticchat" target="_blank" rel="noopener">Code</a>
+                    <a href="https://sauravbhattacharya001.github.io/agenticchat/" target="_blank" rel="noopener">Demo</a>
+                </div>
+            </div>
+            <div class="card">
+                <div class="card-header">
+                    <span class="card-icon">🛡️</span>
+                    <h3><a href="https://github.com/sauravbhattacharya001/ai" target="_blank" rel="noopener">AI Safety Research</a></h3>
+                </div>
+                <p>Contract-enforced sandbox for studying AI agent self-replication safety. Monte Carlo risk analysis, safety policy engine, interactive reports.</p>
+                <div class="card-tags">
+                    <span class="tag">Python</span>
+                    <span class="tag">AI Safety</span>
+                    <span class="tag">Monte Carlo</span>
+                </div>
+                <div class="card-links">
+                    <a href="https://github.com/sauravbhattacharya001/ai" target="_blank" rel="noopener">Code</a>
+                    <a href="https://sauravbhattacharya001.github.io/ai/" target="_blank" rel="noopener">Docs</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="category">
+        <div class="category-label">Security</div>
+        <div class="projects-grid">
+            <div class="card">
+                <div class="card-header">
+                    <span class="card-icon">🔒</span>
+                    <h3><a href="https://github.com/sauravbhattacharya001/WinSentinel" target="_blank" rel="noopener">WinSentinel</a></h3>
+                </div>
+                <p>Always-on Windows security agent — real-time monitoring, AI-powered threat detection, auto-remediation, 13 audit modules, compliance profiles.</p>
+                <div class="card-tags">
+                    <span class="tag">C#</span>
+                    <span class="tag">.NET 8</span>
+                    <span class="tag">WPF</span>
+                    <span class="tag">Security</span>
+                </div>
+                <div class="card-links">
+                    <a href="https://github.com/sauravbhattacharya001/WinSentinel" target="_blank" rel="noopener">Code</a>
+                    <a href="https://sauravbhattacharya001.github.io/WinSentinel/" target="_blank" rel="noopener">Docs</a>
+                    <a href="https://github.com/sauravbhattacharya001/WinSentinel/releases/tag/v1.1.0" target="_blank" rel="noopener">v1.1.0</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="category">
+        <div class="category-label">Languages &amp; Tools</div>
+        <div class="projects-grid">
+            <div class="card">
+                <div class="card-header">
+                    <span class="card-icon">🔤</span>
+                    <h3><a href="https://github.com/sauravbhattacharya001/sauravcode" target="_blank" rel="noopener">sauravcode</a></h3>
+                </div>
+                <p>A programming language with zero noise — no parens, no commas, no semicolons. Interpreter + compiler (.srv → C → native). 540+ tests.</p>
+                <div class="card-tags">
+                    <span class="tag">Python</span>
+                    <span class="tag">C</span>
+                    <span class="tag">Compiler</span>
+                    <span class="tag">Language Design</span>
+                </div>
+                <div class="card-links">
+                    <a href="https://github.com/sauravbhattacharya001/sauravcode" target="_blank" rel="noopener">Code</a>
+                    <a href="https://sauravbhattacharya001.github.io/sauravcode/" target="_blank" rel="noopener">Docs</a>
+                </div>
+            </div>
+            <div class="card">
+                <div class="card-header">
+                    <span class="card-icon">⚡</span>
+                    <h3><a href="https://github.com/sauravbhattacharya001/prompt" target="_blank" rel="noopener">prompt</a></h3>
+                </div>
+                <p>.NET 8 prompt engineering toolkit — Azure OpenAI client, template engine, prompt chaining, PromptGuard injection detection.</p>
+                <div class="card-tags">
+                    <span class="tag">C#</span>
+                    <span class="tag">.NET 8</span>
+                    <span class="tag">Azure OpenAI</span>
+                </div>
+                <div class="card-links">
+                    <a href="https://github.com/sauravbhattacharya001/prompt" target="_blank" rel="noopener">Code</a>
+                    <a href="https://sauravbhattacharya001.github.io/prompt/" target="_blank" rel="noopener">Docs</a>
+                </div>
+            </div>
+            <div class="card">
+                <div class="card-header">
+                    <span class="card-icon">🎭</span>
+                    <h3><a href="https://github.com/sauravbhattacharya001/gif-captcha" target="_blank" rel="noopener">gif-captcha</a></h3>
+                </div>
+                <p>GIF-based CAPTCHA research — 7 interactive tools: visual puzzles, temporal challenges, AI simulator, cognitive load analyzer. 99.9% coverage.</p>
+                <div class="card-tags">
+                    <span class="tag">HTML/JS</span>
+                    <span class="tag">Research</span>
+                    <span class="tag">Security</span>
+                </div>
+                <div class="card-links">
+                    <a href="https://github.com/sauravbhattacharya001/gif-captcha" target="_blank" rel="noopener">Code</a>
+                    <a href="https://sauravbhattacharya001.github.io/gif-captcha/" target="_blank" rel="noopener">Demo</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="category">
+        <div class="category-label">Visualization &amp; Data</div>
+        <div class="projects-grid">
+            <div class="card">
+                <div class="card-header">
+                    <span class="card-icon">📐</span>
+                    <h3><a href="https://github.com/sauravbhattacharya001/VoronoiMap" target="_blank" rel="noopener">VoronoiMap</a></h3>
+                </div>
+                <p>Voronoi diagram generation &amp; spatial partitioning — Lloyd relaxation, neighbourhood graphs, 6 color schemes, GeoJSON export. 285 tests.</p>
+                <div class="card-tags">
+                    <span class="tag">Python</span>
+                    <span class="tag">Algorithms</span>
+                    <span class="tag">Geometry</span>
+                </div>
+                <div class="card-links">
+                    <a href="https://github.com/sauravbhattacharya001/VoronoiMap" target="_blank" rel="noopener">Code</a>
+                    <a href="https://sauravbhattacharya001.github.io/VoronoiMap/" target="_blank" rel="noopener">Demo</a>
+                </div>
+            </div>
+            <div class="card">
+                <div class="card-header">
+                    <span class="card-icon">🔗</span>
+                    <h3><a href="https://github.com/sauravbhattacharya001/GraphVisual" target="_blank" rel="noopener">GraphVisual</a></h3>
+                </div>
+                <p>Graph visualization for community evolution — centrality (Brandes'), MST, graph coloring, community detection, shortest path, GraphML export.</p>
+                <div class="card-tags">
+                    <span class="tag">Java</span>
+                    <span class="tag">Graph Theory</span>
+                    <span class="tag">Visualization</span>
+                </div>
+                <div class="card-links">
+                    <a href="https://github.com/sauravbhattacharya001/GraphVisual" target="_blank" rel="noopener">Code</a>
+                    <a href="https://sauravbhattacharya001.github.io/GraphVisual/" target="_blank" rel="noopener">Site</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="category">
+        <div class="category-label">Apps &amp; More</div>
+        <div class="projects-grid">
+            <div class="card">
+                <div class="card-header">
+                    <span class="card-icon">📅</span>
+                    <h3><a href="https://github.com/sauravbhattacharya001/everything" target="_blank" rel="noopener">everything</a></h3>
+                </div>
+                <p>Full-stack Flutter/Dart app — event management with calendar view, recurring events, BLoC pattern, SQLite persistence.</p>
+                <div class="card-tags">
+                    <span class="tag">Dart</span>
+                    <span class="tag">Flutter</span>
+                    <span class="tag">BLoC</span>
+                </div>
+                <div class="card-links">
+                    <a href="https://github.com/sauravbhattacharya001/everything" target="_blank" rel="noopener">Code</a>
+                    <a href="https://sauravbhattacharya001.github.io/everything/" target="_blank" rel="noopener">App</a>
+                </div>
+            </div>
+            <div class="card">
+                <div class="card-header">
+                    <span class="card-icon">📰</span>
+                    <h3><a href="https://github.com/sauravbhattacharya001/FeedReader" target="_blank" rel="noopener">FeedReader</a></h3>
+                </div>
+                <p>RSS feed reader (Swift/iOS) — read/unread tracking, reading stats dashboard, bookmarks, search, offline support.</p>
+                <div class="card-tags">
+                    <span class="tag">Swift</span>
+                    <span class="tag">iOS</span>
+                    <span class="tag">RSS</span>
+                </div>
+                <div class="card-links">
+                    <a href="https://github.com/sauravbhattacharya001/FeedReader" target="_blank" rel="noopener">Code</a>
+                    <a href="https://sauravbhattacharya001.github.io/FeedReader/" target="_blank" rel="noopener">Site</a>
+                </div>
+            </div>
+            <div class="card">
+                <div class="card-header">
+                    <span class="card-icon">🧬</span>
+                    <h3><a href="https://github.com/sauravbhattacharya001/BioBots" target="_blank" rel="noopener">BioBots</a></h3>
+                </div>
+                <p>3D bioprinter analytics — 11 metrics, anomaly detection (Z-Score + IQR), interactive data explorer with histograms &amp; regression.</p>
+                <div class="card-tags">
+                    <span class="tag">JavaScript</span>
+                    <span class="tag">Analytics</span>
+                    <span class="tag">Data Viz</span>
+                </div>
+                <div class="card-links">
+                    <a href="https://github.com/sauravbhattacharya001/BioBots" target="_blank" rel="noopener">Code</a>
+                    <a href="https://sauravbhattacharya001.github.io/BioBots/" target="_blank" rel="noopener">Site</a>
+                </div>
+            </div>
+            <div class="card">
+                <div class="card-header">
+                    <span class="card-icon">🎬</span>
+                    <h3><a href="https://github.com/sauravbhattacharya001/Vidly" target="_blank" rel="noopener">Vidly</a></h3>
+                </div>
+                <p>Video rental management (C# / ASP.NET MVC) — CRUD, 4-tier membership, rental checkout/returns, late fees.</p>
+                <div class="card-tags">
+                    <span class="tag">C#</span>
+                    <span class="tag">ASP.NET</span>
+                    <span class="tag">MVC</span>
+                </div>
+                <div class="card-links">
+                    <a href="https://github.com/sauravbhattacharya001/Vidly" target="_blank" rel="noopener">Code</a>
+                    <a href="https://sauravbhattacharya001.github.io/Vidly/" target="_blank" rel="noopener">Site</a>
+                </div>
+            </div>
+            <div class="card">
+                <div class="card-header">
+                    <span class="card-icon">🐫</span>
+                    <h3><a href="https://github.com/sauravbhattacharya001/Ocaml-sample-code" target="_blank" rel="noopener">OCaml Samples</a></h3>
+                </div>
+                <p>17-module functional programming collection — BST, trie, hashmap, bloom filter, red-black trees, union-find, graph algorithms, regex engine.</p>
+                <div class="card-tags">
+                    <span class="tag">OCaml</span>
+                    <span class="tag">Functional</span>
+                    <span class="tag">Data Structures</span>
+                </div>
+                <div class="card-links">
+                    <a href="https://github.com/sauravbhattacharya001/Ocaml-sample-code" target="_blank" rel="noopener">Code</a>
+                    <a href="https://sauravbhattacharya001.github.io/Ocaml-sample-code/" target="_blank" rel="noopener">Site</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Research -->
+<section class="section" id="research">
+    <h2 class="section-title"><span>🔬</span> Research &amp; Publications</h2>
+    <div class="research-item">
+        <h3>AI Agent Identity &amp; Accountability</h3>
+        <p>Frameworks for governing autonomous agents in distributed systems — identity verification, decision tracing, and accountability chains.</p>
+    </div>
+    <div class="research-item">
+        <h3>AI Self-Replication Safety</h3>
+        <p>Contract-enforced sandboxes to study and contain agent replication behaviors. Monte Carlo risk analysis with configurable safety policies.</p>
+    </div>
+    <div class="research-item">
+        <h3>ICGIS 2026 — Editor &amp; Chair</h3>
+        <p>International Conference on Global Innovations &amp; Solutions · <span class="highlight">June 6–7, 2026</span><br>
+        ICGIS 2025: 49 papers accepted · <a href="https://link.springer.com/book/10.1007/978-3-032-02853-2" target="_blank" rel="noopener">Springer proceedings</a><br>
+        Themes: AI, Smart Infrastructure, Climate, Renewable Energy, Cybersecurity, Digital Health</p>
+    </div>
+    <div class="research-item">
+        <h3>Publications</h3>
+        <p>Published in <strong>IEEE</strong> and <strong>Springer</strong> on topics spanning AI governance, agent systems, and distributed computing.</p>
+    </div>
+</section>
+
+<!-- Tech Stack -->
+<section class="section" id="tech" style="text-align: center;">
+    <h2 class="section-title" style="text-align: left;"><span>🛠️</span> Tech Stack</h2>
+    <div class="tech-grid">
+        <span class="tech-badge">C#</span>
+        <span class="tech-badge">TypeScript</span>
+        <span class="tech-badge">Python</span>
+        <span class="tech-badge">C</span>
+        <span class="tech-badge">Go</span>
+        <span class="tech-badge">Rust</span>
+        <span class="tech-badge">Dart</span>
+        <span class="tech-badge">Swift</span>
+        <span class="tech-badge">OCaml</span>
+        <span class="tech-badge">Java</span>
+        <span class="tech-badge">Azure</span>
+        <span class="tech-badge">Kubernetes</span>
+        <span class="tech-badge">Docker</span>
+        <span class="tech-badge">.NET</span>
+        <span class="tech-badge">React</span>
+        <span class="tech-badge">Node.js</span>
+        <span class="tech-badge">Flutter</span>
+    </div>
+</section>
+
+<footer class="footer">
+    <div class="footer-links">
+        <a href="https://github.com/sauravbhattacharya001" target="_blank" rel="noopener">GitHub</a>
+        <a href="https://www.linkedin.com/in/sauravbhattacharya001/" target="_blank" rel="noopener">LinkedIn</a>
+        <a href="mailto:online.saurav@gmail.com">Email</a>
+    </div>
+    <p>Building tools that make intelligent systems observable, accountable, and safe.</p>
+    <p style="margin-top: 0.5rem;">© 2026 Saurav Bhattacharya</p>
+</footer>
+
+</body>
+</html>
