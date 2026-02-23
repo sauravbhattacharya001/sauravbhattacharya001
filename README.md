@@ -1,7 +1,7 @@
 <div align="center">
 
 <!-- Header -->
-<img src="https://readme-typing-svg.demolab.com?font=Fira+Code&weight=600&size=28&duration=4000&pause=1000&color=58A6FF&center=true&vCenter=true&multiline=true&repeat=true&width=700&height=100&lines=Hey%2C+I'm+Saurav+%F0%9F%91%8B;Software+Engineer+%40+Microsoft+%C2%B7+AI+Safety+Researcher" alt="Typing SVG" />
+<img src="https://readme-typing-svg.demolab.com?font=Fira+Code&weight=600&size=28&duration=4000&pause=1000&color=58A6FF&center=true&vCenter=true&multiline=true&repeat=true&width=700&height=100&lines=Hey%2C+I'm+Saurav+%F0%9F%91%8B;Software+Engineer+%40+Microsoft+%F0%9F%91%8B;AI+Safety+Researcher" alt="Typing SVG" />
 
 **Software Engineer @ Microsoft · AI Safety Researcher · Language Designer**
 
