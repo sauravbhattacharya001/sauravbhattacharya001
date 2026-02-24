@@ -13,7 +13,7 @@
 <br/>
 
 ![Repos](https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Fapi.github.com%2Fusers%2Fsauravbhattacharya001&query=%24.public_repos&label=Repos&color=blue&style=flat-square)
-![Releases](https://img.shields.io/badge/Releases-16-green?style=flat-square)
+![Releases](https://img.shields.io/badge/Releases-17-green?style=flat-square)
 ![Commits](https://img.shields.io/badge/Commits-878-purple?style=flat-square)
 ![Live Sites](https://img.shields.io/badge/Live_Sites-15-orange?style=flat-square)
 [![GitHub Stars](https://img.shields.io/github/stars/sauravbhattacharya001?style=flat-square&label=Stars&color=yellow)](https://github.com/sauravbhattacharya001)
@@ -72,7 +72,7 @@ I build software at Microsoft, research AI agent governance, and create tools fo
 
 | Project | What it does | Release | Live |
 |---|---|---|---|
-| **[VoronoiMap](https://github.com/sauravbhattacharya001/VoronoiMap)** ⭐ 3 | Voronoi diagram generation and spatial partitioning toolkit. Lloyd relaxation, neighbourhood graphs, 6 color schemes, GeoJSON export, 285 tests. | — | [🌐 Demo](https://sauravbhattacharya001.github.io/VoronoiMap/) |
+| **[VoronoiMap](https://github.com/sauravbhattacharya001/VoronoiMap)** ⭐ 3 | Voronoi diagram generation and spatial partitioning toolkit. Lloyd relaxation, neighbourhood graphs, 6 color schemes, GeoJSON export, 285 tests. | [![v1.0.0](https://img.shields.io/badge/release-v1.0.0-blue?style=flat)](https://github.com/sauravbhattacharya001/VoronoiMap/releases/tag/v1.0.0) | [🌐 Demo](https://sauravbhattacharya001.github.io/VoronoiMap/) |
 | **[GraphVisual](https://github.com/sauravbhattacharya001/GraphVisual)** | Graph visualization for studying community evolution — centrality analysis (Brandes'), MST (Kruskal/Prim), graph coloring, community detection, shortest path (BFS/Dijkstra), GraphML export. | [![v1.0.0](https://img.shields.io/badge/release-v1.0.0-blue?style=flat)](https://github.com/sauravbhattacharya001/GraphVisual/releases/tag/v1.0.0) | [🌐 Site](https://sauravbhattacharya001.github.io/GraphVisual/) |
 
 ### Apps & More
