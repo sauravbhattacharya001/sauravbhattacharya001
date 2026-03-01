@@ -179,17 +179,21 @@ Detailed technical overview of all public repositories. For a quick summary, see
 
 **What it does:**
 - **Network statistics panel**: node/edge counts, density, degree distribution, hub detection
-- **Shortest path finder**: BFS (hop-optimal) and Dijkstra (weight-optimal) with visual highlighting
+- **Shortest path finder**: BFS (hop-optimal) and Dijkstra (weight-optimal) with visual path highlighting
 - **Meeting extraction algorithm** from PostgreSQL communication data
 - **Relationship classification** with configurable thresholds
 - **Timeline visualization** for community evolution
 - **Minimum spanning tree** — Kruskal and Prim algorithms with visual highlighting
 - **Graph coloring** — greedy coloring with chromatic number analysis
 - **Community detection** — modularity-based community identification
-- **Shortest path finder** — BFS (hop-optimal) and Dijkstra (weight-optimal) with path visualization
 - **GraphML export** — standard graph format for interoperability with Gephi, NetworkX, etc.
+- **Degree distribution analyzer** — statistical analysis of node degree distributions
+- **Graph diameter & eccentricity** — computes diameter, radius, center, and periphery vertices
+- **Link prediction** — Jaccard coefficient, Adamic-Adar, common neighbours for predicting future edges
+- **Graph generator** — 10 topologies (complete, cycle, star, grid, tree, path, bipartite, Petersen, wheel, random)
+- **Topological sort** — Kahn's algorithm with cycle detection for DAGs
 
-**Infrastructure:** CI (Java 11/17), CodeQL, Dependabot, auto-labeler, branch protection.
+**Infrastructure:** CI (Java 11/17), CodeQL, Dependabot, auto-labeler, branch protection. 650+ tests.
 
 ---
 
@@ -208,7 +212,15 @@ Detailed technical overview of all public repositories. For a quick summary, see
 
 **What it does:**
 - **Event CRUD** with date/time picker and 4 priority levels
+- **Recurring events** with flexible recurrence rules (daily, weekly, monthly)
+- **Event templates** for quick creation from saved configurations
+- **Smart conflict detection** — scheduling proximity analysis with resolution suggestions
 - **Search, filter & sort** with combinable criteria
+- **Activity heatmap** — year-at-a-glance event density visualization
+- **Weekly agenda digest** — formatted event summaries for upcoming days
+- **Streak tracker** — consecutive-day activity analysis with motivational messages
+- **Time budget analysis** — time allocation across tags, priorities, and weekdays with budget targets
+- **Event location** support with venue tracking
 - **SQLite persistence** with proper BLoC state management
 - **Docker-ready** with multi-stage Dockerfile
 
@@ -341,4 +353,4 @@ All repositories follow consistent DevOps practices:
 
 ---
 
-*Last updated: February 2026*
+*Last updated: March 2026*

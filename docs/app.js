@@ -110,7 +110,7 @@ var PROJECTS = [
     {
         category: "Visualization & Data",
         icon: "🔗", repo: "GraphVisual", title: "GraphVisual",
-        desc: "Graph visualization for community evolution — centrality (Brandes'), MST, graph coloring, community detection, shortest path, GraphML export.",
+        desc: "Graph visualization for community evolution — centrality (Brandes'), MST, graph coloring, community detection, shortest path, link prediction, graph generation, topological sort, GraphML export. 650+ tests.",
         tags: ["Java", "Graph Theory", "Visualization"],
         links: [
             { label: "Code", url: "https://github.com/sauravbhattacharya001/GraphVisual" },
@@ -122,7 +122,7 @@ var PROJECTS = [
     {
         category: "Apps & More",
         icon: "📅", repo: "everything", title: "everything",
-        desc: "Full-stack Flutter/Dart app — event management with calendar view, recurring events, BLoC pattern, SQLite persistence.",
+        desc: "Full-stack Flutter/Dart app — event management with calendar view, recurring events, conflict detection, activity heatmap, time budgets, streak tracking, BLoC pattern, SQLite persistence.",
         tags: ["Dart", "Flutter", "BLoC"],
         links: [
             { label: "Code", url: "https://github.com/sauravbhattacharya001/everything" },
