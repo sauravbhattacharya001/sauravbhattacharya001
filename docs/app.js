@@ -173,13 +173,34 @@ var PROJECTS = [
 
 /**
  * Escape HTML entities to prevent XSS.
+ *
+ * Uses both textContent (for &, <, >) and manual replacement
+ * for double quotes — which textContent does NOT escape but
+ * are critical inside HTML attribute values like href="...".
+ *
  * @param {string} str
  * @returns {string}
  */
 function escapeHTML(str) {
     var d = document.createElement("div");
     d.appendChild(document.createTextNode(str));
-    return d.innerHTML;
+    return d.innerHTML.replace(/"/g, "&quot;");
+}
+
+/**
+ * Sanitize a URL to prevent javascript: protocol and attribute breakout.
+ * Only allows http:, https:, and mailto: schemes.
+ * @param {string} url
+ * @returns {string}
+ */
+function sanitizeURL(url) {
+    var trimmed = url.replace(/^\s+/, "").toLowerCase();
+    if (trimmed.indexOf("http:") === 0 ||
+        trimmed.indexOf("https:") === 0 ||
+        trimmed.indexOf("mailto:") === 0) {
+        return escapeHTML(url);
+    }
+    return "#";
 }
 
 /**
@@ -193,12 +214,12 @@ function buildCard(p) {
     }).join("");
 
     var links = p.links.map(function(l) {
-        return '<a href="' + escapeHTML(l.url) + '" target="_blank" rel="noopener">' + escapeHTML(l.label) + '</a>';
+        return '<a href="' + sanitizeURL(l.url) + '" target="_blank" rel="noopener">' + escapeHTML(l.label) + '</a>';
     }).join("");
 
     return '<div class="card">' +
         '<div class="card-header">' +
-            '<span class="card-icon">' + p.icon + '</span>' +
+            '<span class="card-icon">' + escapeHTML(p.icon) + '</span>' +
             '<h3><a href="https://github.com/sauravbhattacharya001/' + escapeHTML(p.repo) + '" target="_blank" rel="noopener">' + escapeHTML(p.title) + '</a></h3>' +
         '</div>' +
         '<p>' + escapeHTML(p.desc) + '</p>' +
@@ -248,5 +269,5 @@ if (typeof document !== "undefined") {
 
 // Exports for testing
 if (typeof module !== "undefined" && module.exports) {
-    module.exports = { PROJECTS: PROJECTS, escapeHTML: escapeHTML, buildCard: buildCard, renderProjects: renderProjects };
+    module.exports = { PROJECTS: PROJECTS, escapeHTML: escapeHTML, sanitizeURL: sanitizeURL, buildCard: buildCard, renderProjects: renderProjects };
 }

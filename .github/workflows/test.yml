@@ -21,10 +21,13 @@ jobs:
           node-version: '22'
 
       - name: Install test tools
-        run: npm install --save-dev html-validate
+        run: npm install --save-dev html-validate jest@29 jsdom@25
 
       - name: Validate HTML
         run: npx html-validate "docs/**/*.html" --config '{"extends":["html-validate:recommended"],"rules":{"no-inline-style":"off","require-sri":"off","no-trailing-whitespace":"off","attr-quotes":"off","element-permitted-content":"off","heading-level":"off"}}'
+
+      - name: Run unit tests
+        run: npx jest tests/ --verbose
 
       - name: Check required files exist
         run: |

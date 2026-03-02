@@ -10,5 +10,9 @@ desktop.ini
 .vscode/
 .idea/
 
+# Node
+node_modules/
+package-lock.json
+
 # Diagram drafts (keep only referenced files)
 *.drawio
