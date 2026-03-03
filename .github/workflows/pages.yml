@@ -27,6 +27,20 @@ jobs:
     steps:
       - uses: actions/checkout@v6
 
+      - name: Verify SRI hashes
+        run: |
+          cd docs
+          for file in app.js style.css; do
+            expected=$(grep -oP "(?<=$file\" integrity=\")[^\"]*" index.html)
+            actual="sha384-$(openssl dgst -sha384 -binary "$file" | base64 -w0)"
+            if [ "$expected" != "$actual" ]; then
+              echo "::error::SRI mismatch for $file: expected=$expected actual=$actual"
+              echo "Run: cd docs && for f in app.js style.css; do echo \"sha384-\$(openssl dgst -sha384 -binary \$f | base64 -w0)\"; done"
+              exit 1
+            fi
+            echo "✅ $file integrity verified"
+          done
+
       - name: Setup Pages
         uses: actions/configure-pages@v5
 

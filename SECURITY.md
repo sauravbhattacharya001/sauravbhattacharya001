@@ -77,6 +77,27 @@ The following are **out of scope**:
 - Rate limiting on demo/documentation pages
 - Missing security headers on GitHub Pages (controlled by GitHub)
 
+## Subresource Integrity (SRI)
+
+The portfolio site (`docs/`) uses SRI hashes on all local script and stylesheet references. This provides defense-in-depth against:
+
+- Cache poisoning or CDN compromise
+- Accidental file corruption during deployment
+- Build pipeline tampering
+
+**How it works:** Each `<script>` and `<link>` tag in `docs/index.html` includes an `integrity="sha384-..."` attribute. The browser refuses to execute the resource if the hash doesn't match.
+
+**Updating hashes:** When you modify `docs/app.js` or `docs/style.css`, regenerate hashes:
+
+```bash
+cd docs
+for f in app.js style.css; do
+  echo "$f: sha384-$(openssl dgst -sha384 -binary "$f" | base64 -w0)"
+done
+```
+
+Update the `integrity` attributes in `index.html` with the new values. The Pages deployment workflow verifies hashes automatically and will fail if they're stale.
+
 ---
 
 *This policy applies to all repositories under [sauravbhattacharya001](https://github.com/sauravbhattacharya001).*
