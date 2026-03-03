@@ -7,6 +7,15 @@
     <meta name="description" content="Software Engineer at Microsoft, AI Safety Researcher, and Programming Language Designer. Building observable, accountable, and safe intelligent systems.">
     <meta name="author" content="Saurav Bhattacharya">
     <meta name="theme-color" content="#0d1117">
+    <!-- CSP via meta tag — GitHub Pages doesn't support custom HTTP headers,
+         so this is the only way to enforce Content Security Policy on the
+         production deployment. The script-src 'self' prevents inline script
+         injection; style-src 'unsafe-inline' is needed for inline styles
+         used by the card hover transitions. -->
+    <meta http-equiv="Content-Security-Policy"
+          content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self'; frame-src 'none'; object-src 'none'; base-uri 'self'; form-action 'self';">
+    <meta http-equiv="X-Content-Type-Options" content="nosniff">
+    <meta name="referrer" content="strict-origin-when-cross-origin">
     <meta property="og:title" content="Saurav Bhattacharya — Portfolio">
     <meta property="og:description" content="Software Engineer at Microsoft · AI Safety Researcher · Language Designer">
     <meta property="og:type" content="website">

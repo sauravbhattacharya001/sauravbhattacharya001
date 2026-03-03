@@ -367,3 +367,138 @@ describe("XSS prevention", () => {
         }
     });
 });
+
+// ── CSP & Security Headers ──────────────────────────────────────────
+
+describe("Security headers", () => {
+    test("index.html contains CSP meta tag", () => {
+        const html = fs.readFileSync(
+            path.join(__dirname, "..", "docs", "index.html"),
+            "utf-8"
+        );
+        expect(html).toContain('http-equiv="Content-Security-Policy"');
+    });
+
+    test("CSP blocks inline scripts (script-src 'self')", () => {
+        const html = fs.readFileSync(
+            path.join(__dirname, "..", "docs", "index.html"),
+            "utf-8"
+        );
+        expect(html).toMatch(/script-src\s+'self'/);
+    });
+
+    test("CSP blocks object/embed (object-src 'none')", () => {
+        const html = fs.readFileSync(
+            path.join(__dirname, "..", "docs", "index.html"),
+            "utf-8"
+        );
+        expect(html).toMatch(/object-src\s+'none'/);
+    });
+
+    test("CSP blocks iframes (frame-src 'none')", () => {
+        const html = fs.readFileSync(
+            path.join(__dirname, "..", "docs", "index.html"),
+            "utf-8"
+        );
+        expect(html).toMatch(/frame-src\s+'none'/);
+    });
+
+    test("CSP restricts base-uri to prevent base tag hijacking", () => {
+        const html = fs.readFileSync(
+            path.join(__dirname, "..", "docs", "index.html"),
+            "utf-8"
+        );
+        expect(html).toMatch(/base-uri\s+'self'/);
+    });
+
+    test("CSP restricts form-action", () => {
+        const html = fs.readFileSync(
+            path.join(__dirname, "..", "docs", "index.html"),
+            "utf-8"
+        );
+        expect(html).toMatch(/form-action\s+'self'/);
+    });
+
+    test("X-Content-Type-Options meta tag present", () => {
+        const html = fs.readFileSync(
+            path.join(__dirname, "..", "docs", "index.html"),
+            "utf-8"
+        );
+        expect(html).toContain('http-equiv="X-Content-Type-Options"');
+        expect(html).toContain('content="nosniff"');
+    });
+
+    test("referrer policy meta tag present", () => {
+        const html = fs.readFileSync(
+            path.join(__dirname, "..", "docs", "index.html"),
+            "utf-8"
+        );
+        expect(html).toContain('name="referrer"');
+        expect(html).toContain('strict-origin-when-cross-origin');
+    });
+
+    test("no inline scripts in index.html (CSP compliance)", () => {
+        const html = fs.readFileSync(
+            path.join(__dirname, "..", "docs", "index.html"),
+            "utf-8"
+        );
+        // JSON-LD is safe (type="application/ld+json" is not executed)
+        // Only check for <script> tags without type or with type="text/javascript"
+        const inlineScripts = html.match(/<script(?:\s[^>]*)?>[\s\S]*?<\/script>/gi) || [];
+        for (const tag of inlineScripts) {
+            // JSON-LD is fine
+            if (tag.includes('application/ld+json')) continue;
+            // External src scripts are fine
+            if (tag.match(/\bsrc\s*=/i)) continue;
+            // Anything else with inline content is a violation
+            const content = tag.replace(/<script[^>]*>/, '').replace(/<\/script>/, '').trim();
+            expect(content).toBe('');
+        }
+    });
+
+    test("all external links have rel=noopener", () => {
+        const html = fs.readFileSync(
+            path.join(__dirname, "..", "docs", "index.html"),
+            "utf-8"
+        );
+        const extLinks = html.match(/<a\s[^>]*target="_blank"[^>]*>/gi) || [];
+        for (const link of extLinks) {
+            expect(link).toContain('rel="noopener"');
+        }
+    });
+
+    test("Dockerfile security headers include Permissions-Policy", () => {
+        const dockerfile = fs.readFileSync(
+            path.join(__dirname, "..", "Dockerfile"),
+            "utf-8"
+        );
+        expect(dockerfile).toContain("Permissions-Policy");
+    });
+
+    test("Dockerfile static asset location repeats security headers", () => {
+        const dockerfile = fs.readFileSync(
+            path.join(__dirname, "..", "Dockerfile"),
+            "utf-8"
+        );
+        // The static asset location block should contain security headers
+        // to avoid the nginx add_header inheritance bug
+        const lines = dockerfile.split('\n');
+        let inStaticBlock = false;
+        let blockContent = '';
+        let braceDepth = 0;
+        for (const line of lines) {
+            if (line.match(/location ~\*.*\.\(css\|js/)) {
+                inStaticBlock = true;
+            }
+            if (inStaticBlock) {
+                blockContent += line + '\n';
+                braceDepth += (line.match(/\{/g) || []).length;
+                braceDepth -= (line.match(/\}/g) || []).length;
+                if (braceDepth === 0 && blockContent.length > 0) break;
+            }
+        }
+        expect(blockContent).toContain("X-Content-Type-Options");
+        expect(blockContent).toContain("Content-Security-Policy");
+        expect(blockContent).toContain("Permissions-Policy");
+    });
+});
