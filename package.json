@@ -1,8 +1,8 @@
 {
-  "name": "temp-garden",
+  "name": "sauravbhattacharya001-portfolio",
   "version": "1.0.0",
-  "description": "<div align=\"center\">",
-  "main": "index.js",
+  "description": "Personal portfolio site for Saurav Bhattacharya - Software Engineer, AI Safety Researcher",
+  "main": "docs/app.js",
   "directories": {
     "doc": "docs",
     "test": "tests"
