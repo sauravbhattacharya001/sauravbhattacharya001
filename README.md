@@ -13,7 +13,7 @@
 <br/>
 
 ![Repos](https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Fapi.github.com%2Fusers%2Fsauravbhattacharya001&query=%24.public_repos&label=Repos&color=blue&style=flat-square)
-![Releases](https://img.shields.io/badge/Releases-20-green?style=flat-square)
+![Releases](https://img.shields.io/badge/Releases-19-green?style=flat-square)
 ![Commits](https://img.shields.io/badge/Commits-1000+-purple?style=flat-square)
 ![Live Sites](https://img.shields.io/badge/Live_Sites-16-orange?style=flat-square)
 [![GitHub Stars](https://img.shields.io/github/stars/sauravbhattacharya001?style=flat-square&label=Stars&color=yellow)](https://github.com/sauravbhattacharya001)
@@ -59,7 +59,7 @@ I build software at Microsoft, research AI agent governance, and create tools fo
 
 | Project | What it does | Release | Live |
 |---|---|---|---|
-| **[WinSentinel](https://github.com/sauravbhattacharya001/WinSentinel)** | Always-on Windows security agent — real-time monitoring, AI-powered threat detection, auto-remediation, 24 audit modules, compliance profiles & finding suppression. | [![v1.1.0](https://img.shields.io/badge/release-v1.1.0-blue?style=flat)](https://github.com/sauravbhattacharya001/WinSentinel/releases/tag/v1.1.0) | [📄 Docs](https://sauravbhattacharya001.github.io/WinSentinel/) |
+| **[WinSentinel](https://github.com/sauravbhattacharya001/WinSentinel)** ⭐ 2 | Always-on Windows security agent — real-time monitoring, AI-powered threat detection, auto-remediation, 24 audit modules, compliance profiles & finding suppression. | [![v1.1.0](https://img.shields.io/badge/release-v1.1.0-blue?style=flat)](https://github.com/sauravbhattacharya001/WinSentinel/releases/tag/v1.1.0) | [📄 Docs](https://sauravbhattacharya001.github.io/WinSentinel/) |
 
 ### Languages & Tools
 
@@ -84,7 +84,7 @@ I build software at Microsoft, research AI agent governance, and create tools fo
 | **[FeedReader](https://github.com/sauravbhattacharya001/FeedReader)** | RSS feed reader (Swift/iOS) — read/unread tracking, reading stats dashboard, bookmarks, search. | [![v1.1.0](https://img.shields.io/badge/release-v1.1.0-blue?style=flat)](https://github.com/sauravbhattacharya001/FeedReader/releases/tag/v1.1.0) | [🌐 Site](https://sauravbhattacharya001.github.io/FeedReader/) |
 | **[BioBots](https://github.com/sauravbhattacharya001/BioBots)** | 3D bioprinter analytics — 11 metrics, anomaly detection (Z-Score + IQR), interactive data explorer with histograms, scatter plots, regression. | [![v1.0.0](https://img.shields.io/badge/release-v1.0.0-blue?style=flat)](https://github.com/sauravbhattacharya001/BioBots/releases/tag/v1.0.0) | [🌐 Site](https://sauravbhattacharya001.github.io/BioBots/) |
 | **[Vidly](https://github.com/sauravbhattacharya001/Vidly)** | Video rental management (C# / ASP.NET MVC) — CRUD, 4-tier membership, rental checkout/returns, late fees. | [![v1.0.0](https://img.shields.io/badge/release-v1.0.0-blue?style=flat)](https://github.com/sauravbhattacharya001/Vidly/releases/tag/v1.0.0) | [🌐 Site](https://sauravbhattacharya001.github.io/Vidly/) |
-| **[OCaml Samples](https://github.com/sauravbhattacharya001/Ocaml-sample-code)** | 45-module functional programming collection — data structures (BST, trie, hashmap, bloom filter, red-black trees, union-find, heap), algorithms (sorting, graph, regex via Thompson's NFA), type systems (Hindley-Milner, GADTs), logic programming (miniKanren), lambda calculus, and more. | [![v1.0.0](https://img.shields.io/badge/release-v1.0.0-blue?style=flat)](https://github.com/sauravbhattacharya001/Ocaml-sample-code/releases/tag/v1.0.0) | [📄 Site](https://sauravbhattacharya001.github.io/Ocaml-sample-code/) |
+| **[OCaml Samples](https://github.com/sauravbhattacharya001/Ocaml-sample-code)** ⭐ 2 | 45-module functional programming collection — data structures (BST, trie, hashmap, bloom filter, red-black trees, union-find, heap), algorithms (sorting, graph, regex via Thompson's NFA), type systems (Hindley-Milner, GADTs), logic programming (miniKanren), lambda calculus, and more. | [![v1.0.0](https://img.shields.io/badge/release-v1.0.0-blue?style=flat)](https://github.com/sauravbhattacharya001/Ocaml-sample-code/releases/tag/v1.0.0) | [📄 Site](https://sauravbhattacharya001.github.io/Ocaml-sample-code/) |
 
 ---
 
