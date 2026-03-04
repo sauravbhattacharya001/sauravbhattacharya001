@@ -43,7 +43,7 @@ Detailed technical overview of all public repositories. For a quick summary, see
 
 **What it does:**
 - Studies how AI agents attempt self-replication under various containment strategies
-- **5 replication strategies**: greedy, conservative, random, chain, burst
+- **5 base replication strategies** (greedy, conservative, random, chain, burst) plus 34 analysis modules for safety policy, chaos testing, forensics, game theory, alignment drift, and incident response
 - **ManifestSigner** with HMAC-SHA256 for cryptographic spawn authorization
 - **Controller** enforces depth limits, resource caps, and kill switches
 - **Simulation Runner CLI** with ASCII worker tree visualization and JSON export
@@ -112,7 +112,7 @@ Detailed technical overview of all public repositories. For a quick summary, see
 - **Module imports**: `import` statement for `.srv` files with circular dependency detection and diamond dependency handling
 - **Interactive REPL** with persistent state, multi-line blocks, command history
 - **Standard library**: upper/lower/trim/replace/split/join/contains, abs/round/floor/ceil/sqrt/power, type_of/to_string/range/sort
-- **540+ tests** covering interpreter, compiler, REPL, and module imports
+- **600+ tests** covering interpreter, compiler, REPL, and module imports
 
 **Full language specification:** [docs/LANGUAGE.md](https://github.com/sauravbhattacharya001/sauravcode/blob/master/docs/LANGUAGE.md) with EBNF grammar.
 
@@ -193,7 +193,7 @@ Detailed technical overview of all public repositories. For a quick summary, see
 - **Graph generator** — 10 topologies (complete, cycle, star, grid, tree, path, bipartite, Petersen, wheel, random)
 - **Topological sort** — Kahn's algorithm with cycle detection for DAGs
 
-**Infrastructure:** CI (Java 11/17), CodeQL, Dependabot, auto-labeler, branch protection. 650+ tests.
+**Infrastructure:** CI (Java 11/17), CodeQL, Dependabot, auto-labeler, branch protection. 900+ tests.
 
 ---
 

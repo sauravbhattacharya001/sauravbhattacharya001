@@ -43,7 +43,7 @@ var PROJECTS = [
     {
         category: "AI & Agents",
         icon: "🛡️", repo: "ai", title: "AI Safety Research",
-        desc: "Contract-enforced sandbox for studying AI agent self-replication safety. Monte Carlo risk analysis, safety policy engine, interactive reports.",
+        desc: "Contract-enforced sandbox for studying AI agent self-replication safety — 34 analysis modules including Monte Carlo simulation, game-theory modeling, alignment drift detection, and interactive reports.",
         tags: ["Python", "AI Safety", "Monte Carlo"],
         links: [
             { label: "Code", url: "https://github.com/sauravbhattacharya001/ai" },
@@ -55,7 +55,7 @@ var PROJECTS = [
     {
         category: "Security",
         icon: "🔒", repo: "WinSentinel", title: "WinSentinel",
-        desc: "Always-on Windows security agent — real-time monitoring, AI-powered threat detection, auto-remediation, 13 audit modules, compliance profiles.",
+        desc: "Always-on Windows security agent — real-time monitoring, AI-powered threat detection, auto-remediation, 24 audit modules, compliance profiles.",
         tags: ["C#", ".NET 8", "WPF", "Security"],
         links: [
             { label: "Code", url: "https://github.com/sauravbhattacharya001/WinSentinel" },
@@ -68,7 +68,7 @@ var PROJECTS = [
     {
         category: "Languages & Tools",
         icon: "🔤", repo: "sauravcode", title: "sauravcode",
-        desc: "A programming language with zero noise — no parens, no commas, no semicolons. Interpreter + compiler (.srv → C → native). 540+ tests.",
+        desc: "A programming language with zero noise — no parens, no commas, no semicolons. Interpreter + compiler (.srv → C → native). 600+ tests.",
         tags: ["Python", "C", "Compiler", "Language Design"],
         links: [
             { label: "Code", url: "https://github.com/sauravbhattacharya001/sauravcode" },
@@ -110,7 +110,7 @@ var PROJECTS = [
     {
         category: "Visualization & Data",
         icon: "🔗", repo: "GraphVisual", title: "GraphVisual",
-        desc: "Graph visualization for community evolution — centrality (Brandes'), MST, graph coloring, community detection, shortest path, link prediction, graph generation, topological sort, GraphML export. 650+ tests.",
+        desc: "Graph visualization for community evolution — centrality (Brandes'), MST, graph coloring, community detection, shortest path, link prediction, graph generation, topological sort, GraphML export. 900+ tests.",
         tags: ["Java", "Graph Theory", "Visualization"],
         links: [
             { label: "Code", url: "https://github.com/sauravbhattacharya001/GraphVisual" },
@@ -162,7 +162,7 @@ var PROJECTS = [
     {
         category: "Apps & More",
         icon: "🐫", repo: "Ocaml-sample-code", title: "OCaml Samples",
-        desc: "17-module functional programming collection — BST, trie, hashmap, bloom filter, red-black trees, union-find, graph algorithms, regex engine.",
+        desc: "45-module functional programming collection — BST, trie, hashmap, bloom filter, red-black trees, union-find, graph algorithms, regex engine, type inference, lambda calculus, SAT solver, and more.",
         tags: ["OCaml", "Functional", "Data Structures"],
         links: [
             { label: "Code", url: "https://github.com/sauravbhattacharya001/Ocaml-sample-code" },
