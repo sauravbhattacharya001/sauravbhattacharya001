@@ -196,15 +196,25 @@ function escapeHTML(str) {
 /**
  * Sanitize a URL to prevent javascript: protocol and attribute breakout.
  * Only allows http:, https:, and mailto: schemes.
+ *
+ * Strips ASCII control characters (0x00-0x1F, 0x7F) and Unicode
+ * whitespace before checking the scheme.  Browsers silently ignore
+ * embedded tabs, newlines, and null bytes when parsing href values,
+ * so "java\tscript:alert(1)" would execute without this defence.
+ * See CWE-116 (Improper Encoding or Escaping of Output).
+ *
  * @param {string} url
  * @returns {string}
  */
 function sanitizeURL(url) {
-    var trimmed = url.replace(/^\s+/, "").toLowerCase();
+    // Strip control chars (0x00-0x1F, 0x7F) and all Unicode whitespace
+    // eslint-disable-next-line no-control-regex
+    var cleaned = url.replace(/[\x00-\x1F\x7F]/g, "");
+    var trimmed = cleaned.replace(/^\s+/, "").toLowerCase();
     if (trimmed.indexOf("http:") === 0 ||
         trimmed.indexOf("https:") === 0 ||
         trimmed.indexOf("mailto:") === 0) {
-        return escapeHTML(url);
+        return escapeHTML(cleaned);
     }
     return "#";
 }
@@ -236,14 +246,21 @@ function buildCard(p) {
 
 /**
  * Render all project cards into #projects-container, grouped by category.
+ *
+ * Uses Object.create(null) for the category map so that inherited
+ * properties like "constructor", "toString", or "__proto__" can never
+ * collide with a category name — preventing prototype-pollution-style
+ * bugs (CWE-1321).
  */
 function renderProjects() {
     var container = document.getElementById("projects-container");
     if (!container) return;
 
-    // Group by category (preserve insertion order)
+    // Group by category (preserve insertion order).
+    // Object.create(null) avoids prototype pollution — a category
+    // named "constructor" or "__proto__" won't collide with Object.prototype.
     var groups = [];
-    var groupMap = {};
+    var groupMap = Object.create(null);
     PROJECTS.forEach(function(p) {
         if (!groupMap[p.category]) {
             groupMap[p.category] = [];

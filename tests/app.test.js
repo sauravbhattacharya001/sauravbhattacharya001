@@ -70,6 +70,24 @@ describe("escapeHTML", () => {
         const result = win.escapeHTML("it's");
         expect(result).toBe("it's");
     });
+
+    test("reuses cached DOM element (_escapeEl)", () => {
+        // Call twice and verify consistent output (proves caching doesn't corrupt state)
+        const first = win.escapeHTML("<a>&\"test\"</a>");
+        const second = win.escapeHTML("clean");
+        const third = win.escapeHTML("<a>&\"test\"</a>");
+        expect(first).toBe(third);
+        expect(second).toBe("clean");
+    });
+
+    test("handles string with only special characters", () => {
+        expect(win.escapeHTML('<>&"')).toBe("&lt;&gt;&amp;&quot;");
+    });
+
+    test("handles unicode characters", () => {
+        expect(win.escapeHTML("🚀 <test> 🔒")).toContain("🚀");
+        expect(win.escapeHTML("🚀 <test> 🔒")).toContain("&lt;test&gt;");
+    });
 });
 
 // ── PROJECTS data integrity ─────────────────────────────────────────
@@ -209,6 +227,36 @@ describe("buildCard", () => {
         expect(card).toContain("github.com/sauravbhattacharya001/" + p.repo);
     });
 
+    test("builds card with empty tags array", () => {
+        const p = {
+            category: "Test", icon: "🧪", repo: "test",
+            title: "No Tags", desc: "Project with no tags",
+            tags: [],
+            links: [{ label: "Code", url: "https://example.com" }]
+        };
+        const card = win.buildCard(p);
+        expect(card).toContain('class="card-tags">');
+        expect(card).toContain('class="card"');
+    });
+
+    test("builds card with multiple links", () => {
+        const p = {
+            category: "Test", icon: "🧪", repo: "test",
+            title: "Multi Links", desc: "Test",
+            tags: ["Test"],
+            links: [
+                { label: "Code", url: "https://github.com/test" },
+                { label: "Demo", url: "https://demo.test.com" },
+                { label: "Docs", url: "https://docs.test.com" },
+            ]
+        };
+        const card = win.buildCard(p);
+        expect(card).toContain("Code");
+        expect(card).toContain("Demo");
+        expect(card).toContain("Docs");
+        expect((card.match(/href=/g) || []).length).toBe(4); // 3 links + 1 repo title link
+    });
+
     test("escapes description with special chars", () => {
         const p = {
             category: "Test",
@@ -270,6 +318,38 @@ describe("renderProjects", () => {
         parent.appendChild(newContainer);
         win.renderProjects();
     });
+
+    test("re-render is idempotent (same card count)", () => {
+        // Render again into the existing container
+        win.renderProjects();
+        const container = dom.window.document.getElementById("projects-container");
+        const cards = container.querySelectorAll(".card");
+        expect(cards.length).toBe(win.PROJECTS.length);
+    });
+
+    test("category named constructor does not collide with Object.prototype", () => {
+        // Temporarily add a project with category "constructor"
+        const saved = win.PROJECTS.slice();
+        win.PROJECTS.push({
+            category: "constructor",
+            icon: "🧪", repo: "test-proto", title: "ProtoTest",
+            desc: "Test", tags: ["Test"],
+            links: [{ label: "Code", url: "https://example.com" }]
+        });
+
+        const container = dom.window.document.getElementById("projects-container");
+        expect(() => win.renderProjects()).not.toThrow();
+
+        // Check that a category label "constructor" exists
+        const labels = Array.from(container.querySelectorAll(".category-label"))
+            .map(el => el.textContent);
+        expect(labels).toContain("constructor");
+
+        // Cleanup
+        win.PROJECTS.length = 0;
+        saved.forEach(p => win.PROJECTS.push(p));
+        win.renderProjects();
+    });
 });
 
 // ── sanitizeURL ─────────────────────────────────────────────────────
@@ -301,6 +381,48 @@ describe("sanitizeURL", () => {
 
     test("rejects vbscript: protocol", () => {
         expect(win.sanitizeURL("vbscript:alert(1)")).toBe("#");
+    });
+
+    test("rejects javascript: with embedded tabs (control char bypass)", () => {
+        expect(win.sanitizeURL("java\tscript:alert(1)")).toBe("#");
+    });
+
+    test("rejects javascript: with embedded newlines", () => {
+        expect(win.sanitizeURL("java\nscript:alert(1)")).toBe("#");
+    });
+
+    test("rejects javascript: with embedded carriage returns", () => {
+        expect(win.sanitizeURL("java\rscript:alert(1)")).toBe("#");
+    });
+
+    test("rejects javascript: with null bytes", () => {
+        expect(win.sanitizeURL("java\0script:alert(1)")).toBe("#");
+    });
+
+    test("rejects javascript: with mixed control chars", () => {
+        expect(win.sanitizeURL("\x01j\x02a\x03v\x04ascript:alert(1)")).toBe("#");
+    });
+
+    test("strips control chars from allowed URLs", () => {
+        const result = win.sanitizeURL("https://exam\tple.com");
+        expect(result).toBe("https://example.com");
+        expect(result).not.toContain("\t");
+    });
+
+    test("rejects empty string", () => {
+        expect(win.sanitizeURL("")).toBe("#");
+    });
+
+    test("rejects whitespace-only string", () => {
+        expect(win.sanitizeURL("   ")).toBe("#");
+    });
+
+    test("rejects file: protocol", () => {
+        expect(win.sanitizeURL("file:///etc/passwd")).toBe("#");
+    });
+
+    test("rejects ftp: protocol", () => {
+        expect(win.sanitizeURL("ftp://example.com")).toBe("#");
     });
 
     test("escapes special characters in allowed URLs", () => {
