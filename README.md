@@ -13,7 +13,7 @@
 <br/>
 
 ![Repos](https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Fapi.github.com%2Fusers%2Fsauravbhattacharya001&query=%24.public_repos&label=Repos&color=blue&style=flat-square)
-![Releases](https://img.shields.io/badge/Releases-22-green?style=flat-square)
+![Releases](https://img.shields.io/badge/Releases-24-green?style=flat-square)
 ![Commits](https://img.shields.io/badge/Commits-2000+-purple?style=flat-square)
 ![Live Sites](https://img.shields.io/badge/Live_Sites-16-orange?style=flat-square)
 [![GitHub Stars](https://img.shields.io/github/stars/sauravbhattacharya001?style=flat-square&label=Stars&color=yellow)](https://github.com/sauravbhattacharya001)
@@ -34,8 +34,8 @@ I build software at Microsoft, research AI agent governance, and create tools fo
 
 ## 🔭 Currently
 
-- 🧬 Building **[AgentLens](https://github.com/sauravbhattacharya001/agentlens)** — observability for AI agents ("Datadog for AI agents")
-- 🛡️ Building **[WinSentinel](https://github.com/sauravbhattacharya001/WinSentinel)** — always-on Windows security agent with 24 audit modules
+- 🧬 Building **[AgentLens](https://github.com/sauravbhattacharya001/agentlens)** — observability for AI agents ("Datadog for AI agents") · just shipped **v1.2.0**
+- 🛡️ Building **[WinSentinel](https://github.com/sauravbhattacharya001/WinSentinel)** — always-on Windows security agent with 24 audit modules · **v1.1.0** live
 - 🤖 Running **[AgentBox](https://sauravbhattacharya001.github.io/getagentbox/)** — AI agents as a service, open access
 - 🔤 Evolving **[sauravcode](https://github.com/sauravbhattacharya001/sauravcode)** — my own programming language with f-strings, try/catch, and zero noise
 - 📋 Chairing **ICGIS 2026** (June 6–7) — international conference on global innovations
@@ -49,10 +49,10 @@ I build software at Microsoft, research AI agent governance, and create tools fo
 
 | Project | What it does | Release | Live |
 |---|---|---|---|
-| **[AgentLens](https://github.com/sauravbhattacharya001/agentlens)** | Observability & explainability platform for AI agents — trace, debug, and understand agent behavior at scale. Python SDK + Node.js backend + dashboard. Event search & filter, cost estimation. | [![v1.0.0](https://img.shields.io/badge/release-v1.0.0-blue?style=flat)](https://github.com/sauravbhattacharya001/agentlens/releases/tag/v1.0.0) | [📄 Docs](https://sauravbhattacharya001.github.io/agentlens/) |
+| **[AgentLens](https://github.com/sauravbhattacharya001/agentlens)** | Observability & explainability platform for AI agents — trace, debug, and understand agent behavior at scale. Python SDK + Node.js backend + dashboard. Event search & filter, cost estimation, scaled observability. | [![v1.2.0](https://img.shields.io/badge/release-v1.2.0-blue?style=flat)](https://github.com/sauravbhattacharya001/agentlens/releases/tag/v1.2.0) | [📄 Docs](https://sauravbhattacharya001.github.io/agentlens/) |
 | **[AgentBox](https://github.com/sauravbhattacharya001/getagentbox)** | AI agents as a service — personal AI assistants accessible via messaging. Open access, 20 msg/day free tier. | [![v1.0.0](https://img.shields.io/badge/release-v1.0.0-blue?style=flat)](https://github.com/sauravbhattacharya001/getagentbox/releases/tag/v1.0.0) | [🌐 Site](https://sauravbhattacharya001.github.io/getagentbox/) |
 | **[AgenticChat](https://github.com/sauravbhattacharya001/agenticchat)** | Agentic conversation framework — client-side GPT-4o chat with sandboxed code execution, 30+ modular features including voice input, session management, slash commands, message search, bookmarks, annotations, conversation tags, focus mode, dark/light themes, keyboard shortcuts. | [![v1.0.0](https://img.shields.io/badge/release-v1.0.0-blue?style=flat)](https://github.com/sauravbhattacharya001/agenticchat/releases/tag/v1.0.0) | [🌐 Demo](https://sauravbhattacharya001.github.io/agenticchat/) |
-| **[AI Safety Research](https://github.com/sauravbhattacharya001/ai)** | Contract-enforced sandbox for studying AI agent self-replication safety — 34 analysis modules including Monte Carlo simulation, game-theory modeling, alignment drift detection, and interactive HTML reports. | [![v1.0.0](https://img.shields.io/badge/release-v1.0.0-blue?style=flat)](https://github.com/sauravbhattacharya001/ai/releases/tag/v1.0.0) | [📄 Site](https://sauravbhattacharya001.github.io/ai/) |
+| **[AI Safety Research](https://github.com/sauravbhattacharya001/ai)** | Contract-enforced sandbox for studying AI agent self-replication safety — 34 analysis modules including Monte Carlo simulation, game-theory modeling, alignment drift detection, escalation detection, security hardening, and interactive HTML reports. | [![v1.1.0](https://img.shields.io/badge/release-v1.1.0-blue?style=flat)](https://github.com/sauravbhattacharya001/ai/releases/tag/v1.1.0) | [📄 Site](https://sauravbhattacharya001.github.io/ai/) |
 | **[Zalenix Memory](https://github.com/sauravbhattacharya001/zalenix-memory)** | AI agent memory & workspace — persistent context, soul files, and daily memory logs for a continuously-running AI assistant. | — | — |
 
 ### Security
@@ -84,7 +84,7 @@ I build software at Microsoft, research AI agent governance, and create tools fo
 | **[FeedReader](https://github.com/sauravbhattacharya001/FeedReader)** | RSS feed reader (Swift/iOS) — read/unread tracking, reading stats dashboard, bookmarks, search. | [![v1.1.0](https://img.shields.io/badge/release-v1.1.0-blue?style=flat)](https://github.com/sauravbhattacharya001/FeedReader/releases/tag/v1.1.0) | [🌐 Site](https://sauravbhattacharya001.github.io/FeedReader/) |
 | **[BioBots](https://github.com/sauravbhattacharya001/BioBots)** | 3D bioprinter analytics — 11 metrics, anomaly detection (Z-Score + IQR), interactive data explorer with histograms, scatter plots, regression. | [![v1.0.0](https://img.shields.io/badge/release-v1.0.0-blue?style=flat)](https://github.com/sauravbhattacharya001/BioBots/releases/tag/v1.0.0) | [🌐 Site](https://sauravbhattacharya001.github.io/BioBots/) |
 | **[Vidly](https://github.com/sauravbhattacharya001/Vidly)** | Video rental management (C# / ASP.NET MVC) — CRUD, 4-tier membership, rental checkout/returns, late fees. | [![v1.0.0](https://img.shields.io/badge/release-v1.0.0-blue?style=flat)](https://github.com/sauravbhattacharya001/Vidly/releases/tag/v1.0.0) | [🌐 Site](https://sauravbhattacharya001.github.io/Vidly/) |
-| **[OCaml Samples](https://github.com/sauravbhattacharya001/Ocaml-sample-code)** ⭐ 2 | 45-module functional programming collection — data structures (BST, trie, hashmap, bloom filter, red-black trees, union-find, heap), algorithms (sorting, graph, regex via Thompson's NFA), type systems (Hindley-Milner, GADTs), logic programming (miniKanren), lambda calculus, and more. | [![v1.0.0](https://img.shields.io/badge/release-v1.0.0-blue?style=flat)](https://github.com/sauravbhattacharya001/Ocaml-sample-code/releases/tag/v1.0.0) | [📄 Site](https://sauravbhattacharya001.github.io/Ocaml-sample-code/) |
+| **[OCaml Samples](https://github.com/sauravbhattacharya001/Ocaml-sample-code)** ⭐ 2 | 45-module functional programming collection — data structures (BST, trie, hashmap, bloom filter, red-black trees, union-find, heap), algorithms (sorting, graph, regex via Thompson's NFA), type systems (Hindley-Milner, GADTs), logic programming (miniKanren), lambda calculus, diff algorithms, graph queries, zippers, and more. | [![v1.2.0](https://img.shields.io/badge/release-v1.2.0-blue?style=flat)](https://github.com/sauravbhattacharya001/Ocaml-sample-code/releases/tag/v1.2.0) | [📄 Site](https://sauravbhattacharya001.github.io/Ocaml-sample-code/) |
 
 ---
 
