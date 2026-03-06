@@ -27,7 +27,7 @@
     <link rel="canonical" href="https://sauravbhattacharya001.github.io/sauravbhattacharya001/">
     <link rel="preconnect" href="https://github.com" crossorigin>
     <link rel="dns-prefetch" href="https://github.com">
-    <link rel="stylesheet" href="style.css" integrity="sha384-5O2gO3HEqcZemhipaVMVsedLLG5Ac++XPEnRQf6Yc7w0OCGxyyFtSIq3oerLogpL" crossorigin="anonymous">
+    <link rel="stylesheet" href="style.css" integrity="sha384-ggkCB2wo6zeQldYue1PWX7ZJ4mDLNrbPUifYzSeWlblkkqqIDQ4iWAj7smYfPavC" crossorigin="anonymous">
     <script type="application/ld+json">
     {
         "@context": "https://schema.org",
@@ -101,7 +101,14 @@
 <!-- Projects (rendered by app.js) -->
 <section class="section" id="projects">
     <h2 class="section-title"><span>🚀</span> Projects</h2>
+    <div class="filter-bar">
+        <input type="text" id="project-search" class="search-input" placeholder="Search projects..." aria-label="Search projects">
+        <div id="category-filters" class="category-filters"></div>
+    </div>
     <div id="projects-container"></div>
+    <div id="no-results" class="no-results" style="display: none;">
+        <p>No projects match your search.</p>
+    </div>
 </section>
 
 <!-- Research -->
@@ -161,6 +168,6 @@
     <p style="margin-top: 0.5rem;">© 2026 Saurav Bhattacharya</p>
 </footer>
 
-<script src="app.js" integrity="sha384-i3SZj92/CMxUXuYolzHYkmSnj90eN9xn47hgIn3sOPsUNFqH9xtJV00C0z1lVJ4T" crossorigin="anonymous"></script>
+<script src="app.js" integrity="sha384-RdiAZJ81WxcwwZcparXEml2YwCKmrNgnKAn6YvTrDgUFuVBF4kiDe96DhKX7Q6/h" crossorigin="anonymous"></script>
 </body>
 </html>

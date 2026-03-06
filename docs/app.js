@@ -5,7 +5,13 @@
  * The HTML template is generated automatically.
  */
 
-/* exported PROJECTS, renderProjects */
+/* exported PROJECTS, renderProjects, filterProjects, initFilters */
+
+/**
+ * Active filter state.
+ * @type {{ query: string, category: string|null }}
+ */
+var _filterState = { query: "", category: null };
 
 var PROJECTS = [
     // --- AI & Agents ---
@@ -245,23 +251,63 @@ function buildCard(p) {
 }
 
 /**
+ * Filter PROJECTS by current _filterState (query + category).
+ * Returns the filtered list without mutating PROJECTS.
+ *
+ * Text search matches against title, desc, tags, and repo name
+ * (case-insensitive).  Category filter matches the category field
+ * exactly.  Both filters are AND-combined.
+ *
+ * @returns {Object[]}
+ */
+function filterProjects() {
+    var q = _filterState.query.toLowerCase();
+    var cat = _filterState.category;
+
+    return PROJECTS.filter(function(p) {
+        if (cat && p.category !== cat) return false;
+        if (!q) return true;
+
+        // Search across title, description, repo name, and tags
+        if (p.title.toLowerCase().indexOf(q) !== -1) return true;
+        if (p.desc.toLowerCase().indexOf(q) !== -1) return true;
+        if (p.repo.toLowerCase().indexOf(q) !== -1) return true;
+        for (var i = 0; i < p.tags.length; i++) {
+            if (p.tags[i].toLowerCase().indexOf(q) !== -1) return true;
+        }
+        return false;
+    });
+}
+
+/**
  * Render all project cards into #projects-container, grouped by category.
  *
  * Uses Object.create(null) for the category map so that inherited
  * properties like "constructor", "toString", or "__proto__" can never
  * collide with a category name — preventing prototype-pollution-style
  * bugs (CWE-1321).
+ *
+ * @param {Object[]} [projects] - Optional filtered project list.
+ *   Defaults to all PROJECTS.
  */
-function renderProjects() {
+function renderProjects(projects) {
     var container = document.getElementById("projects-container");
     if (!container) return;
+
+    var items = projects || PROJECTS;
+
+    // Show/hide no-results message
+    var noResults = document.getElementById("no-results");
+    if (noResults) {
+        noResults.style.display = items.length === 0 ? "block" : "none";
+    }
 
     // Group by category (preserve insertion order).
     // Object.create(null) avoids prototype pollution — a category
     // named "constructor" or "__proto__" won't collide with Object.prototype.
     var groups = [];
     var groupMap = Object.create(null);
-    PROJECTS.forEach(function(p) {
+    items.forEach(function(p) {
         if (!groupMap[p.category]) {
             groupMap[p.category] = [];
             groups.push({ name: p.category, items: groupMap[p.category] });
@@ -281,16 +327,87 @@ function renderProjects() {
     container.innerHTML = html;
 }
 
+/**
+ * Initialize the category filter pills and search input.
+ * Extracts unique categories from PROJECTS and creates clickable pills.
+ * Wires up debounced search input and pill click handlers.
+ */
+function initFilters() {
+    var filtersContainer = document.getElementById("category-filters");
+    var searchInput = document.getElementById("project-search");
+    if (!filtersContainer) return;
+
+    // Extract unique categories in insertion order
+    var categories = [];
+    var seen = Object.create(null);
+    PROJECTS.forEach(function(p) {
+        if (!seen[p.category]) {
+            seen[p.category] = true;
+            categories.push(p.category);
+        }
+    });
+
+    // Create "All" pill + one per category
+    var allPill = document.createElement("button");
+    allPill.className = "filter-pill active";
+    allPill.textContent = "All";
+    allPill.setAttribute("data-category", "");
+    allPill.type = "button";
+    filtersContainer.appendChild(allPill);
+
+    categories.forEach(function(cat) {
+        var pill = document.createElement("button");
+        pill.className = "filter-pill";
+        pill.textContent = cat;
+        pill.setAttribute("data-category", cat);
+        pill.type = "button";
+        filtersContainer.appendChild(pill);
+    });
+
+    // Pill click handler
+    filtersContainer.addEventListener("click", function(e) {
+        var pill = e.target;
+        if (!pill.classList.contains("filter-pill")) return;
+
+        // Update active state
+        var pills = filtersContainer.querySelectorAll(".filter-pill");
+        for (var i = 0; i < pills.length; i++) {
+            pills[i].classList.remove("active");
+        }
+        pill.classList.add("active");
+
+        var cat = pill.getAttribute("data-category");
+        _filterState.category = cat || null;
+        renderProjects(filterProjects());
+    });
+
+    // Debounced search input
+    var debounceTimer = null;
+    if (searchInput) {
+        searchInput.addEventListener("input", function() {
+            clearTimeout(debounceTimer);
+            debounceTimer = setTimeout(function() {
+                _filterState.query = searchInput.value;
+                renderProjects(filterProjects());
+            }, 200);
+        });
+    }
+}
+
 // Auto-initialize on DOM ready
 if (typeof document !== "undefined") {
     if (document.readyState === "loading") {
-        document.addEventListener("DOMContentLoaded", renderProjects);
+        document.addEventListener("DOMContentLoaded", function() {
+            renderProjects();
+            initFilters();
+        });
     } else {
         renderProjects();
+        initFilters();
     }
 }
 
 // Exports for testing
 if (typeof module !== "undefined" && module.exports) {
-    module.exports = { PROJECTS: PROJECTS, escapeHTML: escapeHTML, sanitizeURL: sanitizeURL, buildCard: buildCard, renderProjects: renderProjects };
+    module.exports = { PROJECTS: PROJECTS, escapeHTML: escapeHTML, sanitizeURL: sanitizeURL, buildCard: buildCard, renderProjects: renderProjects, filterProjects: filterProjects, initFilters: initFilters, _filterState: _filterState };
 }

@@ -12,7 +12,7 @@ const fs = require("fs");
 // Load app.js in a JSDOM environment
 function loadApp() {
     const dom = new JSDOM(
-        '<!DOCTYPE html><html><body><div id="projects-container"></div></body></html>',
+        '<!DOCTYPE html><html><body><div id="projects-container"></div><input id="project-search"><div id="category-filters"></div><div id="no-results" style="display:none"></div></body></html>',
         { runScripts: "dangerously", resources: "usable" }
     );
     const code = fs.readFileSync(path.join(__dirname, "..", "docs", "app.js"), "utf-8");
@@ -622,5 +622,173 @@ describe("Security headers", () => {
         expect(blockContent).toContain("X-Content-Type-Options");
         expect(blockContent).toContain("Content-Security-Policy");
         expect(blockContent).toContain("Permissions-Policy");
+    });
+});
+
+// ── filterProjects tests ──────────────────────────────────────────────
+
+describe("filterProjects", () => {
+    afterEach(() => {
+        // Reset filter state after each test
+        win._filterState.query = "";
+        win._filterState.category = null;
+    });
+
+    test("returns all projects with no filters", () => {
+        const results = win.filterProjects();
+        expect(results.length).toBe(win.PROJECTS.length);
+    });
+
+    test("filters by category", () => {
+        win._filterState.category = "AI & Agents";
+        const results = win.filterProjects();
+        expect(results.length).toBeGreaterThan(0);
+        results.forEach(p => expect(p.category).toBe("AI & Agents"));
+    });
+
+    test("filters by text query matching title", () => {
+        win._filterState.query = "voronoi";
+        const results = win.filterProjects();
+        expect(results.length).toBeGreaterThan(0);
+        expect(results.some(p => p.repo === "VoronoiMap")).toBe(true);
+    });
+
+    test("filters by text query matching tag", () => {
+        win._filterState.query = "python";
+        const results = win.filterProjects();
+        expect(results.length).toBeGreaterThan(0);
+        results.forEach(p => {
+            const hasPython = p.tags.some(t => t.toLowerCase().includes("python"));
+            const titleMatch = p.title.toLowerCase().includes("python");
+            const descMatch = p.desc.toLowerCase().includes("python");
+            const repoMatch = p.repo.toLowerCase().includes("python");
+            expect(hasPython || titleMatch || descMatch || repoMatch).toBe(true);
+        });
+    });
+
+    test("filters by text query matching repo name", () => {
+        win._filterState.query = "agentlens";
+        const results = win.filterProjects();
+        expect(results.length).toBe(1);
+        expect(results[0].repo).toBe("agentlens");
+    });
+
+    test("filters by text query matching description", () => {
+        win._filterState.query = "bioprinter";
+        const results = win.filterProjects();
+        expect(results.length).toBeGreaterThan(0);
+        expect(results.some(p => p.repo === "BioBots")).toBe(true);
+    });
+
+    test("combines category and text filters (AND)", () => {
+        win._filterState.category = "AI & Agents";
+        win._filterState.query = "safety";
+        const results = win.filterProjects();
+        expect(results.length).toBeGreaterThan(0);
+        results.forEach(p => expect(p.category).toBe("AI & Agents"));
+        results.forEach(p => {
+            const match = p.title.toLowerCase().includes("safety") ||
+                          p.desc.toLowerCase().includes("safety") ||
+                          p.repo.toLowerCase().includes("safety") ||
+                          p.tags.some(t => t.toLowerCase().includes("safety"));
+            expect(match).toBe(true);
+        });
+    });
+
+    test("returns empty array when nothing matches", () => {
+        win._filterState.query = "xyznonexistent123";
+        const results = win.filterProjects();
+        expect(results).toEqual([]);
+    });
+
+    test("text search is case-insensitive", () => {
+        win._filterState.query = "VORONOI";
+        const upper = win.filterProjects();
+        win._filterState.query = "voronoi";
+        const lower = win.filterProjects();
+        expect(upper.length).toBe(lower.length);
+        expect(upper.length).toBeGreaterThan(0);
+    });
+
+    test("empty query string returns all projects", () => {
+        win._filterState.query = "";
+        win._filterState.category = null;
+        expect(win.filterProjects().length).toBe(win.PROJECTS.length);
+    });
+
+    test("wrong category returns empty", () => {
+        win._filterState.category = "Nonexistent Category";
+        expect(win.filterProjects()).toEqual([]);
+    });
+});
+
+describe("renderProjects with filtered input", () => {
+    test("renders only filtered projects", () => {
+        const aiProjects = win.PROJECTS.filter(p => p.category === "AI & Agents");
+        win.renderProjects(aiProjects);
+        const container = win.document.getElementById("projects-container");
+        // Should only have AI & Agents category
+        const labels = container.querySelectorAll(".category-label");
+        expect(labels.length).toBe(1);
+        expect(labels[0].textContent).toBe("AI & Agents");
+        // Card count should match
+        const cards = container.querySelectorAll(".card");
+        expect(cards.length).toBe(aiProjects.length);
+    });
+
+    test("shows no-results message when empty", () => {
+        win.renderProjects([]);
+        const noResults = win.document.getElementById("no-results");
+        expect(noResults.style.display).toBe("block");
+    });
+
+    test("hides no-results message when projects exist", () => {
+        win.renderProjects(win.PROJECTS);
+        const noResults = win.document.getElementById("no-results");
+        expect(noResults.style.display).toBe("none");
+    });
+
+    test("re-renders correctly after filter change", () => {
+        // First render all
+        win.renderProjects(win.PROJECTS);
+        let cards = win.document.querySelectorAll(".card");
+        expect(cards.length).toBe(win.PROJECTS.length);
+
+        // Then filter to Security
+        const secProjects = win.PROJECTS.filter(p => p.category === "Security");
+        win.renderProjects(secProjects);
+        cards = win.document.querySelectorAll(".card");
+        expect(cards.length).toBe(secProjects.length);
+
+        // Render all again
+        win.renderProjects(win.PROJECTS);
+        cards = win.document.querySelectorAll(".card");
+        expect(cards.length).toBe(win.PROJECTS.length);
+    });
+});
+
+describe("initFilters", () => {
+    test("creates filter pills for each category plus All", () => {
+        // initFilters was already called during auto-init, so pills exist.
+        // Count unique categories from PROJECTS.
+        const pills = win.document.querySelectorAll(".filter-pill");
+        const categories = new Set(win.PROJECTS.map(p => p.category));
+        // May have been called multiple times; just verify at least the right count exists
+        // and first pill is "All"
+        expect(pills.length).toBeGreaterThanOrEqual(categories.size + 1);
+        expect(pills[0].textContent).toBe("All");
+    });
+
+    test("All pill starts as active", () => {
+        const pills = win.document.querySelectorAll(".filter-pill");
+        expect(pills[0].classList.contains("active")).toBe(true);
+    });
+
+    test("clicking a category pill makes it active and deactivates others", () => {
+        const pills = win.document.querySelectorAll(".filter-pill");
+        // Click second pill (first category)
+        pills[1].click();
+        expect(pills[1].classList.contains("active")).toBe(true);
+        expect(pills[0].classList.contains("active")).toBe(false);
     });
 });

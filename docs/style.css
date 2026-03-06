@@ -122,6 +122,52 @@ a:hover { color: var(--accent-hover); }
     margin-bottom: 0.75rem;
 }
 
+/* Project filter bar */
+.filter-bar {
+    margin-bottom: 1.5rem;
+}
+.search-input {
+    width: 100%;
+    padding: 0.6rem 1rem;
+    border-radius: 6px;
+    border: 1px solid var(--border);
+    background: var(--surface);
+    color: var(--text);
+    font-size: 0.9rem;
+    font-family: inherit;
+    outline: none;
+    transition: border-color 0.2s;
+    margin-bottom: 0.75rem;
+}
+.search-input:focus { border-color: var(--accent); }
+.search-input::placeholder { color: var(--text-secondary); }
+.category-filters {
+    display: flex; flex-wrap: wrap; gap: 0.5rem;
+}
+.filter-pill {
+    padding: 0.3rem 0.75rem;
+    border-radius: 99px;
+    font-size: 0.8rem; font-weight: 500;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    color: var(--text-secondary);
+    cursor: pointer;
+    transition: all 0.2s;
+    user-select: none;
+}
+.filter-pill:hover { border-color: var(--accent); color: var(--text); }
+.filter-pill.active {
+    background: rgba(88, 166, 255, 0.15);
+    border-color: var(--accent);
+    color: var(--accent);
+}
+.no-results {
+    text-align: center;
+    padding: 2rem;
+    color: var(--text-secondary);
+    font-size: 0.95rem;
+}
+
 /* Tech stack */
 .tech-grid {
     display: flex; flex-wrap: wrap; gap: 0.5rem;
