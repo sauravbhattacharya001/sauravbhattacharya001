@@ -33,7 +33,7 @@ var PROJECTS = [
     {
         category: "AI & Agents",
         icon: "💬", repo: "agenticchat", title: "AgenticChat",
-        desc: "Agentic conversation framework — GPT-4o chat with sandboxed code execution, voice input, dark/light themes, keyboard shortcuts.",
+        desc: "Agentic conversation framework — GPT-4o chat with sandboxed code execution, 30+ modular features including voice input, session management, conversation tags, search, bookmarks, annotations, focus mode.",
         tags: ["JavaScript", "GPT-4o", "Code Execution"],
         links: [
             { label: "Code", url: "https://github.com/sauravbhattacharya001/agenticchat" },
@@ -110,7 +110,7 @@ var PROJECTS = [
     {
         category: "Visualization & Data",
         icon: "🔗", repo: "GraphVisual", title: "GraphVisual",
-        desc: "Graph visualization for community evolution — centrality (Brandes'), MST, graph coloring, community detection, shortest path, link prediction, graph generation, topological sort, GraphML export. 900+ tests.",
+        desc: "Graph visualization for community evolution — centrality (Brandes'), MST, graph coloring, community detection, shortest path, link prediction, graph generation, topological sort, influence spread simulation, GraphML export. 2400+ tests.",
         tags: ["Java", "Graph Theory", "Visualization"],
         links: [
             { label: "Code", url: "https://github.com/sauravbhattacharya001/GraphVisual" },

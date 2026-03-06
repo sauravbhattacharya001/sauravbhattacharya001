@@ -13,8 +13,8 @@
 <br/>
 
 ![Repos](https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Fapi.github.com%2Fusers%2Fsauravbhattacharya001&query=%24.public_repos&label=Repos&color=blue&style=flat-square)
-![Releases](https://img.shields.io/badge/Releases-19-green?style=flat-square)
-![Commits](https://img.shields.io/badge/Commits-1000+-purple?style=flat-square)
+![Releases](https://img.shields.io/badge/Releases-22-green?style=flat-square)
+![Commits](https://img.shields.io/badge/Commits-2000+-purple?style=flat-square)
 ![Live Sites](https://img.shields.io/badge/Live_Sites-16-orange?style=flat-square)
 [![GitHub Stars](https://img.shields.io/github/stars/sauravbhattacharya001?style=flat-square&label=Stars&color=yellow)](https://github.com/sauravbhattacharya001)
 [![License: MIT](https://img.shields.io/badge/License-MIT-brightgreen?style=flat-square)](LICENSE)
@@ -51,7 +51,7 @@ I build software at Microsoft, research AI agent governance, and create tools fo
 |---|---|---|---|
 | **[AgentLens](https://github.com/sauravbhattacharya001/agentlens)** | Observability & explainability platform for AI agents — trace, debug, and understand agent behavior at scale. Python SDK + Node.js backend + dashboard. Event search & filter, cost estimation. | [![v1.0.0](https://img.shields.io/badge/release-v1.0.0-blue?style=flat)](https://github.com/sauravbhattacharya001/agentlens/releases/tag/v1.0.0) | [📄 Docs](https://sauravbhattacharya001.github.io/agentlens/) |
 | **[AgentBox](https://github.com/sauravbhattacharya001/getagentbox)** | AI agents as a service — personal AI assistants accessible via messaging. Open access, 20 msg/day free tier. | [![v1.0.0](https://img.shields.io/badge/release-v1.0.0-blue?style=flat)](https://github.com/sauravbhattacharya001/getagentbox/releases/tag/v1.0.0) | [🌐 Site](https://sauravbhattacharya001.github.io/getagentbox/) |
-| **[AgenticChat](https://github.com/sauravbhattacharya001/agenticchat)** | Agentic conversation framework — client-side GPT-4o chat with sandboxed code execution, voice input, dark/light themes, keyboard shortcuts. | [![v1.0.0](https://img.shields.io/badge/release-v1.0.0-blue?style=flat)](https://github.com/sauravbhattacharya001/agenticchat/releases/tag/v1.0.0) | [🌐 Demo](https://sauravbhattacharya001.github.io/agenticchat/) |
+| **[AgenticChat](https://github.com/sauravbhattacharya001/agenticchat)** | Agentic conversation framework — client-side GPT-4o chat with sandboxed code execution, 30+ modular features including voice input, session management, slash commands, message search, bookmarks, annotations, conversation tags, focus mode, dark/light themes, keyboard shortcuts. | [![v1.0.0](https://img.shields.io/badge/release-v1.0.0-blue?style=flat)](https://github.com/sauravbhattacharya001/agenticchat/releases/tag/v1.0.0) | [🌐 Demo](https://sauravbhattacharya001.github.io/agenticchat/) |
 | **[AI Safety Research](https://github.com/sauravbhattacharya001/ai)** | Contract-enforced sandbox for studying AI agent self-replication safety — 34 analysis modules including Monte Carlo simulation, game-theory modeling, alignment drift detection, and interactive HTML reports. | [![v1.0.0](https://img.shields.io/badge/release-v1.0.0-blue?style=flat)](https://github.com/sauravbhattacharya001/ai/releases/tag/v1.0.0) | [📄 Site](https://sauravbhattacharya001.github.io/ai/) |
 | **[Zalenix Memory](https://github.com/sauravbhattacharya001/zalenix-memory)** | AI agent memory & workspace — persistent context, soul files, and daily memory logs for a continuously-running AI assistant. | — | — |
 
@@ -74,7 +74,7 @@ I build software at Microsoft, research AI agent governance, and create tools fo
 | Project | What it does | Release | Live |
 |---|---|---|---|
 | **[VoronoiMap](https://github.com/sauravbhattacharya001/VoronoiMap)** ⭐ 3 | Voronoi diagram generation and spatial partitioning toolkit. Lloyd relaxation, neighbourhood graphs, 6 color schemes, GeoJSON export, 285 tests. | [![v1.0.0](https://img.shields.io/badge/release-v1.0.0-blue?style=flat)](https://github.com/sauravbhattacharya001/VoronoiMap/releases/tag/v1.0.0) | [🌐 Demo](https://sauravbhattacharya001.github.io/VoronoiMap/) |
-| **[GraphVisual](https://github.com/sauravbhattacharya001/GraphVisual)** | Graph visualization for studying community evolution — centrality analysis (Brandes'), MST (Kruskal/Prim), graph coloring, community detection, shortest path (BFS/Dijkstra), link prediction, graph generation, topological sort, GraphML export. 900+ tests. | [![v1.0.0](https://img.shields.io/badge/release-v1.0.0-blue?style=flat)](https://github.com/sauravbhattacharya001/GraphVisual/releases/tag/v1.0.0) | [🌐 Site](https://sauravbhattacharya001.github.io/GraphVisual/) |
+| **[GraphVisual](https://github.com/sauravbhattacharya001/GraphVisual)** | Graph visualization for studying community evolution — centrality analysis (Brandes'), MST (Kruskal/Prim), graph coloring, community detection, shortest path (BFS/Dijkstra), link prediction, graph generation, topological sort, influence spread simulation, GraphML export. 2400+ tests. | [![v1.0.0](https://img.shields.io/badge/release-v1.0.0-blue?style=flat)](https://github.com/sauravbhattacharya001/GraphVisual/releases/tag/v1.0.0) | [🌐 Site](https://sauravbhattacharya001.github.io/GraphVisual/) |
 
 ### Apps & More
 

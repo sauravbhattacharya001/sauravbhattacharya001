@@ -66,13 +66,23 @@ Detailed technical overview of all public repositories. For a quick summary, see
 
 **What it does:**
 - Client-side agentic chat with GPT-4o integration
+- **30+ modular features** built as revealing-module-pattern IIFEs
 - **Sandboxed code execution** via postMessage-based iframe isolation
-- **15 prompt templates** across 4 categories (Data & Charts, Web & APIs, Utilities, Fun & Creative)
+- **Session management** with auto-save, import/export, and conversation tags
+- **Slash commands** for quick actions (/focus, /tags, /timing, etc.)
+- **Message search** with highlight navigation and match counting
+- **Bookmarks & pinning** for important messages
+- **Message annotations** and **conversation chapters** for organization
+- **Conversation timeline**, **summarizer**, and **fork** support
+- **Voice input**, **read aloud**, and **message diff** comparison
+- **Prompt templates** across 4 categories (Data & Charts, Web & APIs, Utilities, Fun & Creative)
 - **Conversation history** panel with Markdown/JSON export
 - **Token usage tracking** with cost estimation
-- **50K character input validation** with live counter
+- **Focus/zen mode** for distraction-free writing
+- **Persona presets** and **model selector** for different AI configurations
+- **Scratchpad**, **quick replies**, **input history**, and **response time badges**
 
-**Infrastructure:** CI (HTMLHint + ESLint + secret scanning), CodeQL, 61 Jest tests, Docker workflow, npm publishing, branch protection, documentation site.
+**Infrastructure:** CI (HTMLHint + ESLint + secret scanning), CodeQL, 100+ Jest tests, Docker workflow, npm publishing, branch protection, documentation site.
 
 ---
 
@@ -192,8 +202,10 @@ Detailed technical overview of all public repositories. For a quick summary, see
 - **Link prediction** — Jaccard coefficient, Adamic-Adar, common neighbours for predicting future edges
 - **Graph generator** — 10 topologies (complete, cycle, star, grid, tree, path, bipartite, Petersen, wheel, random)
 - **Topological sort** — Kahn's algorithm with cycle detection for DAGs
+- **Influence spread simulation** — Independent Cascade (IC), Linear Threshold (LT), and SIR models with cached neighbor lookups
+- **Graph similarity** — spectral comparison via Jacobi eigenvalue decomposition
 
-**Infrastructure:** CI (Java 11/17), CodeQL, Dependabot, auto-labeler, branch protection. 900+ tests.
+**Infrastructure:** CI (Java 11/17), CodeQL, Dependabot, auto-labeler, branch protection. 2400+ tests.
 
 ---
 
