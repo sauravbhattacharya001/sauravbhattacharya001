@@ -174,17 +174,23 @@ var PROJECTS = [
 /**
  * Escape HTML entities to prevent XSS.
  *
- * Uses both textContent (for &, <, >) and manual replacement
- * for double quotes — which textContent does NOT escape but
- * are critical inside HTML attribute values like href="...".
+ * Uses a pre-allocated, reusable DOM element instead of creating a new
+ * one per call.  The element is lazily created on first use and cached
+ * for subsequent calls — avoids ~100+ createElement+GC cycles during
+ * renderProjects().
+ *
+ * The textContent setter handles &, <, > escaping; we manually replace
+ * double quotes afterwards because textContent does NOT escape them but
+ * they are critical inside HTML attribute values like href="...".
  *
  * @param {string} str
  * @returns {string}
  */
+var _escapeEl = null;
 function escapeHTML(str) {
-    var d = document.createElement("div");
-    d.appendChild(document.createTextNode(str));
-    return d.innerHTML.replace(/"/g, "&quot;");
+    if (!_escapeEl) { _escapeEl = document.createElement("span"); }
+    _escapeEl.textContent = str;
+    return _escapeEl.innerHTML.replace(/"/g, "&quot;");
 }
 
 /**
