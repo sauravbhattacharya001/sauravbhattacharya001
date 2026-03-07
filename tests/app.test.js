@@ -1088,3 +1088,354 @@ describe("updateTagIndicator", () => {
         expect(win._filterState.tag).toBeNull();
     });
 });
+
+// ── Keyboard navigation ─────────────────────────────────────────────
+
+describe("keyboard navigation state", () => {
+    test("_kbState has expected initial values", () => {
+        expect(win._kbState).toBeDefined();
+        expect(win._kbState.focusIndex).toBe(-1);
+        expect(typeof win._kbState.helpVisible).toBe("boolean");
+    });
+});
+
+describe("getVisibleCards", () => {
+    test("returns all rendered cards", () => {
+        win.renderProjects();
+        const cards = win.getVisibleCards();
+        expect(cards.length).toBe(win.PROJECTS.length);
+    });
+
+    test("returns only filtered cards after filter", () => {
+        const aiProjects = win.PROJECTS.filter(p => p.category === "AI & Agents");
+        win.renderProjects(aiProjects);
+        const cards = win.getVisibleCards();
+        expect(cards.length).toBe(aiProjects.length);
+        // Restore
+        win.renderProjects();
+    });
+
+    test("returns empty array when no projects rendered", () => {
+        win.renderProjects([]);
+        const cards = win.getVisibleCards();
+        expect(cards.length).toBe(0);
+        win.renderProjects();
+    });
+});
+
+describe("focusCard", () => {
+    beforeEach(() => {
+        win.renderProjects();
+        win.blurCards();
+        win._kbState.focusIndex = -1;
+    });
+
+    test("focuses the first card at index 0", () => {
+        const result = win.focusCard(0);
+        expect(result).toBe(true);
+        expect(win._kbState.focusIndex).toBe(0);
+        const cards = win.getVisibleCards();
+        expect(cards[0].classList.contains("card-focused")).toBe(true);
+    });
+
+    test("focuses card at arbitrary index", () => {
+        win.focusCard(3);
+        expect(win._kbState.focusIndex).toBe(3);
+        const cards = win.getVisibleCards();
+        expect(cards[3].classList.contains("card-focused")).toBe(true);
+    });
+
+    test("clamps negative index to 0", () => {
+        win.focusCard(-5);
+        expect(win._kbState.focusIndex).toBe(0);
+    });
+
+    test("clamps index past end to last card", () => {
+        const total = win.getVisibleCards().length;
+        win.focusCard(total + 10);
+        expect(win._kbState.focusIndex).toBe(total - 1);
+    });
+
+    test("removes previous focus when moving", () => {
+        win.focusCard(0);
+        win.focusCard(2);
+        const cards = win.getVisibleCards();
+        expect(cards[0].classList.contains("card-focused")).toBe(false);
+        expect(cards[2].classList.contains("card-focused")).toBe(true);
+    });
+
+    test("returns false with no visible cards", () => {
+        win.renderProjects([]);
+        const result = win.focusCard(0);
+        expect(result).toBe(false);
+        win.renderProjects();
+    });
+
+    test("sets tabindex on focused card", () => {
+        win.focusCard(1);
+        const cards = win.getVisibleCards();
+        expect(cards[1].getAttribute("tabindex")).toBe("-1");
+    });
+});
+
+describe("blurCards", () => {
+    test("removes card-focused class from all cards", () => {
+        win.renderProjects();
+        win.focusCard(0);
+        win.focusCard(3);
+        win.blurCards();
+        const focused = win.document.querySelectorAll(".card-focused");
+        expect(focused.length).toBe(0);
+    });
+
+    test("removes tabindex from unfocused cards", () => {
+        win.renderProjects();
+        win.focusCard(2);
+        win.blurCards();
+        const cards = win.getVisibleCards();
+        expect(cards[2].getAttribute("tabindex")).toBeNull();
+    });
+});
+
+describe("openFocusedCard", () => {
+    let openedUrl;
+
+    beforeEach(() => {
+        win.renderProjects();
+        win.blurCards();
+        win._kbState.focusIndex = -1;
+        openedUrl = null;
+        // Mock window.open
+        win.open = function(url) { openedUrl = url; };
+    });
+
+    test("opens the GitHub link of the focused card", () => {
+        win.focusCard(0);
+        const result = win.openFocusedCard();
+        expect(result).toBe(true);
+        expect(openedUrl).toContain("github.com/sauravbhattacharya001/");
+    });
+
+    test("returns false when no card is focused", () => {
+        win._kbState.focusIndex = -1;
+        expect(win.openFocusedCard()).toBe(false);
+    });
+
+    test("returns false when focusIndex is out of range", () => {
+        win._kbState.focusIndex = 999;
+        expect(win.openFocusedCard()).toBe(false);
+    });
+});
+
+describe("buildHelpOverlay", () => {
+    test("returns HTML string with overlay structure", () => {
+        const html = win.buildHelpOverlay();
+        expect(html).toContain("kb-help-overlay");
+        expect(html).toContain("Keyboard Shortcuts");
+        expect(html).toContain("<kbd>");
+    });
+
+    test("includes all shortcut keys", () => {
+        const html = win.buildHelpOverlay();
+        expect(html).toContain("j / ↓");
+        expect(html).toContain("k / ↑");
+        expect(html).toContain("Enter");
+        expect(html).toContain("/");
+        expect(html).toContain("Escape");
+        expect(html).toContain("?");
+    });
+
+    test("includes descriptions for all shortcuts", () => {
+        const html = win.buildHelpOverlay();
+        expect(html).toContain("Next project card");
+        expect(html).toContain("Previous project card");
+        expect(html).toContain("Open focused project");
+        expect(html).toContain("Focus search input");
+        expect(html).toContain("Clear search");
+        expect(html).toContain("Toggle this help");
+    });
+
+    test("has aria-label for accessibility", () => {
+        const html = win.buildHelpOverlay();
+        expect(html).toContain('role="dialog"');
+        expect(html).toContain('aria-label="Keyboard shortcuts"');
+    });
+});
+
+describe("showKeyboardHelp / hideKeyboardHelp", () => {
+    afterEach(() => {
+        win.hideKeyboardHelp();
+        const overlay = win.document.getElementById("kb-help-overlay");
+        if (overlay) overlay.parentNode.removeChild(overlay);
+        win._kbState.helpVisible = false;
+    });
+
+    test("showKeyboardHelp creates overlay in DOM", () => {
+        win.showKeyboardHelp();
+        const overlay = win.document.getElementById("kb-help-overlay");
+        expect(overlay).not.toBeNull();
+        expect(win._kbState.helpVisible).toBe(true);
+    });
+
+    test("hideKeyboardHelp adds hidden class", () => {
+        win.showKeyboardHelp();
+        win.hideKeyboardHelp();
+        const overlay = win.document.getElementById("kb-help-overlay");
+        expect(overlay.classList.contains("hidden")).toBe(true);
+        expect(win._kbState.helpVisible).toBe(false);
+    });
+
+    test("showKeyboardHelp is idempotent (no duplicate overlays)", () => {
+        win.showKeyboardHelp();
+        win.showKeyboardHelp();
+        const overlays = win.document.querySelectorAll("#kb-help-overlay");
+        expect(overlays.length).toBe(1);
+    });
+
+    test("show then hide then show unhides existing overlay", () => {
+        win.showKeyboardHelp();
+        win.hideKeyboardHelp();
+        win.showKeyboardHelp();
+        const overlay = win.document.getElementById("kb-help-overlay");
+        expect(overlay.classList.contains("hidden")).toBe(false);
+    });
+});
+
+describe("toggleKeyboardHelp", () => {
+    afterEach(() => {
+        win.hideKeyboardHelp();
+        const overlay = win.document.getElementById("kb-help-overlay");
+        if (overlay) overlay.parentNode.removeChild(overlay);
+        win._kbState.helpVisible = false;
+    });
+
+    test("toggles from hidden to visible", () => {
+        win._kbState.helpVisible = false;
+        win.toggleKeyboardHelp();
+        expect(win._kbState.helpVisible).toBe(true);
+    });
+
+    test("toggles from visible to hidden", () => {
+        win.showKeyboardHelp();
+        win.toggleKeyboardHelp();
+        expect(win._kbState.helpVisible).toBe(false);
+    });
+});
+
+describe("keyboard event handling", () => {
+    function fireKey(key, opts) {
+        const event = new win.KeyboardEvent("keydown", Object.assign({
+            key: key, bubbles: true, cancelable: true
+        }, opts || {}));
+        win.document.dispatchEvent(event);
+        return event;
+    }
+
+    beforeEach(() => {
+        win.renderProjects();
+        win.blurCards();
+        win._kbState.focusIndex = -1;
+        win._kbState.helpVisible = false;
+        // Remove any help overlay
+        const overlay = win.document.getElementById("kb-help-overlay");
+        if (overlay) overlay.parentNode.removeChild(overlay);
+    });
+
+    test("j key moves focus to next card", () => {
+        fireKey("j");
+        expect(win._kbState.focusIndex).toBe(0);
+        fireKey("j");
+        expect(win._kbState.focusIndex).toBe(1);
+    });
+
+    test("k key moves focus to previous card", () => {
+        win.focusCard(3);
+        fireKey("k");
+        expect(win._kbState.focusIndex).toBe(2);
+    });
+
+    test("ArrowDown key moves focus forward", () => {
+        fireKey("ArrowDown");
+        expect(win._kbState.focusIndex).toBe(0);
+    });
+
+    test("ArrowUp key moves focus backward", () => {
+        win.focusCard(2);
+        fireKey("ArrowUp");
+        expect(win._kbState.focusIndex).toBe(1);
+    });
+
+    test("/ key focuses search input", () => {
+        const search = win.document.getElementById("project-search");
+        search.blur();
+        fireKey("/");
+        expect(win.document.activeElement).toBe(search);
+    });
+
+    test("? key toggles help overlay", () => {
+        fireKey("?");
+        expect(win._kbState.helpVisible).toBe(true);
+        fireKey("?");
+        expect(win._kbState.helpVisible).toBe(false);
+    });
+
+    test("Escape clears search input content", () => {
+        const search = win.document.getElementById("project-search");
+        search.value = "test query";
+        win._filterState.query = "test query";
+        fireKey("Escape");
+        expect(search.value).toBe("");
+        expect(win._filterState.query).toBe("");
+    });
+
+    test("Escape closes help overlay when visible", () => {
+        win.showKeyboardHelp();
+        expect(win._kbState.helpVisible).toBe(true);
+        fireKey("Escape");
+        expect(win._kbState.helpVisible).toBe(false);
+    });
+
+    test("Escape clears tag filter", () => {
+        win._filterState.tag = "Python";
+        fireKey("Escape");
+        expect(win._filterState.tag).toBeNull();
+    });
+
+    test("Escape blurs focused card when nothing else to clear", () => {
+        win.focusCard(2);
+        expect(win._kbState.focusIndex).toBe(2);
+        fireKey("Escape");
+        expect(win._kbState.focusIndex).toBe(-1);
+        const focused = win.document.querySelectorAll(".card-focused");
+        expect(focused.length).toBe(0);
+    });
+
+    test("shortcuts are suppressed when typing in input", () => {
+        const search = win.document.getElementById("project-search");
+        search.focus();
+        // Dispatch keydown on the input element (not document)
+        const event = new win.KeyboardEvent("keydown", {
+            key: "j", bubbles: true, cancelable: true
+        });
+        search.dispatchEvent(event);
+        // focusIndex should NOT change because target is an input
+        expect(win._kbState.focusIndex).toBe(-1);
+    });
+
+    test("modifier keys are ignored (Ctrl+J does not navigate)", () => {
+        fireKey("j", { ctrlKey: true });
+        expect(win._kbState.focusIndex).toBe(-1);
+    });
+
+    test("Escape works even from input", () => {
+        const search = win.document.getElementById("project-search");
+        search.value = "test";
+        win._filterState.query = "test";
+        search.focus();
+        const event = new win.KeyboardEvent("keydown", {
+            key: "Escape", bubbles: true, cancelable: true
+        });
+        search.dispatchEvent(event);
+        expect(search.value).toBe("");
+    });
+});
