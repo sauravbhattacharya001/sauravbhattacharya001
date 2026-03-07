@@ -14,16 +14,20 @@ Detailed technical overview of all public repositories. For a quick summary, see
 |---|---|
 | **Language** | JavaScript (Node.js backend) + Python (SDK) |
 | **Architecture** | Python SDK → Node.js API → SQLite → React Dashboard |
-| **Release** | [v1.0.0](https://github.com/sauravbhattacharya001/agentlens/releases/tag/v1.0.0) |
+| **Release** | [v1.2.0](https://github.com/sauravbhattacharya001/agentlens/releases/tag/v1.2.0) |
 | **Docs** | [sauravbhattacharya001.github.io/agentlens](https://sauravbhattacharya001.github.io/agentlens/) |
 
 **What it does:**
 - **Python SDK** with decorators (`@trace_agent`, `@trace_tool`) for zero-config instrumentation
 - **Session tracking** with hierarchical agent → tool → sub-agent spans
 - **Explainability engine** — understands *why* an agent made a decision, not just *what* it did
-- **Real-time dashboard** with session timeline, event stream, and token usage analytics
+- **Real-time dashboard** with session timeline, event stream, token usage analytics, bookmarks, annotations
 - **Session comparison** — side-by-side diff of two agent runs with visual charts
-- **Export** — JSON/CSV session export for offline analysis
+- **Error analytics** — error rate charts, type/model/agent breakdown, MTBF tracking
+- **Postmortem dashboard** — incident report generation with root cause analysis
+- **Command palette** (Ctrl+K) for quick navigation
+- **Rate limiter** — sliding-window API call limiting with preset policies
+- **Export** — JSON, CSV, and standalone HTML reports for offline analysis
 - **LangChain integration** as first target
 
 **Infrastructure:** CI (Node 18/20/22 + Python 3.9-3.13), CodeQL, Dependabot, branch protection, Docker workflow.
@@ -38,16 +42,19 @@ Detailed technical overview of all public repositories. For a quick summary, see
 |---|---|
 | **Language** | Python |
 | **Architecture** | Controller → Workers (sandboxed agents) with HMAC-signed manifests |
-| **Release** | [v1.0.0](https://github.com/sauravbhattacharya001/ai/releases/tag/v1.0.0) |
+| **Release** | [v1.1.0](https://github.com/sauravbhattacharya001/ai/releases/tag/v1.1.0) |
 | **Docs** | [sauravbhattacharya001.github.io/ai](https://sauravbhattacharya001.github.io/ai/) |
 
 **What it does:**
 - Studies how AI agents attempt self-replication under various containment strategies
-- **5 base replication strategies** (greedy, conservative, random, chain, burst) plus 34 analysis modules for safety policy, chaos testing, forensics, game theory, alignment drift, and incident response
+- **5 base replication strategies** (greedy, conservative, random, chain, burst) plus 40+ analysis modules for safety policy, chaos testing, forensics, game theory, alignment drift, incident response, threat intel, and attack modeling
 - **ManifestSigner** with HMAC-SHA256 for cryptographic spawn authorization
 - **Controller** enforces depth limits, resource caps, and kill switches
-- **Simulation Runner CLI** with ASCII worker tree visualization and JSON export
-- **Comparison Runner** for side-by-side strategy analysis with rankings
+- **Prompt injection detection** with 70+ patterns, encoding evasion checks, input size bounding
+- **Resource dependency analysis** with SPOF detection, blast radius, cascade simulation
+- **Attack tree generator** — Schneier-style threat modeling with risk scoring
+- **Unified CLI** with 36+ subcommands under `python -m replication`
+- **Simulation Runner** with ASCII worker tree visualization and JSON export
 
 **Infrastructure:** CI (Python 3.10-3.12, mypy + flake8), CodeQL, Docker (multi-arch amd64+arm64), PyPI publishing, branch protection, MkDocs docs site.
 
@@ -66,7 +73,7 @@ Detailed technical overview of all public repositories. For a quick summary, see
 
 **What it does:**
 - Client-side agentic chat with GPT-4o integration
-- **30+ modular features** built as revealing-module-pattern IIFEs
+- **40+ modular features** built as revealing-module-pattern IIFEs
 - **Sandboxed code execution** via postMessage-based iframe isolation
 - **Session management** with auto-save, import/export, and conversation tags
 - **Slash commands** for quick actions (/focus, /tags, /timing, etc.)
@@ -81,8 +88,13 @@ Detailed technical overview of all public repositories. For a quick summary, see
 - **Focus/zen mode** for distraction-free writing
 - **Persona presets** and **model selector** for different AI configurations
 - **Scratchpad**, **quick replies**, **input history**, and **response time badges**
+- **CSV export** for conversations with timestamps and response times
+- **Response quality rating** — thumbs up/down with per-model satisfaction dashboard
+- **Cost dashboard** — persistent API spend tracker with budget alerts
+- **Conversation merge** — combine sessions chronologically
+- **Data backup/restore** for all user data (21 storage keys)
 
-**Infrastructure:** CI (HTMLHint + ESLint + secret scanning), CodeQL, 100+ Jest tests, Docker workflow, npm publishing, branch protection, documentation site.
+**Infrastructure:** CI (HTMLHint + ESLint + secret scanning), CodeQL, 1250+ tests, Docker workflow, npm publishing, branch protection, documentation site.
 
 ---
 
@@ -113,12 +125,13 @@ Detailed technical overview of all public repositories. For a quick summary, see
 |---|---|
 | **Language** | Python (interpreter + compiler) |
 | **Architecture** | Lexer → Parser → AST → Tree-walk Interpreter *or* C code generator → GCC → native binary |
-| **Release** | [v2.0.0](https://github.com/sauravbhattacharya001/sauravcode/releases/tag/v2.0.0) |
+| **Release** | [v3.0.0](https://github.com/sauravbhattacharya001/sauravcode/releases/tag/v3.0.0) |
 | **Docs** | [sauravbhattacharya001.github.io/sauravcode](https://sauravbhattacharya001.github.io/sauravcode/) |
 
 **What it does:**
 - **Dual execution**: `saurav.py` (tree-walk interpreter) and `sauravcc.py` (compiler: `.srv` → C → GCC → native `.exe`)
 - **27 built-in functions**: string ops, math, utilities — all user-overridable
+- **Regex builtins** with ReDoS protection (pattern validation, nested quantifier detection)
 - **Module imports**: `import` statement for `.srv` files with circular dependency detection and diamond dependency handling
 - **Interactive REPL** with persistent state, multi-line blocks, command history
 - **Standard library**: upper/lower/trim/replace/split/join/contains, abs/round/floor/ceil/sqrt/power, type_of/to_string/range/sort
@@ -138,7 +151,7 @@ Detailed technical overview of all public repositories. For a quick summary, see
 |---|---|
 | **Language** | C# / .NET 8 |
 | **Architecture** | `AzureLLM` client → Azure OpenAI → retry/streaming/conversation management |
-| **Release** | [v2.0.0](https://github.com/sauravbhattacharya001/prompt/releases/tag/v2.0.0) |
+| **Release** | [v4.0.0](https://github.com/sauravbhattacharya001/prompt/releases/tag/v4.0.0) |
 | **Docs** | [sauravbhattacharya001.github.io/prompt](https://sauravbhattacharya001.github.io/prompt/) |
 
 **What it does:**
@@ -147,6 +160,12 @@ Detailed technical overview of all public repositories. For a quick summary, see
 - **PromptTemplate** with `{{variable}}` placeholders, defaults, strict/non-strict rendering, composition
 - **Conversation serialization** — full SaveToJson/LoadFromJson round-trip
 - **Retry logic** with configurable maxRetries (validated, cached)
+- **PromptConditional** — if/else/switch/case logic for prompt templates
+- **PromptFallbackChain** — multi-model fallback execution with quality gates
+- **PromptExplainer** — prompt analysis for techniques and improvement suggestions
+- **PromptSanitizer** — PII redaction, injection neutralization, token escaping
+- **PromptChatFormatter** — multi-provider formatting (OpenAI, Anthropic, Gemini)
+- **PromptOutputValidator** — LLM response validation (length, regex, JSON, enums)
 
 **Infrastructure:** CI, CodeQL, code coverage (Codecov), Docker workflow, NuGet publishing, branch protection, auto-labeler, stale bot.
 
@@ -185,7 +204,7 @@ Detailed technical overview of all public repositories. For a quick summary, see
 |---|---|
 | **Language** | Java (Swing GUI) |
 | **Architecture** | PostgreSQL → Java data pipeline → graph model → Swing visualization |
-| **Release** | [v1.0.0](https://github.com/sauravbhattacharya001/GraphVisual/releases/tag/v1.0.0) |
+| **Release** | [v2.0.0](https://github.com/sauravbhattacharya001/GraphVisual/releases/tag/v2.0.0) |
 
 **What it does:**
 - **Network statistics panel**: node/edge counts, density, degree distribution, hub detection
@@ -248,7 +267,7 @@ Detailed technical overview of all public repositories. For a quick summary, see
 |---|---|
 | **Language** | Swift 5 |
 | **Architecture** | MVC with XMLParser, URLSession, NSCache, NSCoding persistence |
-| **Release** | [v1.0.0](https://github.com/sauravbhattacharya001/FeedReader/releases/tag/v1.0.0) |
+| **Release** | [v1.1.0](https://github.com/sauravbhattacharya001/FeedReader/releases/tag/v1.1.0) |
 
 **What it does:**
 - **Async image loading** with NSCache and cell-reuse guards
@@ -311,17 +330,17 @@ Detailed technical overview of all public repositories. For a quick summary, see
 | | |
 |---|---|
 | **Language** | HTML/JavaScript |
-| **Architecture** | Static site with research data + interactive demos |
-| **Release** | [v1.0.0](https://github.com/sauravbhattacharya001/gif-captcha/releases/tag/v1.0.0) |
+| **Architecture** | 13,000+ line ES5 library + research demos |
+| **Release** | [v1.3.0](https://github.com/sauravbhattacharya001/gif-captcha/releases/tag/v1.3.0) |
 | **Demo** | [sauravbhattacharya001.github.io/gif-captcha](https://sauravbhattacharya001.github.io/gif-captcha/) |
 
 **What it does:**
 - **7 interactive research tools**: visual puzzle demo, research analysis dashboard, AI response simulator, temporal challenge explorer, benchmark suite, cognitive load analyzer (6-dimension complexity scoring), CAPTCHA generator
+- **Full CAPTCHA library** (13,000+ lines): attempt tracking, session recording, adaptive timeouts, audit trail, fraud ring detection, trust scoring, compliance reporting, geo-risk scoring, challenge analytics, i18n (12 locales)
 - **Research analysis** — 6-category CAPTCHA taxonomy, human vs AI radar chart, multi-model comparison
-- **Cognitive load analysis** — visual processing, temporal reasoning, cultural context, humor/irony, spatial awareness, narrative comprehension scoring
-- **Security**: CSP headers, noopener/noreferrer, nginx hardened config, non-root Docker container
+- **Security**: event emitter, configuration validator, WCAG 2.1 accessibility auditor, CSP headers
 
-**Infrastructure:** CI (HTML validation + security audit), Docker workflow (nginx:alpine), Dependabot, branch protection.
+**Infrastructure:** CI (HTML validation + security audit), Docker workflow (nginx:alpine), Dependabot, branch protection, 2,450+ tests.
 
 ---
 
@@ -334,17 +353,47 @@ Detailed technical overview of all public repositories. For a quick summary, see
 | | |
 |---|---|
 | **Language** | OCaml 5.2 |
-| **Release** | [v1.0.0](https://github.com/sauravbhattacharya001/Ocaml-sample-code/releases/tag/v1.0.0) |
+| **Release** | [v1.2.0](https://github.com/sauravbhattacharya001/Ocaml-sample-code/releases/tag/v1.2.0) |
 | **Docs** | [sauravbhattacharya001.github.io/Ocaml-sample-code](https://sauravbhattacharya001.github.io/Ocaml-sample-code/) |
 
 **What it does:**
-- **17 modules** covering the full spectrum of functional programming
-- **Data structures**: BST, trie, functional hashmap (persistent/immutable), bloom filter (probabilistic set membership), red-black trees (balanced BST), union-find (disjoint sets), leftist heap (priority queue)
-- **Algorithms**: graph algorithms (BFS, DFS, shortest path, components, cycle detection, topological sort), merge sort (tail-recursive), sorting algorithms, regex engine (Thompson's NFA construction)
-- **Functional patterns**: lazy streams, parser combinators, higher-order functions
-- **Learning path**: basics → recursion → pattern matching → modules/functors → advanced data structures → graph algorithms
+- **78+ modules** covering the full spectrum of functional programming
+- **Data structures**: BST, trie, hashmap, bloom filter, red-black tree, union-find, heap, skip list, segment tree, fenwick tree, interval tree, rope, LRU cache, suffix array, finger tree, persistent vector, deque, zipper
+- **Algorithms**: graph algorithms (BFS, DFS, Dijkstra, network flow), sorting (6 algorithms), string matching (KMP, Boyer-Moore, Rabin-Karp, Aho-Corasick), regex engine (Thompson's NFA), Huffman coding, diff (Myers algorithm)
+- **Concurrency**: software transactional memory (STM), Raft consensus, CSP (communicating sequential processes)
+- **PL theory**: lambda calculus, type inference, bytecode VM, parser combinators, PEG parser, Earley parser, term rewriting, abstract interpretation, theorem prover, model checker, SAT solver, MiniKanren, Datalog
+- **Functional patterns**: lazy streams, FRP (functional reactive programming), effects, optics, GADTs, QuickCheck (property-based testing)
+- **Applied**: game AI (minimax, alpha-beta, MCTS), geometry, probability, matrix operations, calculus, graph database, CSV processing, JSON parser, cryptography, GC simulator
+- **Learning path**: basics → recursion → pattern matching → modules → advanced data structures → language implementation → formal methods
 
 **Infrastructure:** CodeQL, Docker (multi-stage, native binaries), docs site with syntax-highlighted code.
+
+---
+
+## 🔒 Security
+
+### [WinSentinel](https://github.com/sauravbhattacharya001/WinSentinel)
+
+> Windows security auditing, monitoring, and remediation agent.
+
+| | |
+|---|---|
+| **Language** | C# / .NET 8 / WPF |
+| **Architecture** | 13 audit modules → compliance profiles → remediation checklists → security scoring |
+| **Release** | [v1.1.0](https://github.com/sauravbhattacharya001/WinSentinel/releases/tag/v1.1.0) |
+
+**What it does:**
+- **13 audit modules**: Windows Update, Firewall, Antivirus, UAC, BitLocker, Network, Password Policy, Remote Desktop, Services, Shared Folders, USB, Browser, Privacy
+- **Compliance profiles** (NIST, CIS, HIPAA) with configurable risk tolerance
+- **Ignore rules** — suppress known-good findings with expiration and audit trail
+- **Remediation checklists** — interactive HTML checklists with localStorage progress
+- **Baseline snapshots** — compare security posture over time
+- **Security scoring** with 30-day trend tracking and score forecasting
+- **Watch mode** — continuous live monitoring with change detection
+- **Hardening script generator** — reviewable PowerShell scripts
+- **Security digest** — executive summary with module heatmap
+
+**Infrastructure:** CI (.NET 8, xUnit), CodeQL, Dependabot, branch protection, auto-labeler. 90+ tests.
 
 ---
 
