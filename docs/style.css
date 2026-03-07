@@ -124,10 +124,9 @@ a:hover { color: var(--accent-hover); }
     border-radius: 8px;
     padding: 1.25rem;
     transition: border-color 0.2s, transform 0.2s;
-    will-change: transform;
     contain: content;
 }
-.card:hover { border-color: var(--accent); transform: translateY(-2px); }
+.card:hover { border-color: var(--accent); transform: translateY(-2px); will-change: transform; }
 .card-header { display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.5rem; }
 .card-icon { font-size: 1.3rem; }
 .card h3 { font-size: 1rem; font-weight: 600; }

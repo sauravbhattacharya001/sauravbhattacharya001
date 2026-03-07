@@ -183,26 +183,21 @@ var PROJECTS = [
 /**
  * Escape HTML entities to prevent XSS.
  *
- * Uses a pre-allocated, reusable DOM element instead of creating a new
- * one per call.  The element is lazily created on first use and cached
- * for subsequent calls — avoids ~100+ createElement+GC cycles during
- * renderProjects().
+ * Pure regex replacement — faster than the previous DOM-based approach
+ * (textContent → innerHTML → regex) because it avoids DOM writes, forced
+ * serialization, and works identically in non-browser environments
+ * (tests, SSR).  The compiled regex and lookup map are allocated once.
  *
- * The textContent setter handles &, <, > escaping; we manually replace
- * double quotes and single quotes afterwards because textContent does
- * NOT escape them but they are critical inside HTML attribute values.
- *
- * Single-quote escaping (&#39;) provides defense-in-depth for any
- * future attributes that use single-quoted delimiters (CWE-79).
+ * Escapes &, <, >, double-quote, and single-quote (&#39; — defense-in-depth
+ * for single-quoted attribute delimiters, CWE-79).
  *
  * @param {string} str
  * @returns {string}
  */
-var _escapeEl = null;
+var _escapeRe = /[&<>"']/g;
+var _escapeMap = { "&": "&amp;", "<": "&lt;", ">": "&gt;", "\"": "&quot;", "'": "&#39;" };
 function escapeHTML(str) {
-    if (!_escapeEl) { _escapeEl = document.createElement("span"); }
-    _escapeEl.textContent = str;
-    return _escapeEl.innerHTML.replace(/"/g, "&quot;").replace(/'/g, "&#39;");
+    return String(str).replace(_escapeRe, function(ch) { return _escapeMap[ch]; });
 }
 
 /**
@@ -499,9 +494,18 @@ function wireFilterEvents(filtersContainer, searchInput) {
  * Centralises the common filterProjects() → renderProjects() call
  * pattern that was previously duplicated in pill clicks, search input,
  * setTagFilter, and clearTagFilter.
+ *
+ * Skips DOM rebuild when the filtered result set hasn't changed (same
+ * project IDs in same order), which matters during rapid keystroke
+ * sequences where the debounced query yields the same matches.
  */
+var _lastRenderedIds = null;
 function _applyFilters() {
-    renderProjects(filterProjects());
+    var filtered = filterProjects();
+    var ids = filtered.map(function(p) { return p.repo; }).join(",");
+    if (ids === _lastRenderedIds) return;
+    _lastRenderedIds = ids;
+    renderProjects(filtered);
 }
 
 /**
