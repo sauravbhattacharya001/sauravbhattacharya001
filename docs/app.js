@@ -5,11 +5,11 @@
  * The HTML template is generated automatically.
  */
 
-/* exported PROJECTS, renderProjects, filterProjects, initFilters, buildCardHeader, buildCardTags, buildCardLinks, buildCategoryHTML, projectMatchesQuery, groupByCategory, extractCategories, createFilterPills, wireFilterEvents */
+/* exported PROJECTS, _filterState, renderProjects, filterProjects, initFilters, buildCardHeader, buildCardTags, buildCardLinks, buildCategoryHTML, projectMatchesQuery, groupByCategory, extractCategories, createFilterPills, wireFilterEvents, updateTagIndicator, clearTagFilter, setTagFilter, extractTags, wireTagClicks, getPreferredTheme, applyTheme, toggleTheme, initTheme */
 
 /**
  * Active filter state.
- * @type {{ query: string, category: string|null }}
+ * @type {{ query: string, category: string|null, tag: string|null }}
  */
 var _filterState = { query: "", category: null, tag: null };
 
@@ -479,7 +479,7 @@ function wireFilterEvents(filtersContainer, searchInput) {
 
         var cat = pill.getAttribute("data-category");
         _filterState.category = cat || null;
-        renderProjects(filterProjects());
+        _applyFilters();
     });
 
     var debounceTimer = null;
@@ -488,10 +488,20 @@ function wireFilterEvents(filtersContainer, searchInput) {
             clearTimeout(debounceTimer);
             debounceTimer = setTimeout(function() {
                 _filterState.query = searchInput.value;
-                renderProjects(filterProjects());
+                _applyFilters();
             }, 200);
         });
     }
+}
+
+/**
+ * Re-render projects using the current filter state.
+ * Centralises the common filterProjects() → renderProjects() call
+ * pattern that was previously duplicated in pill clicks, search input,
+ * setTagFilter, and clearTagFilter.
+ */
+function _applyFilters() {
+    renderProjects(filterProjects());
 }
 
 /**
@@ -528,7 +538,7 @@ function updateTagIndicator() {
  */
 function clearTagFilter() {
     _filterState.tag = null;
-    renderProjects(filterProjects());
+    _applyFilters();
 }
 
 /**
@@ -537,7 +547,7 @@ function clearTagFilter() {
  */
 function setTagFilter(tagName) {
     _filterState.tag = tagName;
-    renderProjects(filterProjects());
+    _applyFilters();
 }
 
 /**
@@ -573,6 +583,7 @@ function initFilters() {
     var categories = extractCategories();
     createFilterPills(filtersContainer, categories);
     wireFilterEvents(filtersContainer, searchInput);
+    wireTagClicks();
 }
 
 // ── Theme toggle ────────────────────────────────────────────────────
@@ -684,13 +695,11 @@ if (typeof document !== "undefined") {
             renderProjects();
             initFilters();
             initTheme();
-            wireTagClicks();
         });
     } else {
         renderProjects();
         initFilters();
         initTheme();
-        wireTagClicks();
     }
 }
 
