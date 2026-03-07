@@ -5,7 +5,7 @@
  * The HTML template is generated automatically.
  */
 
-/* exported PROJECTS, renderProjects, filterProjects, initFilters, buildCardHeader, buildCardTags, buildCardLinks, projectMatchesQuery, groupByCategory */
+/* exported PROJECTS, renderProjects, filterProjects, initFilters, buildCardHeader, buildCardTags, buildCardLinks, buildCategoryHTML, projectMatchesQuery, groupByCategory, extractCategories, createFilterPills, wireFilterEvents */
 
 /**
  * Active filter state.
@@ -347,6 +347,20 @@ function groupByCategory(items) {
 }
 
 /**
+ * Build the HTML for a single category section (label + grid of cards).
+ *
+ * @param {{ name: string, items: Object[] }} group - Category group.
+ * @returns {string}
+ */
+function buildCategoryHTML(group) {
+    return '<div class="category">' +
+        '<div class="category-label">' + escapeHTML(group.name) + '</div>' +
+        '<div class="projects-grid">' +
+        group.items.map(buildCard).join("") +
+        '</div></div>';
+}
+
+/**
  * Render all project cards into #projects-container, grouped by category.
  *
  * @param {Object[]} [projects] - Optional filtered project list.
@@ -365,46 +379,43 @@ function renderProjects(projects) {
     }
 
     var groups = groupByCategory(items);
-
-    var html = "";
-    groups.forEach(function(g) {
-        html += '<div class="category">' +
-            '<div class="category-label">' + escapeHTML(g.name) + '</div>' +
-            '<div class="projects-grid">' +
-            g.items.map(buildCard).join("") +
-            '</div></div>';
-    });
-
-    container.innerHTML = html;
+    container.innerHTML = groups.map(buildCategoryHTML).join("");
 }
 
 /**
- * Initialize the category filter pills and search input.
- * Extracts unique categories from PROJECTS and creates clickable pills.
- * Wires up debounced search input and pill click handlers.
+ * Extract unique categories from the PROJECTS array, preserving
+ * insertion order.
+ *
+ * @param {Object[]} [projects] - Optional project list. Defaults to PROJECTS.
+ * @returns {string[]}
  */
-function initFilters() {
-    var filtersContainer = document.getElementById("category-filters");
-    var searchInput = document.getElementById("project-search");
-    if (!filtersContainer) return;
-
-    // Extract unique categories in insertion order
+function extractCategories(projects) {
+    var items = projects || PROJECTS;
     var categories = [];
     var seen = Object.create(null);
-    PROJECTS.forEach(function(p) {
+    items.forEach(function(p) {
         if (!seen[p.category]) {
             seen[p.category] = true;
             categories.push(p.category);
         }
     });
+    return categories;
+}
 
-    // Create "All" pill + one per category
+/**
+ * Create filter pill buttons inside a container element.
+ * Prepends an "All" pill, then one pill per category.
+ *
+ * @param {HTMLElement} container - DOM element to append pills into.
+ * @param {string[]} categories - Category names.
+ */
+function createFilterPills(container, categories) {
     var allPill = document.createElement("button");
     allPill.className = "filter-pill active";
     allPill.textContent = "All";
     allPill.setAttribute("data-category", "");
     allPill.type = "button";
-    filtersContainer.appendChild(allPill);
+    container.appendChild(allPill);
 
     categories.forEach(function(cat) {
         var pill = document.createElement("button");
@@ -412,15 +423,23 @@ function initFilters() {
         pill.textContent = cat;
         pill.setAttribute("data-category", cat);
         pill.type = "button";
-        filtersContainer.appendChild(pill);
+        container.appendChild(pill);
     });
+}
 
-    // Pill click handler
+/**
+ * Wire up event handlers for filter pills and the search input.
+ * Pill clicks update the active pill and trigger re-render.
+ * Search input is debounced at 200ms.
+ *
+ * @param {HTMLElement} filtersContainer - Container holding pill buttons.
+ * @param {HTMLInputElement|null} searchInput - Search text input (may be null).
+ */
+function wireFilterEvents(filtersContainer, searchInput) {
     filtersContainer.addEventListener("click", function(e) {
         var pill = e.target;
         if (!pill.classList.contains("filter-pill")) return;
 
-        // Update active state
         var pills = filtersContainer.querySelectorAll(".filter-pill");
         for (var i = 0; i < pills.length; i++) {
             pills[i].classList.remove("active");
@@ -432,7 +451,6 @@ function initFilters() {
         renderProjects(filterProjects());
     });
 
-    // Debounced search input
     var debounceTimer = null;
     if (searchInput) {
         searchInput.addEventListener("input", function() {
@@ -443,6 +461,20 @@ function initFilters() {
             }, 200);
         });
     }
+}
+
+/**
+ * Initialize the category filter pills and search input.
+ * Delegates to extractCategories, createFilterPills, and wireFilterEvents.
+ */
+function initFilters() {
+    var filtersContainer = document.getElementById("category-filters");
+    var searchInput = document.getElementById("project-search");
+    if (!filtersContainer) return;
+
+    var categories = extractCategories();
+    createFilterPills(filtersContainer, categories);
+    wireFilterEvents(filtersContainer, searchInput);
 }
 
 // ── Theme toggle ────────────────────────────────────────────────────
@@ -537,5 +569,32 @@ if (typeof document !== "undefined") {
 
 // Exports for testing
 if (typeof module !== "undefined" && module.exports) {
-    module.exports = { PROJECTS: PROJECTS, escapeHTML: escapeHTML, sanitizeURL: sanitizeURL, buildCard: buildCard, buildCardHeader: buildCardHeader, buildCardTags: buildCardTags, buildCardLinks: buildCardLinks, projectMatchesQuery: projectMatchesQuery, groupByCategory: groupByCategory, renderProjects: renderProjects, filterProjects: filterProjects, initFilters: initFilters, _filterState: _filterState, getPreferredTheme: getPreferredTheme, applyTheme: applyTheme, toggleTheme: toggleTheme, initTheme: initTheme };
+    module.exports = {
+        PROJECTS: PROJECTS,
+        _filterState: _filterState,
+        // HTML helpers
+        escapeHTML: escapeHTML,
+        sanitizeURL: sanitizeURL,
+        // Card builders
+        buildCard: buildCard,
+        buildCardHeader: buildCardHeader,
+        buildCardTags: buildCardTags,
+        buildCardLinks: buildCardLinks,
+        buildCategoryHTML: buildCategoryHTML,
+        // Query & filter
+        projectMatchesQuery: projectMatchesQuery,
+        groupByCategory: groupByCategory,
+        extractCategories: extractCategories,
+        filterProjects: filterProjects,
+        // Rendering & init
+        renderProjects: renderProjects,
+        createFilterPills: createFilterPills,
+        wireFilterEvents: wireFilterEvents,
+        initFilters: initFilters,
+        // Theme
+        getPreferredTheme: getPreferredTheme,
+        applyTheme: applyTheme,
+        toggleTheme: toggleTheme,
+        initTheme: initTheme
+    };
 }
