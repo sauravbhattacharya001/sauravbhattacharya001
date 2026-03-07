@@ -13,7 +13,7 @@
 <br/>
 
 ![Repos](https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Fapi.github.com%2Fusers%2Fsauravbhattacharya001&query=%24.public_repos&label=Repos&color=blue&style=flat-square)
-![Releases](https://img.shields.io/badge/Releases-24-green?style=flat-square)
+![Releases](https://img.shields.io/badge/Releases-28-green?style=flat-square)
 ![Commits](https://img.shields.io/badge/Commits-2000+-purple?style=flat-square)
 ![Live Sites](https://img.shields.io/badge/Live_Sites-16-orange?style=flat-square)
 [![GitHub Stars](https://img.shields.io/github/stars/sauravbhattacharya001?style=flat-square&label=Stars&color=yellow)](https://github.com/sauravbhattacharya001)
@@ -34,10 +34,10 @@ I build software at Microsoft, research AI agent governance, and create tools fo
 
 ## 🔭 Currently
 
-- 🧬 Building **[AgentLens](https://github.com/sauravbhattacharya001/agentlens)** — observability for AI agents ("Datadog for AI agents") · just shipped **v1.2.0**
+- 🧬 Building **[AgentLens](https://github.com/sauravbhattacharya001/agentlens)** — observability for AI agents ("Datadog for AI agents") · **v1.2.0** live
 - 🛡️ Building **[WinSentinel](https://github.com/sauravbhattacharya001/WinSentinel)** — always-on Windows security agent with 24 audit modules · **v1.1.0** live
-- 🤖 Running **[AgentBox](https://sauravbhattacharya001.github.io/getagentbox/)** — AI agents as a service, open access
-- 🔤 Evolving **[sauravcode](https://github.com/sauravbhattacharya001/sauravcode)** — my own programming language with f-strings, try/catch, and zero noise
+- 🤖 Running **[AgentBox](https://sauravbhattacharya001.github.io/getagentbox/)** — AI agents as a service, open access · **v2.0.0** live
+- 🔤 Evolving **[sauravcode](https://github.com/sauravbhattacharya001/sauravcode)** — my own programming language with f-strings, try/catch, and zero noise · just shipped **v3.0.0** (tooling release)
 - 📋 Chairing **ICGIS 2026** (June 6–7) — international conference on global innovations
 - 🔬 Researching AI agent identity, accountability & self-replication safety
 
@@ -50,7 +50,7 @@ I build software at Microsoft, research AI agent governance, and create tools fo
 | Project | What it does | Release | Live |
 |---|---|---|---|
 | **[AgentLens](https://github.com/sauravbhattacharya001/agentlens)** | Observability & explainability platform for AI agents — trace, debug, and understand agent behavior at scale. Python SDK + Node.js backend + dashboard. Event search & filter, cost estimation, scaled observability. | [![v1.2.0](https://img.shields.io/badge/release-v1.2.0-blue?style=flat)](https://github.com/sauravbhattacharya001/agentlens/releases/tag/v1.2.0) | [📄 Docs](https://sauravbhattacharya001.github.io/agentlens/) |
-| **[AgentBox](https://github.com/sauravbhattacharya001/getagentbox)** | AI agents as a service — personal AI assistants accessible via messaging. Open access, 20 msg/day free tier. | [![v1.0.0](https://img.shields.io/badge/release-v1.0.0-blue?style=flat)](https://github.com/sauravbhattacharya001/getagentbox/releases/tag/v1.0.0) | [🌐 Site](https://sauravbhattacharya001.github.io/getagentbox/) |
+| **[AgentBox](https://github.com/sauravbhattacharya001/getagentbox)** | AI agents as a service — personal AI assistants accessible via messaging. Open access, 20 msg/day free tier. | [![v2.0.0](https://img.shields.io/badge/release-v2.0.0-blue?style=flat)](https://github.com/sauravbhattacharya001/getagentbox/releases/tag/v2.0.0) | [🌐 Site](https://sauravbhattacharya001.github.io/getagentbox/) |
 | **[AgenticChat](https://github.com/sauravbhattacharya001/agenticchat)** | Agentic conversation framework — client-side GPT-4o chat with sandboxed code execution, 30+ modular features including voice input, session management, slash commands, message search, bookmarks, annotations, conversation tags, focus mode, dark/light themes, keyboard shortcuts. | [![v1.0.0](https://img.shields.io/badge/release-v1.0.0-blue?style=flat)](https://github.com/sauravbhattacharya001/agenticchat/releases/tag/v1.0.0) | [🌐 Demo](https://sauravbhattacharya001.github.io/agenticchat/) |
 | **[AI Safety Research](https://github.com/sauravbhattacharya001/ai)** | Contract-enforced sandbox for studying AI agent self-replication safety — 34 analysis modules including Monte Carlo simulation, game-theory modeling, alignment drift detection, escalation detection, security hardening, and interactive HTML reports. | [![v1.1.0](https://img.shields.io/badge/release-v1.1.0-blue?style=flat)](https://github.com/sauravbhattacharya001/ai/releases/tag/v1.1.0) | [📄 Site](https://sauravbhattacharya001.github.io/ai/) |
 | **[Zalenix Memory](https://github.com/sauravbhattacharya001/zalenix-memory)** | AI agent memory & workspace — persistent context, soul files, and daily memory logs for a continuously-running AI assistant. | — | — |
@@ -65,16 +65,16 @@ I build software at Microsoft, research AI agent governance, and create tools fo
 
 | Project | What it does | Release | Live |
 |---|---|---|---|
-| **[sauravcode](https://github.com/sauravbhattacharya001/sauravcode)** | A programming language with zero noise — no parens, no commas, no semicolons. Interpreter + compiler (.srv → C → native). F-strings, try/catch/throw, module imports, 600+ tests. | [![v2.0.0](https://img.shields.io/badge/release-v2.0.0_Compiler-blue?style=flat)](https://github.com/sauravbhattacharya001/sauravcode/releases/tag/v2.0.0) | [📄 Docs](https://sauravbhattacharya001.github.io/sauravcode/) |
-| **[prompt](https://github.com/sauravbhattacharya001/prompt)** | .NET 8 prompt engineering toolkit — Azure OpenAI client, template engine, prompt chaining, PromptGuard injection detection, PromptLibrary registry. | [![v2.0.0](https://img.shields.io/badge/release-v2.0.0-blue?style=flat)](https://github.com/sauravbhattacharya001/prompt/releases/tag/v2.0.0) | [📄 Site](https://sauravbhattacharya001.github.io/prompt/) |
-| **[gif-captcha](https://github.com/sauravbhattacharya001/gif-captcha)** | GIF-based CAPTCHA research — 7 interactive tools: visual puzzles, temporal challenges, AI simulator, benchmark suite, cognitive load analyzer, CAPTCHA generator. 99.9% test coverage. | [![v1.2.0](https://img.shields.io/badge/release-v1.2.0-blue?style=flat)](https://github.com/sauravbhattacharya001/gif-captcha/releases/tag/v1.2.0) | [🌐 Demo](https://sauravbhattacharya001.github.io/gif-captcha/) |
+| **[sauravcode](https://github.com/sauravbhattacharya001/sauravcode)** | A programming language with zero noise — no parens, no commas, no semicolons. Interpreter + compiler (.srv → C → native). F-strings, try/catch/throw, module imports, LSP, formatter, linter, REPL, 600+ tests. | [![v3.0.0](https://img.shields.io/badge/release-v3.0.0_Tooling-blue?style=flat)](https://github.com/sauravbhattacharya001/sauravcode/releases/tag/v3.0.0) | [📄 Docs](https://sauravbhattacharya001.github.io/sauravcode/) |
+| **[prompt](https://github.com/sauravbhattacharya001/prompt)** | .NET 8 prompt engineering toolkit — Azure OpenAI client, template engine, prompt chaining, PromptGuard injection detection, PromptLibrary registry. | [![v4.0.0](https://img.shields.io/badge/release-v4.0.0-blue?style=flat)](https://github.com/sauravbhattacharya001/prompt/releases/tag/v4.0.0) | [📄 Site](https://sauravbhattacharya001.github.io/prompt/) |
+| **[gif-captcha](https://github.com/sauravbhattacharya001/gif-captcha)** | GIF-based CAPTCHA research — 7 interactive tools: visual puzzles, temporal challenges, AI simulator, benchmark suite, cognitive load analyzer, CAPTCHA generator. 99.9% test coverage. | [![v1.3.0](https://img.shields.io/badge/release-v1.3.0-blue?style=flat)](https://github.com/sauravbhattacharya001/gif-captcha/releases/tag/v1.3.0) | [🌐 Demo](https://sauravbhattacharya001.github.io/gif-captcha/) |
 
 ### Visualization & Data
 
 | Project | What it does | Release | Live |
 |---|---|---|---|
 | **[VoronoiMap](https://github.com/sauravbhattacharya001/VoronoiMap)** ⭐ 3 | Voronoi diagram generation and spatial partitioning toolkit. Lloyd relaxation, neighbourhood graphs, 6 color schemes, GeoJSON export, 285 tests. | [![v1.0.0](https://img.shields.io/badge/release-v1.0.0-blue?style=flat)](https://github.com/sauravbhattacharya001/VoronoiMap/releases/tag/v1.0.0) | [🌐 Demo](https://sauravbhattacharya001.github.io/VoronoiMap/) |
-| **[GraphVisual](https://github.com/sauravbhattacharya001/GraphVisual)** | Graph visualization for studying community evolution — centrality analysis (Brandes'), MST (Kruskal/Prim), graph coloring, community detection, shortest path (BFS/Dijkstra), link prediction, graph generation, topological sort, influence spread simulation, GraphML export. 2400+ tests. | [![v1.0.0](https://img.shields.io/badge/release-v1.0.0-blue?style=flat)](https://github.com/sauravbhattacharya001/GraphVisual/releases/tag/v1.0.0) | [🌐 Site](https://sauravbhattacharya001.github.io/GraphVisual/) |
+| **[GraphVisual](https://github.com/sauravbhattacharya001/GraphVisual)** | Graph visualization for studying community evolution — 68 analyzers: centrality analysis (Brandes'), MST (Kruskal/Prim), graph coloring, community detection, shortest path (BFS/Dijkstra), link prediction, graph generation, topological sort, influence spread simulation, GraphML export. 2400+ tests. | [![v2.0.0](https://img.shields.io/badge/release-v2.0.0-blue?style=flat)](https://github.com/sauravbhattacharya001/GraphVisual/releases/tag/v2.0.0) | [🌐 Site](https://sauravbhattacharya001.github.io/GraphVisual/) |
 
 ### Apps & More
 
