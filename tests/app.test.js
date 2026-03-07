@@ -792,3 +792,127 @@ describe("initFilters", () => {
         expect(pills[0].classList.contains("active")).toBe(false);
     });
 });
+
+// ── Theme toggle ────────────────────────────────────────────────────
+
+describe("theme toggle", () => {
+    /** Load app in a DOM that includes the theme-toggle button. */
+    function loadAppWithTheme() {
+        const dom = new JSDOM(
+            '<!DOCTYPE html><html><body>' +
+            '<button class="theme-toggle" id="theme-toggle" type="button">🌙</button>' +
+            '<div id="projects-container"></div>' +
+            '<input id="project-search">' +
+            '<div id="category-filters"></div>' +
+            '<div id="no-results" style="display:none"></div>' +
+            '</body></html>',
+            { runScripts: "dangerously", resources: "usable", url: "http://localhost" }
+        );
+        const code = fs.readFileSync(path.join(__dirname, "..", "docs", "app.js"), "utf-8");
+        dom.window.eval(code);
+        return dom;
+    }
+
+    let tdom, twin;
+
+    beforeEach(() => {
+        tdom = loadAppWithTheme();
+        twin = tdom.window;
+        // Clear localStorage before each test
+        twin.localStorage.clear();
+    });
+
+    afterEach(() => {
+        tdom.window.close();
+    });
+
+    test("getPreferredTheme returns 'dark' by default", () => {
+        expect(twin.getPreferredTheme()).toBe("dark");
+    });
+
+    test("getPreferredTheme reads from localStorage", () => {
+        twin.localStorage.setItem("theme", "light");
+        expect(twin.getPreferredTheme()).toBe("light");
+    });
+
+    test("getPreferredTheme ignores invalid localStorage values", () => {
+        twin.localStorage.setItem("theme", "blue");
+        expect(twin.getPreferredTheme()).toBe("dark");
+    });
+
+    test("applyTheme sets data-theme attribute on html element", () => {
+        twin.applyTheme("light");
+        expect(twin.document.documentElement.getAttribute("data-theme")).toBe("light");
+        twin.applyTheme("dark");
+        expect(twin.document.documentElement.getAttribute("data-theme")).toBe("dark");
+    });
+
+    test("applyTheme updates button icon for dark theme", () => {
+        twin.applyTheme("dark");
+        const btn = twin.document.getElementById("theme-toggle");
+        expect(btn.textContent).toBe("🌙");
+    });
+
+    test("applyTheme updates button icon for light theme", () => {
+        twin.applyTheme("light");
+        const btn = twin.document.getElementById("theme-toggle");
+        expect(btn.textContent).toBe("☀️");
+    });
+
+    test("applyTheme updates aria-label for dark", () => {
+        twin.applyTheme("dark");
+        const btn = twin.document.getElementById("theme-toggle");
+        expect(btn.getAttribute("aria-label")).toBe("Switch to light theme");
+    });
+
+    test("applyTheme updates aria-label for light", () => {
+        twin.applyTheme("light");
+        const btn = twin.document.getElementById("theme-toggle");
+        expect(btn.getAttribute("aria-label")).toBe("Switch to dark theme");
+    });
+
+    test("toggleTheme switches from dark to light", () => {
+        twin.applyTheme("dark");
+        const result = twin.toggleTheme();
+        expect(result).toBe("light");
+        expect(twin.document.documentElement.getAttribute("data-theme")).toBe("light");
+    });
+
+    test("toggleTheme switches from light to dark", () => {
+        twin.applyTheme("light");
+        const result = twin.toggleTheme();
+        expect(result).toBe("dark");
+        expect(twin.document.documentElement.getAttribute("data-theme")).toBe("dark");
+    });
+
+    test("toggleTheme persists choice in localStorage", () => {
+        twin.applyTheme("dark");
+        twin.toggleTheme();
+        expect(twin.localStorage.getItem("theme")).toBe("light");
+        twin.toggleTheme();
+        expect(twin.localStorage.getItem("theme")).toBe("dark");
+    });
+
+    test("initTheme applies stored preference", () => {
+        twin.localStorage.setItem("theme", "light");
+        twin.initTheme();
+        expect(twin.document.documentElement.getAttribute("data-theme")).toBe("light");
+    });
+
+    test("initTheme wires button click handler", () => {
+        twin.localStorage.setItem("theme", "dark");
+        twin.initTheme();
+        const btn = twin.document.getElementById("theme-toggle");
+        btn.click();
+        expect(twin.document.documentElement.getAttribute("data-theme")).toBe("light");
+    });
+
+    test("theme toggle roundtrip preserves state", () => {
+        twin.applyTheme("dark");
+        twin.toggleTheme(); // -> light
+        twin.toggleTheme(); // -> dark
+        twin.toggleTheme(); // -> light
+        expect(twin.document.documentElement.getAttribute("data-theme")).toBe("light");
+        expect(twin.localStorage.getItem("theme")).toBe("light");
+    });
+});
