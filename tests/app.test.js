@@ -12,7 +12,7 @@ const fs = require("fs");
 // Load app.js in a JSDOM environment
 function loadApp() {
     const dom = new JSDOM(
-        '<!DOCTYPE html><html><body><div id="projects-container"></div><input id="project-search"><div id="category-filters"></div><div id="no-results" class="hidden"></div></body></html>',
+        '<!DOCTYPE html><html><body><div id="projects-container"></div><input id="project-search"><div id="category-filters"></div><div id="active-tag-indicator" class="active-tag-indicator hidden"></div><div id="no-results" class="hidden"></div></body></html>',
         { runScripts: "dangerously", resources: "usable" }
     );
     const code = fs.readFileSync(path.join(__dirname, "..", "docs", "app.js"), "utf-8");
@@ -915,5 +915,176 @@ describe("theme toggle", () => {
         twin.toggleTheme(); // -> light
         expect(twin.document.documentElement.getAttribute("data-theme")).toBe("light");
         expect(twin.localStorage.getItem("theme")).toBe("light");
+    });
+});
+
+// ── Tag filtering ───────────────────────────────────────────────────
+
+describe("extractTags", () => {
+    test("returns sorted unique tags from all projects", () => {
+        const tags = win.extractTags();
+        expect(tags.length).toBeGreaterThan(0);
+        // Check sorted (lexicographic, matching Array.sort() default)
+        for (let i = 1; i < tags.length; i++) {
+            expect(tags[i] >= tags[i - 1]).toBe(true);
+        }
+        // Check unique (case-insensitive)
+        const seen = new Set();
+        tags.forEach(t => {
+            const lower = t.toLowerCase();
+            expect(seen.has(lower)).toBe(false);
+            seen.add(lower);
+        });
+    });
+
+    test("includes known tags", () => {
+        const tags = win.extractTags();
+        const lowerTags = tags.map(t => t.toLowerCase());
+        expect(lowerTags).toContain("python");
+        expect(lowerTags).toContain("javascript");
+    });
+
+    test("works with custom project list", () => {
+        const custom = [
+            { tags: ["A", "B"] },
+            { tags: ["B", "C"] }
+        ];
+        const tags = win.extractTags(custom);
+        expect(tags).toEqual(["A", "B", "C"]);
+    });
+
+    test("handles projects with no tags", () => {
+        const custom = [{ tags: [] }, { tags: ["X"] }];
+        const tags = win.extractTags(custom);
+        expect(tags).toEqual(["X"]);
+    });
+});
+
+describe("tag filtering via _filterState", () => {
+    beforeEach(() => {
+        win._filterState.query = "";
+        win._filterState.category = null;
+        win._filterState.tag = null;
+    });
+
+    test("no tag filter returns all projects", () => {
+        const results = win.filterProjects();
+        expect(results.length).toBe(win.PROJECTS.length);
+    });
+
+    test("tag filter returns only matching projects", () => {
+        win._filterState.tag = "Python";
+        const results = win.filterProjects();
+        expect(results.length).toBeGreaterThan(0);
+        results.forEach(p => {
+            const hasPython = p.tags.some(t => t.toLowerCase() === "python");
+            expect(hasPython).toBe(true);
+        });
+    });
+
+    test("tag filter is case-insensitive", () => {
+        win._filterState.tag = "python";
+        const lower = win.filterProjects();
+        win._filterState.tag = "PYTHON";
+        const upper = win.filterProjects();
+        expect(lower.length).toBe(upper.length);
+    });
+
+    test("tag filter combines with category filter", () => {
+        win._filterState.category = "AI & Agents";
+        win._filterState.tag = "Python";
+        const results = win.filterProjects();
+        results.forEach(p => {
+            expect(p.category).toBe("AI & Agents");
+            expect(p.tags.some(t => t.toLowerCase() === "python")).toBe(true);
+        });
+    });
+
+    test("tag filter combines with search query", () => {
+        win._filterState.query = "safety";
+        win._filterState.tag = "Python";
+        const results = win.filterProjects();
+        results.forEach(p => {
+            expect(p.tags.some(t => t.toLowerCase() === "python")).toBe(true);
+        });
+        expect(results.length).toBeGreaterThan(0);
+    });
+
+    test("non-existent tag returns empty", () => {
+        win._filterState.tag = "NonExistentTag12345";
+        const results = win.filterProjects();
+        expect(results.length).toBe(0);
+    });
+});
+
+describe("setTagFilter / clearTagFilter", () => {
+    beforeEach(() => {
+        win._filterState.query = "";
+        win._filterState.category = null;
+        win._filterState.tag = null;
+    });
+
+    test("setTagFilter updates state and re-renders", () => {
+        win.setTagFilter("Python");
+        expect(win._filterState.tag).toBe("Python");
+        const container = win.document.getElementById("projects-container");
+        expect(container.innerHTML).not.toBe("");
+    });
+
+    test("clearTagFilter clears state and re-renders all", () => {
+        win.setTagFilter("Python");
+        const filteredCards = win.document.querySelectorAll(".card").length;
+        win.clearTagFilter();
+        expect(win._filterState.tag).toBeNull();
+        const allCards = win.document.querySelectorAll(".card").length;
+        expect(allCards).toBeGreaterThanOrEqual(filteredCards);
+    });
+});
+
+describe("buildCardTags with clickable tags", () => {
+    test("tags are buttons with data-tag attributes", () => {
+        const html = win.buildCardTags(["Python", "AI"]);
+        expect(html).toContain('data-tag="Python"');
+        expect(html).toContain('data-tag="AI"');
+        expect(html).toContain("tag-clickable");
+        expect(html).toContain("<button");
+    });
+
+    test("tag values are HTML-escaped in data-tag", () => {
+        const html = win.buildCardTags(['<script>']);
+        expect(html).not.toContain("<script>");
+        expect(html).toContain("&lt;script&gt;");
+    });
+});
+
+describe("updateTagIndicator", () => {
+    beforeEach(() => {
+        win._filterState.tag = null;
+    });
+
+    test("hides indicator when no tag is active", () => {
+        win.updateTagIndicator();
+        const indicator = win.document.getElementById("active-tag-indicator");
+        expect(indicator.classList.contains("hidden")).toBe(true);
+        expect(indicator.innerHTML).toBe("");
+    });
+
+    test("shows indicator with tag name and clear button when tag is active", () => {
+        win._filterState.tag = "Python";
+        win.updateTagIndicator();
+        const indicator = win.document.getElementById("active-tag-indicator");
+        expect(indicator.classList.contains("hidden")).toBe(false);
+        expect(indicator.innerHTML).toContain("Python");
+        expect(indicator.querySelector(".tag-clear")).not.toBeNull();
+    });
+
+    test("clear button clears the tag filter", () => {
+        win._filterState.tag = "Python";
+        win.renderProjects(win.filterProjects());
+        const indicator = win.document.getElementById("active-tag-indicator");
+        const clearBtn = indicator.querySelector(".tag-clear");
+        expect(clearBtn).not.toBeNull();
+        clearBtn.click();
+        expect(win._filterState.tag).toBeNull();
     });
 });

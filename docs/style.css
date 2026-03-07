@@ -285,3 +285,52 @@ a:hover { color: var(--accent-hover); }
 .text-center { text-align: center; }
 .text-left { text-align: left; }
 .footer-copy { margin-top: 0.5rem; }
+
+/* ── Clickable tag filtering ─────────────────────────────────────── */
+.tag-clickable {
+    cursor: pointer;
+    transition: background 0.2s, border-color 0.2s, color 0.2s;
+    font-family: inherit;
+}
+.tag-clickable:hover {
+    background: var(--accent);
+    color: var(--bg);
+    border-color: var(--accent);
+}
+.active-tag-indicator {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 0;
+    margin-top: 0.5rem;
+}
+.tag-indicator-label {
+    font-size: 0.8rem;
+    color: var(--text-secondary);
+}
+.tag-active {
+    background: var(--accent);
+    color: var(--bg);
+    border-color: var(--accent);
+    font-weight: 600;
+}
+.tag-clear {
+    background: none;
+    border: 1px solid var(--border);
+    border-radius: 50%;
+    width: 1.4rem;
+    height: 1.4rem;
+    cursor: pointer;
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+    line-height: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: border-color 0.2s, color 0.2s;
+    font-family: inherit;
+}
+.tag-clear:hover {
+    border-color: var(--red);
+    color: var(--red);
+}

@@ -11,7 +11,7 @@
  * Active filter state.
  * @type {{ query: string, category: string|null }}
  */
-var _filterState = { query: "", category: null };
+var _filterState = { query: "", category: null, tag: null };
 
 var PROJECTS = [
     // --- AI & Agents ---
@@ -249,13 +249,15 @@ function buildCardHeader(p) {
 
 /**
  * Build tag pills for a project card.
+ * Tags are clickable buttons that filter to show all projects with that tag.
  * @param {string[]} tags
  * @returns {string}
  */
 function buildCardTags(tags) {
     return '<div class="card-tags">' +
         tags.map(function(t) {
-            return '<span class="tag">' + escapeHTML(t) + '</span>';
+            return '<button type="button" class="tag tag-clickable" data-tag="' +
+                escapeHTML(t) + '">' + escapeHTML(t) + '</button>';
         }).join("") +
         '</div>';
 }
@@ -309,21 +311,34 @@ function projectMatchesQuery(p, query) {
 }
 
 /**
- * Filter PROJECTS by current _filterState (query + category).
+ * Filter PROJECTS by current _filterState (query + category + tag).
  * Returns the filtered list without mutating PROJECTS.
  *
  * Text search matches against title, desc, tags, and repo name
  * (case-insensitive).  Category filter matches the category field
- * exactly.  Both filters are AND-combined.
+ * exactly.  Tag filter matches any tag case-insensitively.
+ * All filters are AND-combined.
  *
  * @returns {Object[]}
  */
 function filterProjects() {
     var q = _filterState.query.toLowerCase();
     var cat = _filterState.category;
+    var tag = _filterState.tag;
 
     return PROJECTS.filter(function(p) {
         if (cat && p.category !== cat) return false;
+        if (tag) {
+            var tagLower = tag.toLowerCase();
+            var hasTag = false;
+            for (var i = 0; i < p.tags.length; i++) {
+                if (p.tags[i].toLowerCase() === tagLower) {
+                    hasTag = true;
+                    break;
+                }
+            }
+            if (!hasTag) return false;
+        }
         return projectMatchesQuery(p, q);
     });
 }
@@ -370,6 +385,7 @@ function buildCategoryHTML(group) {
 
 /**
  * Render all project cards into #projects-container, grouped by category.
+ * Also updates the active tag indicator if tag filtering is active.
  *
  * @param {Object[]} [projects] - Optional filtered project list.
  *   Defaults to all PROJECTS.
@@ -392,6 +408,9 @@ function renderProjects(projects) {
 
     var groups = groupByCategory(items);
     container.innerHTML = groups.map(buildCategoryHTML).join("");
+
+    // Update active tag indicator
+    updateTagIndicator();
 }
 
 /**
@@ -473,6 +492,73 @@ function wireFilterEvents(filtersContainer, searchInput) {
             }, 200);
         });
     }
+}
+
+/**
+ * Update the active tag indicator shown below the filter bar.
+ * Creates or updates the indicator element showing which tag is
+ * currently filtering, with a clear button.
+ */
+function updateTagIndicator() {
+    var container = document.getElementById("active-tag-indicator");
+    if (!container) return;
+
+    if (!_filterState.tag) {
+        container.innerHTML = "";
+        container.classList.add("hidden");
+        return;
+    }
+
+    container.classList.remove("hidden");
+    container.innerHTML =
+        '<span class="tag-indicator-label">Filtered by tag:</span>' +
+        '<span class="tag tag-active">' + escapeHTML(_filterState.tag) + '</span>' +
+        '<button type="button" class="tag-clear" aria-label="Clear tag filter">&times;</button>';
+
+    var clearBtn = container.querySelector(".tag-clear");
+    if (clearBtn) {
+        clearBtn.addEventListener("click", function() {
+            clearTagFilter();
+        });
+    }
+}
+
+/**
+ * Clear the active tag filter and re-render.
+ */
+function clearTagFilter() {
+    _filterState.tag = null;
+    renderProjects(filterProjects());
+}
+
+/**
+ * Set the active tag filter and re-render.
+ * @param {string} tagName - Tag name to filter by.
+ */
+function setTagFilter(tagName) {
+    _filterState.tag = tagName;
+    renderProjects(filterProjects());
+}
+
+/**
+ * Extract all unique tags from the PROJECTS array.
+ * @param {Object[]} [projects] - Optional project list. Defaults to PROJECTS.
+ * @returns {string[]}
+ */
+function extractTags(projects) {
+    var items = projects || PROJECTS;
+    var tags = [];
+    var seen = Object.create(null);
+    items.forEach(function(p) {
+        (p.tags || []).forEach(function(t) {
+            var lower = t.toLowerCase();
+            if (!seen[lower]) {
+                seen[lower] = true;
+                tags.push(t);
+            }
+        });
+    });
+    return tags.sort();
 }
 
 /**
@@ -564,6 +650,33 @@ function initTheme() {
     }
 }
 
+/**
+ * Wire up click handlers for tag buttons on project cards.
+ * Uses event delegation on the projects container for efficiency.
+ */
+function wireTagClicks() {
+    var container = document.getElementById("projects-container");
+    if (!container) return;
+
+    container.addEventListener("click", function(e) {
+        var tagEl = e.target;
+        if (!tagEl.classList.contains("tag-clickable")) return;
+
+        e.preventDefault();
+        e.stopPropagation();
+
+        var tagName = tagEl.getAttribute("data-tag");
+        if (!tagName) return;
+
+        // Toggle: if same tag is clicked again, clear it
+        if (_filterState.tag && _filterState.tag.toLowerCase() === tagName.toLowerCase()) {
+            clearTagFilter();
+        } else {
+            setTagFilter(tagName);
+        }
+    });
+}
+
 // Auto-initialize on DOM ready
 if (typeof document !== "undefined") {
     if (document.readyState === "loading") {
@@ -571,11 +684,13 @@ if (typeof document !== "undefined") {
             renderProjects();
             initFilters();
             initTheme();
+            wireTagClicks();
         });
     } else {
         renderProjects();
         initFilters();
         initTheme();
+        wireTagClicks();
     }
 }
 
@@ -603,6 +718,12 @@ if (typeof module !== "undefined" && module.exports) {
         createFilterPills: createFilterPills,
         wireFilterEvents: wireFilterEvents,
         initFilters: initFilters,
+        // Tag filtering
+        updateTagIndicator: updateTagIndicator,
+        clearTagFilter: clearTagFilter,
+        setTagFilter: setTagFilter,
+        extractTags: extractTags,
+        wireTagClicks: wireTagClicks,
         // Theme
         getPreferredTheme: getPreferredTheme,
         applyTheme: applyTheme,
