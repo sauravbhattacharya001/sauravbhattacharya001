@@ -186,8 +186,11 @@ var PROJECTS = [
  * renderProjects().
  *
  * The textContent setter handles &, <, > escaping; we manually replace
- * double quotes afterwards because textContent does NOT escape them but
- * they are critical inside HTML attribute values like href="...".
+ * double quotes and single quotes afterwards because textContent does
+ * NOT escape them but they are critical inside HTML attribute values.
+ *
+ * Single-quote escaping (&#39;) provides defense-in-depth for any
+ * future attributes that use single-quoted delimiters (CWE-79).
  *
  * @param {string} str
  * @returns {string}
@@ -196,26 +199,28 @@ var _escapeEl = null;
 function escapeHTML(str) {
     if (!_escapeEl) { _escapeEl = document.createElement("span"); }
     _escapeEl.textContent = str;
-    return _escapeEl.innerHTML.replace(/"/g, "&quot;");
+    return _escapeEl.innerHTML.replace(/"/g, "&quot;").replace(/'/g, "&#39;");
 }
 
 /**
  * Sanitize a URL to prevent javascript: protocol and attribute breakout.
  * Only allows http:, https:, and mailto: schemes.
  *
- * Strips ASCII control characters (0x00-0x1F, 0x7F) and Unicode
- * whitespace before checking the scheme.  Browsers silently ignore
- * embedded tabs, newlines, and null bytes when parsing href values,
- * so "java\tscript:alert(1)" would execute without this defence.
- * See CWE-116 (Improper Encoding or Escaping of Output).
+ * Strips ASCII control characters (0x00-0x1F, 0x7F), zero-width Unicode
+ * characters (U+200B-U+200F, U+FEFF, U+00AD), and Unicode line/paragraph
+ * separators before checking the scheme.  Browsers silently ignore
+ * embedded tabs, newlines, null bytes, and zero-width chars when parsing
+ * href values, so "ja\u200Bvascript:alert(1)" would execute without this
+ * defence.  See CWE-116 (Improper Encoding or Escaping of Output).
  *
  * @param {string} url
  * @returns {string}
  */
 function sanitizeURL(url) {
-    // Strip control chars (0x00-0x1F, 0x7F) and all Unicode whitespace
+    // Strip control chars (0x00-0x1F, 0x7F), zero-width Unicode (200B-200F,
+    // FEFF, 00AD), and Unicode line/paragraph separators (2028-2029)
     // eslint-disable-next-line no-control-regex
-    var cleaned = url.replace(/[\x00-\x1F\x7F]/g, "");
+    var cleaned = url.replace(/[\x00-\x1F\x7F\u00AD\u200B-\u200F\u2028\u2029\uFEFF]/g, "");
     var trimmed = cleaned.replace(/^\s+/, "").toLowerCase();
     if (trimmed.indexOf("http:") === 0 ||
         trimmed.indexOf("https:") === 0 ||
@@ -372,10 +377,14 @@ function renderProjects(projects) {
 
     var items = projects || PROJECTS;
 
-    // Show/hide no-results message
+    // Show/hide no-results message (uses CSS class instead of inline style)
     var noResults = document.getElementById("no-results");
     if (noResults) {
-        noResults.style.display = items.length === 0 ? "block" : "none";
+        if (items.length === 0) {
+            noResults.classList.remove("hidden");
+        } else {
+            noResults.classList.add("hidden");
+        }
     }
 
     var groups = groupByCategory(items);

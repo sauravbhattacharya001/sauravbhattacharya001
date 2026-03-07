@@ -278,3 +278,10 @@ a:hover { color: var(--accent-hover); }
     .card, .stat, .research-item { border: 1px solid #ccc; break-inside: avoid; }
     .section { padding: 1rem 0; }
 }
+
+/* ── Utility classes (replaces inline styles for CSP compliance) ──── */
+.hidden { display: none; }
+.nav-accent { color: var(--accent); }
+.text-center { text-align: center; }
+.text-left { text-align: left; }
+.footer-copy { margin-top: 0.5rem; }

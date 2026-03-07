@@ -12,7 +12,7 @@ const fs = require("fs");
 // Load app.js in a JSDOM environment
 function loadApp() {
     const dom = new JSDOM(
-        '<!DOCTYPE html><html><body><div id="projects-container"></div><input id="project-search"><div id="category-filters"></div><div id="no-results" style="display:none"></div></body></html>',
+        '<!DOCTYPE html><html><body><div id="projects-container"></div><input id="project-search"><div id="category-filters"></div><div id="no-results" class="hidden"></div></body></html>',
         { runScripts: "dangerously", resources: "usable" }
     );
     const code = fs.readFileSync(path.join(__dirname, "..", "docs", "app.js"), "utf-8");
@@ -65,10 +65,11 @@ describe("escapeHTML", () => {
         expect(result).toContain("&lt;img");
     });
 
-    test("escapes single quotes (via textContent)", () => {
-        // textContent doesn't escape single quotes, but they're safe in innerHTML context
+    test("escapes single quotes for defense-in-depth", () => {
+        // Single quotes are now escaped to &#39; for defense-in-depth
+        // against attribute injection in single-quoted contexts (CWE-79)
         const result = win.escapeHTML("it's");
-        expect(result).toBe("it's");
+        expect(result).toBe("it&#39;s");
     });
 
     test("reuses cached DOM element (_escapeEl)", () => {
@@ -739,13 +740,13 @@ describe("renderProjects with filtered input", () => {
     test("shows no-results message when empty", () => {
         win.renderProjects([]);
         const noResults = win.document.getElementById("no-results");
-        expect(noResults.style.display).toBe("block");
+        expect(noResults.classList.contains("hidden")).toBe(false);
     });
 
     test("hides no-results message when projects exist", () => {
         win.renderProjects(win.PROJECTS);
         const noResults = win.document.getElementById("no-results");
-        expect(noResults.style.display).toBe("none");
+        expect(noResults.classList.contains("hidden")).toBe(true);
     });
 
     test("re-renders correctly after filter change", () => {
@@ -804,7 +805,7 @@ describe("theme toggle", () => {
             '<div id="projects-container"></div>' +
             '<input id="project-search">' +
             '<div id="category-filters"></div>' +
-            '<div id="no-results" style="display:none"></div>' +
+            '<div id="no-results" class="hidden"></div>' +
             '</body></html>',
             { runScripts: "dangerously", resources: "usable", url: "http://localhost" }
         );
