@@ -5,7 +5,7 @@
  * The HTML template is generated automatically.
  */
 
-/* exported PROJECTS, renderProjects, filterProjects, initFilters */
+/* exported PROJECTS, renderProjects, filterProjects, initFilters, buildCardHeader, buildCardTags, buildCardLinks, projectMatchesQuery, groupByCategory */
 
 /**
  * Active filter state.
@@ -230,24 +230,74 @@ function sanitizeURL(url) {
  * @param {Object} p - Project from PROJECTS array.
  * @returns {string}
  */
+function buildCardHeader(p) {
+    return '<div class="card-header">' +
+        '<span class="card-icon">' + escapeHTML(p.icon) + '</span>' +
+        '<h3><a href="https://github.com/sauravbhattacharya001/' +
+            escapeHTML(p.repo) + '" target="_blank" rel="noopener">' +
+            escapeHTML(p.title) + '</a></h3>' +
+        '</div>';
+}
+
+/**
+ * Build tag pills for a project card.
+ * @param {string[]} tags
+ * @returns {string}
+ */
+function buildCardTags(tags) {
+    return '<div class="card-tags">' +
+        tags.map(function(t) {
+            return '<span class="tag">' + escapeHTML(t) + '</span>';
+        }).join("") +
+        '</div>';
+}
+
+/**
+ * Build link buttons for a project card.
+ * @param {Object[]} links - Array of {label, url} objects.
+ * @returns {string}
+ */
+function buildCardLinks(links) {
+    return '<div class="card-links">' +
+        links.map(function(l) {
+            return '<a href="' + sanitizeURL(l.url) +
+                '" target="_blank" rel="noopener">' +
+                escapeHTML(l.label) + '</a>';
+        }).join("") +
+        '</div>';
+}
+
+/**
+ * Assemble a full project card from its constituent parts.
+ * @param {Object} p - Project from PROJECTS array.
+ * @returns {string}
+ */
 function buildCard(p) {
-    var tags = p.tags.map(function(t) {
-        return '<span class="tag">' + escapeHTML(t) + '</span>';
-    }).join("");
-
-    var links = p.links.map(function(l) {
-        return '<a href="' + sanitizeURL(l.url) + '" target="_blank" rel="noopener">' + escapeHTML(l.label) + '</a>';
-    }).join("");
-
     return '<div class="card">' +
-        '<div class="card-header">' +
-            '<span class="card-icon">' + escapeHTML(p.icon) + '</span>' +
-            '<h3><a href="https://github.com/sauravbhattacharya001/' + escapeHTML(p.repo) + '" target="_blank" rel="noopener">' + escapeHTML(p.title) + '</a></h3>' +
-        '</div>' +
+        buildCardHeader(p) +
         '<p>' + escapeHTML(p.desc) + '</p>' +
-        '<div class="card-tags">' + tags + '</div>' +
-        '<div class="card-links">' + links + '</div>' +
-    '</div>';
+        buildCardTags(p.tags) +
+        buildCardLinks(p.links) +
+        '</div>';
+}
+
+/**
+ * Check if a project matches a text query (case-insensitive).
+ * Searches across title, description, repo name, and tags.
+ *
+ * @param {Object} p - Project from PROJECTS array.
+ * @param {string} query - Lowercase search query.
+ * @returns {boolean}
+ */
+function projectMatchesQuery(p, query) {
+    if (!query) return true;
+    if (p.title.toLowerCase().indexOf(query) !== -1) return true;
+    if (p.desc.toLowerCase().indexOf(query) !== -1) return true;
+    if (p.repo.toLowerCase().indexOf(query) !== -1) return true;
+    for (var i = 0; i < p.tags.length; i++) {
+        if (p.tags[i].toLowerCase().indexOf(query) !== -1) return true;
+    }
+    return false;
 }
 
 /**
@@ -266,26 +316,38 @@ function filterProjects() {
 
     return PROJECTS.filter(function(p) {
         if (cat && p.category !== cat) return false;
-        if (!q) return true;
-
-        // Search across title, description, repo name, and tags
-        if (p.title.toLowerCase().indexOf(q) !== -1) return true;
-        if (p.desc.toLowerCase().indexOf(q) !== -1) return true;
-        if (p.repo.toLowerCase().indexOf(q) !== -1) return true;
-        for (var i = 0; i < p.tags.length; i++) {
-            if (p.tags[i].toLowerCase().indexOf(q) !== -1) return true;
-        }
-        return false;
+        return projectMatchesQuery(p, q);
     });
 }
 
 /**
- * Render all project cards into #projects-container, grouped by category.
+ * Group an array of projects by their category field.
+ * Returns an ordered array of { name, items } objects, preserving
+ * the insertion order of categories.
  *
- * Uses Object.create(null) for the category map so that inherited
+ * Uses Object.create(null) for the lookup map so that inherited
  * properties like "constructor", "toString", or "__proto__" can never
  * collide with a category name — preventing prototype-pollution-style
  * bugs (CWE-1321).
+ *
+ * @param {Object[]} items - Array of projects.
+ * @returns {{ name: string, items: Object[] }[]}
+ */
+function groupByCategory(items) {
+    var groups = [];
+    var groupMap = Object.create(null);
+    items.forEach(function(p) {
+        if (!groupMap[p.category]) {
+            groupMap[p.category] = [];
+            groups.push({ name: p.category, items: groupMap[p.category] });
+        }
+        groupMap[p.category].push(p);
+    });
+    return groups;
+}
+
+/**
+ * Render all project cards into #projects-container, grouped by category.
  *
  * @param {Object[]} [projects] - Optional filtered project list.
  *   Defaults to all PROJECTS.
@@ -302,18 +364,7 @@ function renderProjects(projects) {
         noResults.style.display = items.length === 0 ? "block" : "none";
     }
 
-    // Group by category (preserve insertion order).
-    // Object.create(null) avoids prototype pollution — a category
-    // named "constructor" or "__proto__" won't collide with Object.prototype.
-    var groups = [];
-    var groupMap = Object.create(null);
-    items.forEach(function(p) {
-        if (!groupMap[p.category]) {
-            groupMap[p.category] = [];
-            groups.push({ name: p.category, items: groupMap[p.category] });
-        }
-        groupMap[p.category].push(p);
-    });
+    var groups = groupByCategory(items);
 
     var html = "";
     groups.forEach(function(g) {
@@ -486,5 +537,5 @@ if (typeof document !== "undefined") {
 
 // Exports for testing
 if (typeof module !== "undefined" && module.exports) {
-    module.exports = { PROJECTS: PROJECTS, escapeHTML: escapeHTML, sanitizeURL: sanitizeURL, buildCard: buildCard, renderProjects: renderProjects, filterProjects: filterProjects, initFilters: initFilters, _filterState: _filterState, getPreferredTheme: getPreferredTheme, applyTheme: applyTheme, toggleTheme: toggleTheme, initTheme: initTheme };
+    module.exports = { PROJECTS: PROJECTS, escapeHTML: escapeHTML, sanitizeURL: sanitizeURL, buildCard: buildCard, buildCardHeader: buildCardHeader, buildCardTags: buildCardTags, buildCardLinks: buildCardLinks, projectMatchesQuery: projectMatchesQuery, groupByCategory: groupByCategory, renderProjects: renderProjects, filterProjects: filterProjects, initFilters: initFilters, _filterState: _filterState, getPreferredTheme: getPreferredTheme, applyTheme: applyTheme, toggleTheme: toggleTheme, initTheme: initTheme };
 }
