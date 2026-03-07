@@ -5,7 +5,7 @@
  * The HTML template is generated automatically.
  */
 
-/* exported PROJECTS, _filterState, renderProjects, filterProjects, initFilters, buildCardHeader, buildCardTags, buildCardLinks, buildCategoryHTML, projectMatchesQuery, groupByCategory, extractCategories, createFilterPills, wireFilterEvents, updateTagIndicator, clearTagFilter, setTagFilter, extractTags, wireTagClicks, getPreferredTheme, applyTheme, toggleTheme, initTheme */
+/* exported PROJECTS, _filterState, renderProjects, filterProjects, initFilters, buildCardHeader, buildCardTags, buildCardLinks, buildCategoryHTML, projectMatchesQuery, groupByCategory, _extractUnique, extractCategories, createFilterPills, wireFilterEvents, updateTagIndicator, clearTagFilter, setTagFilter, extractTags, wireTagClicks, getPreferredTheme, applyTheme, toggleTheme, initTheme */
 
 /**
  * Active filter state.
@@ -409,6 +409,31 @@ function renderProjects(projects) {
 }
 
 /**
+ * Extract unique values from an array of objects, preserving insertion order.
+ * Uses Object.create(null) for the lookup map (prototype-pollution safe).
+ *
+ * @param {Object[]} items - Array of objects to extract from.
+ * @param {function(Object): string|string[]} accessor - Returns the key(s) for each item.
+ * @returns {string[]}
+ */
+function _extractUnique(items, accessor) {
+    var result = [];
+    var seen = Object.create(null);
+    items.forEach(function(item) {
+        var keys = accessor(item);
+        if (!Array.isArray(keys)) keys = [keys];
+        keys.forEach(function(k) {
+            var normalized = k.toLowerCase();
+            if (!seen[normalized]) {
+                seen[normalized] = true;
+                result.push(k);
+            }
+        });
+    });
+    return result;
+}
+
+/**
  * Extract unique categories from the PROJECTS array, preserving
  * insertion order.
  *
@@ -416,16 +441,7 @@ function renderProjects(projects) {
  * @returns {string[]}
  */
 function extractCategories(projects) {
-    var items = projects || PROJECTS;
-    var categories = [];
-    var seen = Object.create(null);
-    items.forEach(function(p) {
-        if (!seen[p.category]) {
-            seen[p.category] = true;
-            categories.push(p.category);
-        }
-    });
-    return categories;
+    return _extractUnique(projects || PROJECTS, function(p) { return p.category; });
 }
 
 /**
@@ -560,19 +576,7 @@ function setTagFilter(tagName) {
  * @returns {string[]}
  */
 function extractTags(projects) {
-    var items = projects || PROJECTS;
-    var tags = [];
-    var seen = Object.create(null);
-    items.forEach(function(p) {
-        (p.tags || []).forEach(function(t) {
-            var lower = t.toLowerCase();
-            if (!seen[lower]) {
-                seen[lower] = true;
-                tags.push(t);
-            }
-        });
-    });
-    return tags.sort();
+    return _extractUnique(projects || PROJECTS, function(p) { return p.tags || []; }).sort();
 }
 
 /**
