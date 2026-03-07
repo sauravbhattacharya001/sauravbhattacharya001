@@ -33,7 +33,8 @@ var PROJECTS = [
         tags: ["JavaScript", "AI Agents", "SaaS"],
         links: [
             { label: "Code", url: "https://github.com/sauravbhattacharya001/getagentbox" },
-            { label: "Live", url: "https://sauravbhattacharya001.github.io/getagentbox/" }
+            { label: "Live", url: "https://sauravbhattacharya001.github.io/getagentbox/" },
+            { label: "v2.0.0", url: "https://github.com/sauravbhattacharya001/getagentbox/releases/tag/v2.0.0" }
         ]
     },
     {
@@ -49,7 +50,7 @@ var PROJECTS = [
     {
         category: "AI & Agents",
         icon: "🛡️", repo: "ai", title: "AI Safety Research",
-        desc: "Contract-enforced sandbox for studying AI agent self-replication safety — 34 analysis modules including Monte Carlo simulation, game-theory modeling, alignment drift detection, and interactive reports.",
+        desc: "Contract-enforced sandbox for studying AI agent self-replication safety — 39 analysis modules including Monte Carlo simulation, game-theory modeling, alignment drift detection, dependency analysis, and interactive reports.",
         tags: ["Python", "AI Safety", "Monte Carlo"],
         links: [
             { label: "Code", url: "https://github.com/sauravbhattacharya001/ai" },
@@ -74,7 +75,7 @@ var PROJECTS = [
     {
         category: "Languages & Tools",
         icon: "🔤", repo: "sauravcode", title: "sauravcode",
-        desc: "A programming language with zero noise — no parens, no commas, no semicolons. Interpreter + compiler (.srv → C → native). 600+ tests.",
+        desc: "A programming language with zero noise — no parens, no commas, no semicolons. Interpreter + compiler (.srv → C → native). 2000+ tests.",
         tags: ["Python", "C", "Compiler", "Language Design"],
         links: [
             { label: "Code", url: "https://github.com/sauravbhattacharya001/sauravcode" },
@@ -84,21 +85,23 @@ var PROJECTS = [
     {
         category: "Languages & Tools",
         icon: "⚡", repo: "prompt", title: "prompt",
-        desc: ".NET 8 prompt engineering toolkit — Azure OpenAI client, template engine, prompt chaining, PromptGuard injection detection.",
+        desc: ".NET 8 prompt engineering toolkit — Azure OpenAI client, template engine, prompt chaining, PromptGuard injection detection, prompt sanitization, fallback chains.",
         tags: ["C#", ".NET 8", "Azure OpenAI"],
         links: [
             { label: "Code", url: "https://github.com/sauravbhattacharya001/prompt" },
-            { label: "Docs", url: "https://sauravbhattacharya001.github.io/prompt/" }
+            { label: "Docs", url: "https://sauravbhattacharya001.github.io/prompt/" },
+            { label: "v4.0.0", url: "https://github.com/sauravbhattacharya001/prompt/releases/tag/v4.0.0" }
         ]
     },
     {
         category: "Languages & Tools",
         icon: "🎭", repo: "gif-captcha", title: "gif-captcha",
-        desc: "GIF-based CAPTCHA research — 8 interactive tools: visual puzzles, temporal challenges, AI simulator, cognitive load analyzer, accessibility audit.",
+        desc: "GIF-based CAPTCHA research — 8 interactive tools: visual puzzles, temporal challenges, AI simulator, cognitive load analyzer, accessibility audit. 2450+ tests.",
         tags: ["HTML/JS", "Research", "Security"],
         links: [
             { label: "Code", url: "https://github.com/sauravbhattacharya001/gif-captcha" },
-            { label: "Demo", url: "https://sauravbhattacharya001.github.io/gif-captcha/" }
+            { label: "Demo", url: "https://sauravbhattacharya001.github.io/gif-captcha/" },
+            { label: "v1.3.0", url: "https://github.com/sauravbhattacharya001/gif-captcha/releases/tag/v1.3.0" }
         ]
     },
 
@@ -106,7 +109,7 @@ var PROJECTS = [
     {
         category: "Visualization & Data",
         icon: "📐", repo: "VoronoiMap", title: "VoronoiMap",
-        desc: "Voronoi diagram generation & spatial partitioning — Lloyd relaxation, neighbourhood graphs, 6 color schemes, GeoJSON export. 285 tests.",
+        desc: "Voronoi diagram generation & spatial partitioning — Lloyd relaxation, neighbourhood graphs, KDE heatmaps, spatial clustering, autocorrelation, convex hull analysis. 1990+ tests.",
         tags: ["Python", "Algorithms", "Geometry"],
         links: [
             { label: "Code", url: "https://github.com/sauravbhattacharya001/VoronoiMap" },
@@ -116,7 +119,7 @@ var PROJECTS = [
     {
         category: "Visualization & Data",
         icon: "🔗", repo: "GraphVisual", title: "GraphVisual",
-        desc: "Graph visualization for community evolution — centrality (Brandes'), MST, graph coloring, community detection, shortest path, link prediction, graph generation, topological sort, influence spread simulation, GraphML export. 2400+ tests.",
+        desc: "Graph visualization for community evolution — centrality (Brandes'), MST, graph coloring, community detection, shortest path, link prediction, graph generation, topological sort, influence spread simulation, GraphML export. 68 analyzers.",
         tags: ["Java", "Graph Theory", "Visualization"],
         links: [
             { label: "Code", url: "https://github.com/sauravbhattacharya001/GraphVisual" },
@@ -168,7 +171,7 @@ var PROJECTS = [
     {
         category: "Apps & More",
         icon: "🐫", repo: "Ocaml-sample-code", title: "OCaml Samples",
-        desc: "45-module functional programming collection — BST, trie, hashmap, bloom filter, red-black trees, union-find, graph algorithms, regex engine, type inference, lambda calculus, SAT solver, and more.",
+        desc: "80+ module functional programming collection — BST, trie, hashmap, bloom filter, red-black trees, union-find, graph algorithms, regex engine, type inference, lambda calculus, SAT solver, persistent vectors, symbolic integration, and more.",
         tags: ["OCaml", "Functional", "Data Structures"],
         links: [
             { label: "Code", url: "https://github.com/sauravbhattacharya001/Ocaml-sample-code" },
