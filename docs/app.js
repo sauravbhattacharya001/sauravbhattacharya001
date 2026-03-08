@@ -205,25 +205,39 @@ function escapeHTML(str) {
  * Only allows http:, https:, and mailto: schemes.
  *
  * Strips ASCII control characters (0x00-0x1F, 0x7F), zero-width Unicode
- * characters (U+200B-U+200F, U+FEFF, U+00AD), and Unicode line/paragraph
- * separators before checking the scheme.  Browsers silently ignore
- * embedded tabs, newlines, null bytes, and zero-width chars when parsing
- * href values, so "ja\u200Bvascript:alert(1)" would execute without this
- * defence.  See CWE-116 (Improper Encoding or Escaping of Output).
+ * characters (U+200B-U+200F, U+FEFF, U+00AD), Unicode bidirectional
+ * override/embedding characters (U+202A-U+202E, U+2066-U+2069), and
+ * Unicode line/paragraph separators before checking the scheme.
+ *
+ * Browsers silently ignore embedded tabs, newlines, null bytes, and
+ * zero-width chars when parsing href values, so "ja\u200Bvascript:alert(1)"
+ * would execute without this defence.  Bidirectional overrides (CWE-1007)
+ * can visually disguise malicious URLs as legitimate ones by reordering
+ * rendered text direction.  See also CWE-116 (Improper Encoding or
+ * Escaping of Output).
+ *
+ * Additionally validates that http:/https: URLs contain a valid authority
+ * (at least "scheme://host") and rejects bare "http:" without "//".
  *
  * @param {string} url
  * @returns {string}
  */
+var _sanitizeStripRe = /[\x00-\x1F\x7F\u00AD\u200B-\u200F\u2028\u2029\u202A-\u202E\u2066-\u2069\uFEFF]/g;
 function sanitizeURL(url) {
-    // Strip control chars (0x00-0x1F, 0x7F), zero-width Unicode (200B-200F,
-    // FEFF, 00AD), and Unicode line/paragraph separators (2028-2029)
-    // eslint-disable-next-line no-control-regex
-    var cleaned = url.replace(/[\x00-\x1F\x7F\u00AD\u200B-\u200F\u2028\u2029\uFEFF]/g, "");
+    // Strip control chars, zero-width Unicode, bidi overrides, and separators
+    var cleaned = url.replace(_sanitizeStripRe, "");
     var trimmed = cleaned.replace(/^\s+/, "").toLowerCase();
-    if (trimmed.indexOf("http:") === 0 ||
-        trimmed.indexOf("https:") === 0 ||
-        trimmed.indexOf("mailto:") === 0) {
-        return escapeHTML(cleaned);
+    if (trimmed.indexOf("https://") === 0 ||
+        trimmed.indexOf("http://") === 0) {
+        // Require at least one char after "scheme://" (i.e. a host)
+        var slashIdx = trimmed.indexOf("://");
+        if (trimmed.length > slashIdx + 3) {
+            return escapeHTML(cleaned.replace(/^\s+/, ""));
+        }
+        return "#";
+    }
+    if (trimmed.indexOf("mailto:") === 0) {
+        return escapeHTML(cleaned.replace(/^\s+/, ""));
     }
     return "#";
 }

@@ -429,6 +429,47 @@ describe("sanitizeURL", () => {
     test("escapes special characters in allowed URLs", () => {
         expect(win.sanitizeURL('https://example.com/a"b')).toBe("https://example.com/a&quot;b");
     });
+
+    test("strips Unicode bidirectional override characters (CWE-1007)", () => {
+        // RTL override U+202E can disguise malicious URLs visually
+        expect(win.sanitizeURL("https://exa\u202Emple.com")).toBe("https://example.com");
+    });
+
+    test("strips RTL embedding (U+202B) from URLs", () => {
+        expect(win.sanitizeURL("https://\u202Bexample.com")).toBe("https://example.com");
+    });
+
+    test("strips LRE/RLE/PDF/LRO/RLO bidi chars from URLs", () => {
+        // U+202A (LRE), U+202B (RLE), U+202C (PDF), U+202D (LRO), U+202E (RLO)
+        const bidi = "\u202A\u202B\u202C\u202D\u202E";
+        expect(win.sanitizeURL("https://" + bidi + "example.com")).toBe("https://example.com");
+    });
+
+    test("strips isolate bidi chars U+2066-U+2069 from URLs", () => {
+        // U+2066 (LRI), U+2067 (RLI), U+2068 (FSI), U+2069 (PDI)
+        expect(win.sanitizeURL("https://ex\u2066\u2067\u2068\u2069ample.com"))
+            .toBe("https://example.com");
+    });
+
+    test("rejects bare http: without // authority", () => {
+        expect(win.sanitizeURL("http:evil.com")).toBe("#");
+    });
+
+    test("rejects bare https: without // authority", () => {
+        expect(win.sanitizeURL("https:evil.com")).toBe("#");
+    });
+
+    test("rejects http:// with no host", () => {
+        expect(win.sanitizeURL("http://")).toBe("#");
+    });
+
+    test("rejects https:// with no host", () => {
+        expect(win.sanitizeURL("https://")).toBe("#");
+    });
+
+    test("strips leading whitespace from returned URL", () => {
+        expect(win.sanitizeURL("  https://example.com")).toBe("https://example.com");
+    });
 });
 
 // ── Security-focused tests ──────────────────────────────────────────
