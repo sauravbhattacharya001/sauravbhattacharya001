@@ -1695,3 +1695,237 @@ describe("sort & view integration", () => {
         expect(titles).toEqual(expected);
     });
 });
+
+// ── Bookmarks ───────────────────────────────────────────────────────
+
+describe("isBookmarked", () => {
+    afterEach(() => {
+        // Clear bookmarks between tests
+        win._bookmarks.clear();
+    });
+
+    test("returns false for unbookmarked repo", () => {
+        expect(win.isBookmarked("nonexistent")).toBe(false);
+    });
+
+    test("returns true after adding to _bookmarks", () => {
+        win._bookmarks.add("sauravcode");
+        expect(win.isBookmarked("sauravcode")).toBe(true);
+    });
+});
+
+describe("toggleBookmark", () => {
+    afterEach(() => {
+        win._bookmarks.clear();
+        win._filterState.bookmarked = false;
+    });
+
+    test("bookmarks an unbookmarked repo", () => {
+        const result = win.toggleBookmark("sauravcode");
+        expect(result).toBe(true);
+        expect(win.isBookmarked("sauravcode")).toBe(true);
+    });
+
+    test("unbookmarks a bookmarked repo", () => {
+        win._bookmarks.add("sauravcode");
+        const result = win.toggleBookmark("sauravcode");
+        expect(result).toBe(false);
+        expect(win.isBookmarked("sauravcode")).toBe(false);
+    });
+
+    test("toggle twice returns to original state", () => {
+        win.toggleBookmark("sauravcode");
+        win.toggleBookmark("sauravcode");
+        expect(win.isBookmarked("sauravcode")).toBe(false);
+    });
+});
+
+describe("getBookmarkCount", () => {
+    afterEach(() => {
+        win._bookmarks.clear();
+    });
+
+    test("returns 0 when no bookmarks", () => {
+        expect(win.getBookmarkCount()).toBe(0);
+    });
+
+    test("returns correct count", () => {
+        win._bookmarks.add("sauravcode");
+        win._bookmarks.add("ai");
+        expect(win.getBookmarkCount()).toBe(2);
+    });
+});
+
+describe("setBookmarkFilter", () => {
+    afterEach(() => {
+        win._filterState.bookmarked = false;
+        win._bookmarks.clear();
+    });
+
+    test("toggles bookmark filter on", () => {
+        win.setBookmarkFilter(true);
+        expect(win._filterState.bookmarked).toBe(true);
+    });
+
+    test("toggles bookmark filter off", () => {
+        win._filterState.bookmarked = true;
+        win.setBookmarkFilter(false);
+        expect(win._filterState.bookmarked).toBe(false);
+    });
+
+    test("toggle without argument flips state", () => {
+        win.setBookmarkFilter();
+        expect(win._filterState.bookmarked).toBe(true);
+        win.setBookmarkFilter();
+        expect(win._filterState.bookmarked).toBe(false);
+    });
+});
+
+describe("bookmark filtering", () => {
+    afterEach(() => {
+        win._filterState.bookmarked = false;
+        win._filterState.category = null;
+        win._filterState.query = "";
+        win._bookmarks.clear();
+    });
+
+    test("bookmark filter returns only bookmarked projects", () => {
+        win._bookmarks.add("sauravcode");
+        win._filterState.bookmarked = true;
+        const filtered = win.filterProjects();
+        expect(filtered.length).toBe(1);
+        expect(filtered[0].repo).toBe("sauravcode");
+    });
+
+    test("bookmark filter with no bookmarks returns empty", () => {
+        win._filterState.bookmarked = true;
+        const filtered = win.filterProjects();
+        expect(filtered.length).toBe(0);
+    });
+
+    test("bookmark filter combines with search query", () => {
+        win._bookmarks.add("sauravcode");
+        win._bookmarks.add("ai");
+        win._filterState.bookmarked = true;
+        win._filterState.query = "saurav";
+        const filtered = win.filterProjects();
+        expect(filtered.length).toBe(1);
+        expect(filtered[0].repo).toBe("sauravcode");
+    });
+
+    test("no bookmark filter returns all projects", () => {
+        win._filterState.bookmarked = false;
+        const filtered = win.filterProjects();
+        expect(filtered.length).toBe(win.PROJECTS.length);
+    });
+});
+
+describe("buildCardHeader with bookmarks", () => {
+    afterEach(() => {
+        win._bookmarks.clear();
+    });
+
+    test("includes bookmark button", () => {
+        const p = win.PROJECTS[0];
+        const html = win.buildCardHeader(p);
+        expect(html).toContain("bookmark-btn");
+        expect(html).toContain("data-repo");
+    });
+
+    test("unbookmarked shows empty star", () => {
+        const p = win.PROJECTS[0];
+        const html = win.buildCardHeader(p);
+        expect(html).toContain("☆");
+        expect(html).not.toContain("bookmarked");
+    });
+
+    test("bookmarked shows filled star", () => {
+        const p = win.PROJECTS[0];
+        win._bookmarks.add(p.repo);
+        const html = win.buildCardHeader(p);
+        expect(html).toContain("★");
+        expect(html).toContain("bookmarked");
+    });
+});
+
+describe("bookmark integration", () => {
+    let bmDom, bmWin;
+
+    beforeAll(() => {
+        bmDom = new JSDOM(
+            '<!DOCTYPE html><html><body>' +
+            '<div id="projects-container"></div>' +
+            '<input id="project-search">' +
+            '<div id="category-filters"></div>' +
+            '<div class="filter-bar-right">' +
+            '<div id="sort-controls"></div>' +
+            '<div id="view-toggle"></div>' +
+            '</div>' +
+            '<div id="active-tag-indicator" class="hidden"></div>' +
+            '<div id="no-results" class="hidden"></div>' +
+            '</body></html>',
+            { runScripts: "dangerously", resources: "usable" }
+        );
+        const code = fs.readFileSync(path.join(__dirname, "..", "docs", "app.js"), "utf-8");
+        bmDom.window.eval(code);
+        bmWin = bmDom.window;
+    });
+
+    afterAll(() => {
+        bmDom.window.close();
+    });
+
+    test("bookmark filter pill is created", () => {
+        const pill = bmDom.window.document.getElementById("bookmark-filter");
+        expect(pill).not.toBeNull();
+        expect(pill.textContent).toContain("Bookmarks");
+    });
+
+    test("cards have bookmark buttons", () => {
+        const container = bmDom.window.document.getElementById("projects-container");
+        const btns = container.querySelectorAll(".bookmark-btn");
+        expect(btns.length).toBeGreaterThan(0);
+    });
+
+    test("clicking bookmark button toggles star", () => {
+        const container = bmDom.window.document.getElementById("projects-container");
+        const btn = container.querySelector(".bookmark-btn");
+        const repo = btn.getAttribute("data-repo");
+
+        expect(btn.textContent.trim()).toBe("☆");
+        btn.click();
+        // After re-render, find the button again
+        const updatedBtn = container.querySelector('[data-repo="' + repo + '"]');
+        expect(updatedBtn.textContent.trim()).toBe("★");
+        expect(updatedBtn.classList.contains("bookmarked")).toBe(true);
+    });
+
+    test("bookmark filter pill click toggles filter", () => {
+        const pill = bmDom.window.document.getElementById("bookmark-filter");
+        pill.click();
+        expect(bmWin._filterState.bookmarked).toBe(true);
+        expect(pill.classList.contains("active")).toBe(true);
+
+        pill.click();
+        expect(bmWin._filterState.bookmarked).toBe(false);
+        expect(pill.classList.contains("active")).toBe(false);
+    });
+
+    test("bookmark filter shows only bookmarked projects", () => {
+        // Ensure at least one bookmark exists from earlier test
+        const container = bmDom.window.document.getElementById("projects-container");
+        const pill = bmDom.window.document.getElementById("bookmark-filter");
+
+        // Activate filter
+        bmWin.setBookmarkFilter(true);
+        const cards = container.querySelectorAll(".card");
+        // Should show only bookmarked cards (at least 1 from the click test)
+        expect(cards.length).toBeLessThan(bmWin.PROJECTS.length);
+        expect(cards.length).toBeGreaterThan(0);
+
+        // Deactivate
+        bmWin.setBookmarkFilter(false);
+        const allCards = container.querySelectorAll(".card");
+        expect(allCards.length).toBe(bmWin.PROJECTS.length);
+    });
+});

@@ -5,13 +5,13 @@
  * The HTML template is generated automatically.
  */
 
-/* exported PROJECTS, _filterState, renderProjects, filterProjects, initFilters, buildCardHeader, buildCardTags, buildCardLinks, buildCategoryHTML, projectMatchesQuery, groupByCategory, _extractUnique, extractCategories, createFilterPills, wireFilterEvents, updateTagIndicator, clearTagFilter, setTagFilter, extractTags, wireTagClicks, getPreferredTheme, applyTheme, toggleTheme, initTheme, _kbState, getVisibleCards, focusCard, blurCards, openFocusedCard, showKeyboardHelp, hideKeyboardHelp, toggleKeyboardHelp, initKeyboardNav, buildHelpOverlay, sortProjects, setSortOrder, setViewMode, initSortAndView, buildSortControls, buildViewToggle, SORT_ORDERS */
+/* exported PROJECTS, _filterState, renderProjects, filterProjects, initFilters, buildCardHeader, buildCardTags, buildCardLinks, buildCategoryHTML, projectMatchesQuery, groupByCategory, _extractUnique, extractCategories, createFilterPills, wireFilterEvents, updateTagIndicator, clearTagFilter, setTagFilter, extractTags, wireTagClicks, getPreferredTheme, applyTheme, toggleTheme, initTheme, _kbState, getVisibleCards, focusCard, blurCards, openFocusedCard, showKeyboardHelp, hideKeyboardHelp, toggleKeyboardHelp, initKeyboardNav, buildHelpOverlay, sortProjects, setSortOrder, setViewMode, initSortAndView, buildSortControls, buildViewToggle, SORT_ORDERS, _bookmarks, isBookmarked, toggleBookmark, setBookmarkFilter, initBookmarks, getBookmarkCount */
 
 /**
  * Active filter state.
  * @type {{ query: string, category: string|null, tag: string|null }}
  */
-var _filterState = { query: "", category: null, tag: null, sort: "default", view: "grid" };
+var _filterState = { query: "", category: null, tag: null, sort: "default", view: "grid", bookmarked: false };
 
 var PROJECTS = [
     // --- AI & Agents ---
@@ -248,11 +248,18 @@ function sanitizeURL(url) {
  * @returns {string}
  */
 function buildCardHeader(p) {
+    var bookmarked = isBookmarked(p.repo);
     return '<div class="card-header">' +
         '<span class="card-icon">' + escapeHTML(p.icon) + '</span>' +
         '<h3><a href="https://github.com/sauravbhattacharya001/' +
             escapeHTML(p.repo) + '" target="_blank" rel="noopener">' +
             escapeHTML(p.title) + '</a></h3>' +
+        '<button type="button" class="bookmark-btn' + (bookmarked ? ' bookmarked' : '') +
+            '" data-repo="' + escapeHTML(p.repo) +
+            '" aria-label="' + (bookmarked ? 'Remove bookmark' : 'Bookmark') +
+            '" title="' + (bookmarked ? 'Remove bookmark' : 'Bookmark') + '">' +
+            (bookmarked ? '★' : '☆') +
+        '</button>' +
         '</div>';
 }
 
@@ -334,8 +341,10 @@ function filterProjects() {
     var q = _filterState.query.toLowerCase();
     var cat = _filterState.category;
     var tag = _filterState.tag;
+    var onlyBookmarked = _filterState.bookmarked;
 
     return PROJECTS.filter(function(p) {
+        if (onlyBookmarked && !isBookmarked(p.repo)) return false;
         if (cat && p.category !== cat) return false;
         if (tag) {
             var tagLower = tag.toLowerCase();
@@ -550,10 +559,14 @@ function _applyFilters() {
     var filtered = filterProjects();
     filtered = sortProjects(filtered, _filterState.sort);
     var ids = filtered.map(function(p) { return p.repo; }).join(",");
-    if (ids === _lastRenderedIds) return;
-    _lastRenderedIds = ids;
+    // Include bookmark state in cache key so toggling a bookmark re-renders
+    var bookmarkKey = _bookmarks ? Array.from(_bookmarks).sort().join(",") : "";
+    var cacheKey = ids + "|" + bookmarkKey;
+    if (cacheKey === _lastRenderedIds) return;
+    _lastRenderedIds = cacheKey;
     renderProjects(filtered);
     _applyViewMode();
+    _updateBookmarkFilterPill();
 }
 
 /**
@@ -854,6 +867,166 @@ function initSortAndView() {
     }
 
     _applyViewMode();
+}
+
+// ── Bookmarks ───────────────────────────────────────────────────────
+
+/**
+ * Set of bookmarked project repo names.
+ * Loaded from localStorage on init, persisted on every toggle.
+ * @type {Set<string>}
+ */
+var _bookmarks = new (typeof Set !== "undefined" ? Set : function() {
+    this._items = {};
+    this.has = function(k) { return this._items.hasOwnProperty(k); };
+    this.add = function(k) { this._items[k] = true; return this; };
+    this.delete = function(k) { delete this._items[k]; };
+    this.forEach = function(fn) { for (var k in this._items) { if (this._items.hasOwnProperty(k)) fn(k); } };
+    this.size = 0;
+})();
+
+/**
+ * Check if a project is bookmarked.
+ * @param {string} repo - Repository name.
+ * @returns {boolean}
+ */
+function isBookmarked(repo) {
+    return _bookmarks.has(repo);
+}
+
+/**
+ * Get the number of bookmarked projects.
+ * @returns {number}
+ */
+function getBookmarkCount() {
+    return _bookmarks.size;
+}
+
+/**
+ * Toggle a project's bookmark status.
+ * Persists to localStorage and re-renders.
+ *
+ * @param {string} repo - Repository name to toggle.
+ * @returns {boolean} New bookmark state (true = bookmarked).
+ */
+function toggleBookmark(repo) {
+    var nowBookmarked;
+    if (_bookmarks.has(repo)) {
+        _bookmarks.delete(repo);
+        nowBookmarked = false;
+    } else {
+        _bookmarks.add(repo);
+        nowBookmarked = true;
+    }
+    _persistBookmarks();
+    _lastRenderedIds = null; // force re-render
+    _applyFilters();
+    return nowBookmarked;
+}
+
+/**
+ * Toggle the bookmark-only filter on/off.
+ * When active, only bookmarked projects are shown.
+ *
+ * @param {boolean} [active] - Force a specific state. Omit to toggle.
+ */
+function setBookmarkFilter(active) {
+    if (typeof active === "undefined") {
+        _filterState.bookmarked = !_filterState.bookmarked;
+    } else {
+        _filterState.bookmarked = !!active;
+    }
+    _lastRenderedIds = null;
+    _applyFilters();
+}
+
+/**
+ * Save bookmarks to localStorage.
+ */
+function _persistBookmarks() {
+    if (typeof localStorage === "undefined") return;
+    var arr = [];
+    _bookmarks.forEach(function(repo) { arr.push(repo); });
+    localStorage.setItem("bookmarks", JSON.stringify(arr));
+}
+
+/**
+ * Load bookmarks from localStorage.
+ */
+function _loadBookmarks() {
+    if (typeof localStorage === "undefined") return;
+    try {
+        var stored = localStorage.getItem("bookmarks");
+        if (stored) {
+            var arr = JSON.parse(stored);
+            if (Array.isArray(arr)) {
+                for (var i = 0; i < arr.length; i++) {
+                    _bookmarks.add(arr[i]);
+                }
+            }
+        }
+    } catch (e) {
+        // Corrupted data — start fresh
+    }
+}
+
+/**
+ * Update the bookmark filter pill active state and count badge.
+ */
+function _updateBookmarkFilterPill() {
+    if (typeof document === "undefined") return;
+    var pill = document.getElementById("bookmark-filter");
+    if (!pill) return;
+    var count = getBookmarkCount();
+    if (_filterState.bookmarked) {
+        pill.classList.add("active");
+    } else {
+        pill.classList.remove("active");
+    }
+    var badge = pill.querySelector(".bookmark-count");
+    if (badge) {
+        badge.textContent = count > 0 ? count : "";
+    }
+}
+
+/**
+ * Initialize the bookmark system.
+ * Loads persisted bookmarks, creates the filter pill, and wires
+ * click handlers for bookmark buttons (delegated on the container).
+ */
+function initBookmarks() {
+    _loadBookmarks();
+
+    // Create bookmark filter pill in the filter bar
+    var filterBarRight = document.querySelector(".filter-bar-right");
+    if (filterBarRight) {
+        var pill = document.createElement("button");
+        pill.type = "button";
+        pill.id = "bookmark-filter";
+        pill.className = "bookmark-filter-pill";
+        pill.setAttribute("aria-label", "Show bookmarked projects only");
+        pill.setAttribute("title", "Show bookmarked projects only");
+        pill.innerHTML = '★ Bookmarks <span class="bookmark-count">' +
+            (getBookmarkCount() > 0 ? getBookmarkCount() : "") + '</span>';
+        pill.addEventListener("click", function() {
+            setBookmarkFilter();
+        });
+        // Insert at the beginning of the right section
+        filterBarRight.insertBefore(pill, filterBarRight.firstChild);
+    }
+
+    // Delegate bookmark button clicks on the projects container
+    var container = document.getElementById("projects-container");
+    if (container) {
+        container.addEventListener("click", function(e) {
+            var btn = e.target;
+            if (!btn.classList.contains("bookmark-btn")) return;
+            e.preventDefault();
+            e.stopPropagation();
+            var repo = btn.getAttribute("data-repo");
+            if (repo) toggleBookmark(repo);
+        });
+    }
 }
 
 // ── Theme toggle ────────────────────────────────────────────────────
@@ -1207,6 +1380,7 @@ if (typeof document !== "undefined") {
     if (document.readyState === "loading") {
         document.addEventListener("DOMContentLoaded", function() {
             initSortAndView();
+            initBookmarks();
             renderProjects();
             initFilters();
             initTheme();
@@ -1214,6 +1388,7 @@ if (typeof document !== "undefined") {
         });
     } else {
         initSortAndView();
+        initBookmarks();
         renderProjects();
         initFilters();
         initTheme();
@@ -1274,6 +1449,13 @@ if (typeof module !== "undefined" && module.exports) {
         setViewMode: setViewMode,
         initSortAndView: initSortAndView,
         buildSortControls: buildSortControls,
-        buildViewToggle: buildViewToggle
+        buildViewToggle: buildViewToggle,
+        // Bookmarks
+        _bookmarks: _bookmarks,
+        isBookmarked: isBookmarked,
+        getBookmarkCount: getBookmarkCount,
+        toggleBookmark: toggleBookmark,
+        setBookmarkFilter: setBookmarkFilter,
+        initBookmarks: initBookmarks
     };
 }

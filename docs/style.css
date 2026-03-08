@@ -344,6 +344,72 @@ a:hover { color: var(--accent-hover); }
     color: var(--red);
 }
 
+/* ── Bookmarks ────────────────────────────────────────────────────── */
+.card-header {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+.card-header h3 { flex: 1; min-width: 0; }
+
+.bookmark-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 1.2rem;
+    line-height: 1;
+    padding: 0.15rem 0.25rem;
+    border-radius: 4px;
+    color: var(--text-secondary);
+    transition: color 0.2s, transform 0.15s;
+    flex-shrink: 0;
+    font-family: inherit;
+}
+.bookmark-btn:hover {
+    color: #f5a623;
+    transform: scale(1.2);
+}
+.bookmark-btn.bookmarked {
+    color: #f5a623;
+}
+
+.bookmark-filter-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3rem;
+    padding: 0.3rem 0.7rem;
+    border-radius: 99px;
+    font-size: 0.8rem;
+    font-weight: 500;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    color: var(--text-secondary);
+    cursor: pointer;
+    transition: all 0.2s;
+    user-select: none;
+    font-family: inherit;
+}
+.bookmark-filter-pill:hover {
+    border-color: #f5a623;
+    color: #f5a623;
+}
+.bookmark-filter-pill.active {
+    background: rgba(245, 166, 35, 0.12);
+    border-color: #f5a623;
+    color: #f5a623;
+}
+.bookmark-count {
+    font-size: 0.7rem;
+    background: var(--border);
+    border-radius: 99px;
+    padding: 0 0.35rem;
+    min-width: 1rem;
+    text-align: center;
+}
+.bookmark-filter-pill.active .bookmark-count {
+    background: rgba(245, 166, 35, 0.2);
+}
+
 /* ── Sort Controls & View Toggle ──────────────────────────────────── */
 .filter-bar-row {
     display: flex;
