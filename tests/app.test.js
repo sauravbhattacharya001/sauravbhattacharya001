@@ -1929,3 +1929,182 @@ describe("bookmark integration", () => {
         expect(allCards.length).toBe(bmWin.PROJECTS.length);
     });
 });
+
+// ── Deep Link Filter State ──────────────────────────────────────────
+
+describe("serializeFilterState", () => {
+    afterEach(() => {
+        win._filterState.query = "";
+        win._filterState.category = null;
+        win._filterState.tag = null;
+        win._filterState.sort = "default";
+        win._filterState.view = "grid";
+        win._filterState.bookmarked = false;
+    });
+
+    test("returns empty string for default state", () => {
+        expect(win.serializeFilterState()).toBe("");
+    });
+
+    test("serializes query", () => {
+        win._filterState.query = "hello";
+        expect(win.serializeFilterState()).toBe("q=hello");
+    });
+
+    test("serializes category", () => {
+        win._filterState.category = "AI & Safety";
+        const result = win.serializeFilterState();
+        expect(result).toContain("cat=AI%20%26%20Safety");
+    });
+
+    test("serializes tag", () => {
+        win._filterState.tag = "Python";
+        expect(win.serializeFilterState()).toContain("tag=Python");
+    });
+
+    test("serializes non-default sort", () => {
+        win._filterState.sort = "a-z";
+        expect(win.serializeFilterState()).toContain("sort=a-z");
+    });
+
+    test("does not serialize default sort", () => {
+        win._filterState.sort = "default";
+        expect(win.serializeFilterState()).toBe("");
+    });
+
+    test("serializes non-grid view", () => {
+        win._filterState.view = "list";
+        expect(win.serializeFilterState()).toContain("view=list");
+    });
+
+    test("does not serialize grid view (default)", () => {
+        win._filterState.view = "grid";
+        expect(win.serializeFilterState()).toBe("");
+    });
+
+    test("serializes bookmarked filter", () => {
+        win._filterState.bookmarked = true;
+        expect(win.serializeFilterState()).toContain("bm=1");
+    });
+
+    test("combines multiple filters", () => {
+        win._filterState.query = "test";
+        win._filterState.sort = "z-a";
+        win._filterState.bookmarked = true;
+        const result = win.serializeFilterState();
+        expect(result).toContain("q=test");
+        expect(result).toContain("sort=z-a");
+        expect(result).toContain("bm=1");
+    });
+});
+
+describe("deserializeFilterState", () => {
+    test("returns empty object for empty string", () => {
+        expect(win.deserializeFilterState("")).toEqual({});
+    });
+
+    test("returns empty object for null", () => {
+        expect(win.deserializeFilterState(null)).toEqual({});
+    });
+
+    test("strips leading # from hash", () => {
+        const result = win.deserializeFilterState("#q=hello");
+        expect(result.q).toBe("hello");
+    });
+
+    test("parses query", () => {
+        const result = win.deserializeFilterState("q=hello%20world");
+        expect(result.q).toBe("hello world");
+    });
+
+    test("parses category", () => {
+        const result = win.deserializeFilterState("cat=AI%20%26%20Safety");
+        expect(result.cat).toBe("AI & Safety");
+    });
+
+    test("parses tag", () => {
+        const result = win.deserializeFilterState("tag=Python");
+        expect(result.tag).toBe("Python");
+    });
+
+    test("parses sort", () => {
+        const result = win.deserializeFilterState("sort=a-z");
+        expect(result.sort).toBe("a-z");
+    });
+
+    test("parses view", () => {
+        const result = win.deserializeFilterState("view=list");
+        expect(result.view).toBe("list");
+    });
+
+    test("parses bookmark flag", () => {
+        const result = win.deserializeFilterState("bm=1");
+        expect(result.bm).toBe(true);
+    });
+
+    test("bm=0 is false", () => {
+        const result = win.deserializeFilterState("bm=0");
+        expect(result.bm).toBe(false);
+    });
+
+    test("parses multiple params", () => {
+        const result = win.deserializeFilterState("q=test&sort=z-a&bm=1");
+        expect(result.q).toBe("test");
+        expect(result.sort).toBe("z-a");
+        expect(result.bm).toBe(true);
+    });
+
+    test("ignores unknown keys", () => {
+        const result = win.deserializeFilterState("foo=bar&q=hello");
+        expect(result.q).toBe("hello");
+        expect(result).not.toHaveProperty("foo");
+    });
+
+    test("ignores entries without =", () => {
+        const result = win.deserializeFilterState("q=hello&badentry&tag=AI");
+        expect(result.q).toBe("hello");
+        expect(result.tag).toBe("AI");
+    });
+});
+
+describe("serialize/deserialize roundtrip", () => {
+    afterEach(() => {
+        win._filterState.query = "";
+        win._filterState.category = null;
+        win._filterState.tag = null;
+        win._filterState.sort = "default";
+        win._filterState.view = "grid";
+        win._filterState.bookmarked = false;
+    });
+
+    test("roundtrip preserves query", () => {
+        win._filterState.query = "hello world";
+        const hash = win.serializeFilterState();
+        const parsed = win.deserializeFilterState(hash);
+        expect(parsed.q).toBe("hello world");
+    });
+
+    test("roundtrip preserves category with special chars", () => {
+        win._filterState.category = "AI & Safety";
+        const hash = win.serializeFilterState();
+        const parsed = win.deserializeFilterState(hash);
+        expect(parsed.cat).toBe("AI & Safety");
+    });
+
+    test("roundtrip preserves all fields", () => {
+        win._filterState.query = "test";
+        win._filterState.category = "Tools";
+        win._filterState.tag = "Python";
+        win._filterState.sort = "most-tags";
+        win._filterState.view = "list";
+        win._filterState.bookmarked = true;
+        const hash = win.serializeFilterState();
+        const parsed = win.deserializeFilterState(hash);
+        expect(parsed.q).toBe("test");
+        expect(parsed.cat).toBe("Tools");
+        expect(parsed.tag).toBe("Python");
+        expect(parsed.sort).toBe("most-tags");
+        expect(parsed.view).toBe("list");
+        expect(parsed.bm).toBe(true);
+    });
+});
