@@ -5,7 +5,7 @@
  * The HTML template is generated automatically.
  */
 
-/* exported PROJECTS, _filterState, renderProjects, filterProjects, initFilters, buildCardHeader, buildCardTags, buildCardLinks, buildCategoryHTML, projectMatchesQuery, groupByCategory, _extractUnique, extractCategories, createFilterPills, wireFilterEvents, updateTagIndicator, clearTagFilter, setTagFilter, extractTags, wireTagClicks, getPreferredTheme, applyTheme, toggleTheme, initTheme, _kbState, getVisibleCards, focusCard, blurCards, openFocusedCard, showKeyboardHelp, hideKeyboardHelp, toggleKeyboardHelp, initKeyboardNav, buildHelpOverlay, sortProjects, setSortOrder, setViewMode, initSortAndView, buildSortControls, buildViewToggle, SORT_ORDERS, _bookmarks, isBookmarked, toggleBookmark, setBookmarkFilter, initBookmarks, getBookmarkCount, serializeFilterState, deserializeFilterState, pushFilterState, initDeepLink, _deepLinkEnabled, computeCategoryDistribution, computeTagDistribution, computePortfolioSummary, buildBarChart, buildTagCloud, buildAnalyticsPanel, toggleAnalytics, initAnalytics */
+/* exported PROJECTS, _filterState, renderProjects, filterProjects, initFilters, buildCardHeader, buildCardTags, buildCardLinks, buildCategoryHTML, projectMatchesQuery, groupByCategory, _extractUnique, extractCategories, createFilterPills, wireFilterEvents, updateTagIndicator, clearTagFilter, setTagFilter, extractTags, wireTagClicks, getPreferredTheme, applyTheme, toggleTheme, initTheme, _kbState, getVisibleCards, focusCard, blurCards, openFocusedCard, showKeyboardHelp, hideKeyboardHelp, toggleKeyboardHelp, initKeyboardNav, buildHelpOverlay, sortProjects, setSortOrder, setViewMode, initSortAndView, buildSortControls, buildViewToggle, SORT_ORDERS, _bookmarks, isBookmarked, toggleBookmark, setBookmarkFilter, initBookmarks, getBookmarkCount, serializeFilterState, deserializeFilterState, pushFilterState, initDeepLink, _deepLinkEnabled, computeCategoryDistribution, computeTagDistribution, computePortfolioSummary, buildBarChart, buildTagCloud, buildAnalyticsPanel, toggleAnalytics, initAnalytics, _spotlightState, buildSpotlightCard, renderSpotlight, nextSpotlight, prevSpotlight, goToSpotlight, toggleSpotlightPause, startSpotlightTimer, stopSpotlightTimer, wireSpotlightEvents, initSpotlight */
 
 /**
  * Active filter state.
@@ -1785,6 +1785,212 @@ function initAnalytics() {
     }
 }
 
+// ── Spotlight Carousel ──────────────────────────────────────────────
+
+/**
+ * Spotlight state — tracks current index, auto-rotation timer, and pause.
+ * @type {{ index: number, paused: boolean, timerId: number|null, intervalMs: number }}
+ */
+var _spotlightState = { index: 0, paused: false, timerId: null, intervalMs: 6000 };
+
+/**
+ * Build the HTML for a single spotlight card.
+ * @param {Object} project - A PROJECTS entry.
+ * @param {number} index - Current index (0-based).
+ * @param {number} total - Total project count.
+ * @returns {string} HTML string.
+ */
+function buildSpotlightCard(project, index, total) {
+    if (!project) return "";
+
+    var tagsHtml = "";
+    for (var i = 0; i < project.tags.length; i++) {
+        tagsHtml += '<span class="tag">' + escapeHTML(project.tags[i]) + '</span>';
+    }
+
+    var linksHtml = "";
+    for (var j = 0; j < project.links.length; j++) {
+        var link = project.links[j];
+        var href = sanitizeURL(link.url);
+        if (href) {
+            linksHtml += '<a href="' + escapeHTML(href) + '" target="_blank" rel="noopener">' +
+                escapeHTML(link.label) + '</a>';
+        }
+    }
+
+    var dotsHtml = "";
+    for (var d = 0; d < total; d++) {
+        dotsHtml += '<button type="button" class="spotlight-dot' +
+            (d === index ? ' active' : '') +
+            '" data-spotlight-index="' + d +
+            '" aria-label="Go to project ' + (d + 1) + '"' +
+            ' title="' + escapeHTML(PROJECTS[d].title) + '"></button>';
+    }
+
+    var pauseLabel = _spotlightState.paused ? "Resume" : "Pause";
+
+    return '<div class="spotlight">' +
+        '<button type="button" class="spotlight-nav spotlight-prev" aria-label="Previous project" title="Previous">' +
+            '&#8249;' +
+        '</button>' +
+        '<div class="spotlight-inner">' +
+            '<div class="spotlight-icon">' + escapeHTML(project.icon) + '</div>' +
+            '<div class="spotlight-content">' +
+                '<div class="spotlight-label">Featured Project ' + (index + 1) + ' of ' + total + '</div>' +
+                '<div class="spotlight-title">' + escapeHTML(project.title) + '</div>' +
+                '<div class="spotlight-desc">' + escapeHTML(project.desc) + '</div>' +
+                '<div class="spotlight-tags">' + tagsHtml + '</div>' +
+                '<div class="spotlight-links">' + linksHtml + '</div>' +
+            '</div>' +
+        '</div>' +
+        '<button type="button" class="spotlight-nav spotlight-next" aria-label="Next project" title="Next">' +
+            '&#8250;' +
+        '</button>' +
+        '<button type="button" class="spotlight-pause" aria-label="' + pauseLabel + ' auto-rotation" title="' + pauseLabel + '">' +
+            pauseLabel +
+        '</button>' +
+        '<div class="spotlight-dots">' + dotsHtml + '</div>' +
+    '</div>';
+}
+
+/**
+ * Render the spotlight at the current index.
+ */
+function renderSpotlight() {
+    if (typeof document === "undefined") return;
+    var container = document.getElementById("spotlight-container");
+    if (!container) return;
+    if (PROJECTS.length === 0) return;
+
+    var idx = _spotlightState.index % PROJECTS.length;
+    container.innerHTML = buildSpotlightCard(PROJECTS[idx], idx, PROJECTS.length);
+    wireSpotlightEvents();
+}
+
+/**
+ * Advance to the next spotlight project.
+ * @returns {number} The new index.
+ */
+function nextSpotlight() {
+    if (PROJECTS.length === 0) return 0;
+    _spotlightState.index = (_spotlightState.index + 1) % PROJECTS.length;
+    renderSpotlight();
+    return _spotlightState.index;
+}
+
+/**
+ * Go to the previous spotlight project.
+ * @returns {number} The new index.
+ */
+function prevSpotlight() {
+    if (PROJECTS.length === 0) return 0;
+    _spotlightState.index = (_spotlightState.index - 1 + PROJECTS.length) % PROJECTS.length;
+    renderSpotlight();
+    return _spotlightState.index;
+}
+
+/**
+ * Go to a specific spotlight index.
+ * @param {number} idx
+ * @returns {number} The new index.
+ */
+function goToSpotlight(idx) {
+    if (PROJECTS.length === 0) return 0;
+    _spotlightState.index = ((idx % PROJECTS.length) + PROJECTS.length) % PROJECTS.length;
+    renderSpotlight();
+    return _spotlightState.index;
+}
+
+/**
+ * Toggle auto-rotation pause/resume.
+ * @returns {boolean} True if now paused, false if resumed.
+ */
+function toggleSpotlightPause() {
+    _spotlightState.paused = !_spotlightState.paused;
+    if (_spotlightState.paused) {
+        stopSpotlightTimer();
+    } else {
+        startSpotlightTimer();
+    }
+    renderSpotlight();
+    return _spotlightState.paused;
+}
+
+/**
+ * Start the auto-rotation timer.
+ */
+function startSpotlightTimer() {
+    stopSpotlightTimer();
+    if (typeof setInterval === "undefined") return;
+    _spotlightState.timerId = setInterval(function() {
+        if (!_spotlightState.paused) {
+            nextSpotlight();
+        }
+    }, _spotlightState.intervalMs);
+}
+
+/**
+ * Stop the auto-rotation timer.
+ */
+function stopSpotlightTimer() {
+    if (_spotlightState.timerId !== null && typeof clearInterval !== "undefined") {
+        clearInterval(_spotlightState.timerId);
+        _spotlightState.timerId = null;
+    }
+}
+
+/**
+ * Wire click events for spotlight navigation buttons.
+ */
+function wireSpotlightEvents() {
+    if (typeof document === "undefined") return;
+    var container = document.getElementById("spotlight-container");
+    if (!container) return;
+
+    var prevBtn = container.querySelector(".spotlight-prev");
+    var nextBtn = container.querySelector(".spotlight-next");
+    var pauseBtn = container.querySelector(".spotlight-pause");
+    var dots = container.querySelectorAll(".spotlight-dot");
+
+    if (prevBtn) {
+        prevBtn.addEventListener("click", function() {
+            prevSpotlight();
+            if (!_spotlightState.paused) startSpotlightTimer();
+        });
+    }
+    if (nextBtn) {
+        nextBtn.addEventListener("click", function() {
+            nextSpotlight();
+            if (!_spotlightState.paused) startSpotlightTimer();
+        });
+    }
+    if (pauseBtn) {
+        pauseBtn.addEventListener("click", function() {
+            toggleSpotlightPause();
+        });
+    }
+    for (var i = 0; i < dots.length; i++) {
+        (function(dot) {
+            dot.addEventListener("click", function() {
+                var idx = parseInt(dot.getAttribute("data-spotlight-index"), 10);
+                goToSpotlight(idx);
+                if (!_spotlightState.paused) startSpotlightTimer();
+            });
+        })(dots[i]);
+    }
+}
+
+/**
+ * Initialize the spotlight carousel: render first card and start timer.
+ */
+function initSpotlight() {
+    if (typeof document === "undefined") return;
+    _spotlightState.index = 0;
+    _spotlightState.paused = false;
+    renderSpotlight();
+    startSpotlightTimer();
+}
+
 // Auto-initialize on DOM ready
 if (typeof document !== "undefined") {
     if (document.readyState === "loading") {
@@ -1797,6 +2003,7 @@ if (typeof document !== "undefined") {
             initTheme();
             initKeyboardNav();
             initAnalytics();
+            initSpotlight();
         });
     } else {
         initSortAndView();
@@ -1807,6 +2014,7 @@ if (typeof document !== "undefined") {
         initTheme();
         initKeyboardNav();
         initAnalytics();
+        initSpotlight();
     }
 }
 
@@ -1887,6 +2095,18 @@ if (typeof module !== "undefined" && module.exports) {
         buildTagCloud: buildTagCloud,
         buildAnalyticsPanel: buildAnalyticsPanel,
         toggleAnalytics: toggleAnalytics,
-        initAnalytics: initAnalytics
+        initAnalytics: initAnalytics,
+        // Spotlight Carousel
+        _spotlightState: _spotlightState,
+        buildSpotlightCard: buildSpotlightCard,
+        renderSpotlight: renderSpotlight,
+        nextSpotlight: nextSpotlight,
+        prevSpotlight: prevSpotlight,
+        goToSpotlight: goToSpotlight,
+        toggleSpotlightPause: toggleSpotlightPause,
+        startSpotlightTimer: startSpotlightTimer,
+        stopSpotlightTimer: stopSpotlightTimer,
+        wireSpotlightEvents: wireSpotlightEvents,
+        initSpotlight: initSpotlight
     };
 }

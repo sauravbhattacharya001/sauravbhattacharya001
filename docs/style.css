@@ -295,6 +295,88 @@ a:hover { color: var(--accent-hover); }
 .text-left { text-align: left; }
 .footer-copy { margin-top: 0.5rem; }
 
+/* ── Spotlight Carousel ──────────────────────────────────────────── */
+.spotlight {
+    position: relative;
+    margin-bottom: 2rem;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    overflow: hidden;
+}
+.spotlight-inner {
+    display: flex;
+    align-items: center;
+    padding: 2rem 3.5rem;
+    gap: 1.5rem;
+    min-height: 180px;
+}
+.spotlight-icon { font-size: 3rem; flex-shrink: 0; }
+.spotlight-content { flex: 1; min-width: 0; }
+.spotlight-label {
+    font-size: 0.7rem; text-transform: uppercase;
+    letter-spacing: 0.1em; color: var(--accent);
+    font-weight: 600; margin-bottom: 0.25rem;
+}
+.spotlight-title {
+    font-size: 1.5rem; font-weight: 700;
+    color: var(--text); margin-bottom: 0.4rem;
+}
+.spotlight-desc {
+    color: var(--text-secondary); font-size: 0.95rem;
+    line-height: 1.5; margin-bottom: 0.75rem;
+}
+.spotlight-tags { display: flex; flex-wrap: wrap; gap: 0.4rem; margin-bottom: 0.75rem; }
+.spotlight-tags .tag {
+    font-size: 0.75rem; padding: 0.15rem 0.5rem;
+    background: var(--tag-bg); border: 1px solid var(--tag-border);
+    border-radius: 4px; color: var(--text);
+}
+.spotlight-links { display: flex; gap: 0.75rem; flex-wrap: wrap; }
+.spotlight-links a {
+    font-size: 0.85rem; padding: 0.3rem 0.8rem;
+    border: 1px solid var(--border); border-radius: 6px;
+    color: var(--accent); transition: background 0.2s, border-color 0.2s;
+}
+.spotlight-links a:hover {
+    background: var(--tag-bg); border-color: var(--accent);
+}
+.spotlight-nav {
+    position: absolute; top: 50%; transform: translateY(-50%);
+    background: var(--surface); border: 1px solid var(--border);
+    color: var(--text); width: 32px; height: 32px;
+    border-radius: 50%; cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1rem; transition: background 0.2s, border-color 0.2s; z-index: 2;
+}
+.spotlight-nav:hover { background: var(--tag-bg); border-color: var(--accent); }
+.spotlight-prev { left: 0.5rem; }
+.spotlight-next { right: 0.5rem; }
+.spotlight-dots {
+    display: flex; justify-content: center; gap: 0.4rem; padding: 0.5rem 0 0.75rem;
+}
+.spotlight-dot {
+    width: 8px; height: 8px; border-radius: 50%;
+    background: var(--border); border: none; cursor: pointer;
+    transition: background 0.2s, transform 0.2s; padding: 0;
+}
+.spotlight-dot:hover { transform: scale(1.3); }
+.spotlight-dot.active { background: var(--accent); }
+.spotlight-pause {
+    position: absolute; top: 0.75rem; right: 0.75rem;
+    background: none; border: 1px solid var(--border);
+    border-radius: 4px; color: var(--text-secondary);
+    font-size: 0.7rem; padding: 0.15rem 0.4rem; cursor: pointer;
+    transition: color 0.2s, border-color 0.2s;
+}
+.spotlight-pause:hover { color: var(--text); border-color: var(--accent); }
+@media (max-width: 600px) {
+    .spotlight-inner { padding: 1.5rem 2.5rem; flex-direction: column; text-align: center; }
+    .spotlight-tags { justify-content: center; }
+    .spotlight-links { justify-content: center; }
+    .spotlight-title { font-size: 1.2rem; }
+}
+
 /* ── Clickable tag filtering ─────────────────────────────────────── */
 .tag-clickable {
     cursor: pointer;

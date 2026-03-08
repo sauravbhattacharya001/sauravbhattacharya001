@@ -12,7 +12,7 @@ const fs = require("fs");
 // Load app.js in a JSDOM environment
 function loadApp() {
     const dom = new JSDOM(
-        '<!DOCTYPE html><html><body><div id="projects-container"></div><input id="project-search"><div id="category-filters"></div><div id="active-tag-indicator" class="active-tag-indicator hidden"></div><div id="no-results" class="hidden"></div><button id="analytics-toggle" aria-expanded="false" aria-controls="analytics-panel">📊 Portfolio Analytics <span class="toggle-arrow">▾</span></button><div id="analytics-panel" role="region" aria-label="Portfolio analytics"></div></body></html>',
+        '<!DOCTYPE html><html><body><div id="projects-container"></div><input id="project-search"><div id="category-filters"></div><div id="active-tag-indicator" class="active-tag-indicator hidden"></div><div id="no-results" class="hidden"></div><button id="analytics-toggle" aria-expanded="false" aria-controls="analytics-panel">📊 Portfolio Analytics <span class="toggle-arrow">▾</span></button><div id="analytics-panel" role="region" aria-label="Portfolio analytics"></div><div id="spotlight-container"></div></body></html>',
         { runScripts: "dangerously", resources: "usable" }
     );
     const code = fs.readFileSync(path.join(__dirname, "..", "docs", "app.js"), "utf-8");
@@ -2401,5 +2401,367 @@ describe("toggleAnalytics", () => {
         expect(btn.getAttribute("aria-expanded")).toBe("true");
         win.toggleAnalytics();
         expect(btn.getAttribute("aria-expanded")).toBe("false");
+    });
+});
+
+// ── Spotlight Carousel ──────────────────────────────────────────────
+
+describe("Spotlight Carousel", () => {
+    beforeEach(() => {
+        // Reset spotlight state before each test
+        win._spotlightState.index = 0;
+        win._spotlightState.paused = false;
+        win.stopSpotlightTimer();
+    });
+
+    describe("buildSpotlightCard", () => {
+        test("returns empty string for null project", () => {
+            expect(win.buildSpotlightCard(null, 0, 1)).toBe("");
+        });
+
+        test("returns empty string for undefined project", () => {
+            expect(win.buildSpotlightCard(undefined, 0, 1)).toBe("");
+        });
+
+        test("renders project title", () => {
+            const html = win.buildSpotlightCard(win.PROJECTS[0], 0, win.PROJECTS.length);
+            expect(html).toContain("spotlight-title");
+            expect(html).toContain(win.PROJECTS[0].title);
+        });
+
+        test("renders project description", () => {
+            const html = win.buildSpotlightCard(win.PROJECTS[0], 0, win.PROJECTS.length);
+            expect(html).toContain("spotlight-desc");
+        });
+
+        test("renders project icon", () => {
+            const html = win.buildSpotlightCard(win.PROJECTS[0], 0, win.PROJECTS.length);
+            expect(html).toContain("spotlight-icon");
+        });
+
+        test("renders project tags", () => {
+            const html = win.buildSpotlightCard(win.PROJECTS[0], 0, win.PROJECTS.length);
+            expect(html).toContain("spotlight-tags");
+            for (const tag of win.PROJECTS[0].tags) {
+                expect(html).toContain(tag);
+            }
+        });
+
+        test("renders project links with sanitized URLs", () => {
+            const html = win.buildSpotlightCard(win.PROJECTS[0], 0, win.PROJECTS.length);
+            expect(html).toContain("spotlight-links");
+            expect(html).toContain('target="_blank"');
+            expect(html).toContain('rel="noopener"');
+        });
+
+        test("renders navigation dots for all projects", () => {
+            const total = win.PROJECTS.length;
+            const html = win.buildSpotlightCard(win.PROJECTS[0], 0, total);
+            const dotCount = (html.match(/spotlight-dot/g) || []).length;
+            // Each dot has 'spotlight-dot' once in class
+            expect(dotCount).toBeGreaterThanOrEqual(total);
+        });
+
+        test("marks active dot for current index", () => {
+            const html = win.buildSpotlightCard(win.PROJECTS[2], 2, win.PROJECTS.length);
+            expect(html).toContain('data-spotlight-index="2"');
+            // The dot at index 2 should have 'active'
+            const dotMatch = html.match(/spotlight-dot active[^"]*" data-spotlight-index="2"/);
+            expect(dotMatch).not.toBeNull();
+        });
+
+        test("shows 'Featured Project X of Y'", () => {
+            const html = win.buildSpotlightCard(win.PROJECTS[3], 3, 15);
+            expect(html).toContain("Featured Project 4 of 15");
+        });
+
+        test("renders prev and next buttons", () => {
+            const html = win.buildSpotlightCard(win.PROJECTS[0], 0, 5);
+            expect(html).toContain("spotlight-prev");
+            expect(html).toContain("spotlight-next");
+        });
+
+        test("renders pause button", () => {
+            const html = win.buildSpotlightCard(win.PROJECTS[0], 0, 5);
+            expect(html).toContain("spotlight-pause");
+        });
+
+        test("shows 'Pause' when not paused", () => {
+            win._spotlightState.paused = false;
+            const html = win.buildSpotlightCard(win.PROJECTS[0], 0, 5);
+            expect(html).toContain(">Pause<");
+        });
+
+        test("shows 'Resume' when paused", () => {
+            win._spotlightState.paused = true;
+            const html = win.buildSpotlightCard(win.PROJECTS[0], 0, 5);
+            expect(html).toContain(">Resume<");
+        });
+
+        test("escapes special characters in title", () => {
+            const fakeProject = {
+                title: '<script>alert("xss")</script>',
+                desc: "test",
+                icon: "X",
+                tags: [],
+                links: [],
+                repo: "test",
+                category: "Test"
+            };
+            const html = win.buildSpotlightCard(fakeProject, 0, 1);
+            expect(html).not.toContain("<script>");
+            expect(html).toContain("&lt;script&gt;");
+        });
+
+        test("sanitizes URLs in links", () => {
+            const fakeProject = {
+                title: "Test",
+                desc: "test",
+                icon: "X",
+                tags: [],
+                links: [{ label: "Evil", url: "javascript:alert(1)" }],
+                repo: "test",
+                category: "Test"
+            };
+            const html = win.buildSpotlightCard(fakeProject, 0, 1);
+            expect(html).not.toContain("javascript:");
+        });
+    });
+
+    describe("nextSpotlight", () => {
+        test("advances index by 1", () => {
+            win._spotlightState.index = 0;
+            const result = win.nextSpotlight();
+            expect(result).toBe(1);
+            expect(win._spotlightState.index).toBe(1);
+        });
+
+        test("wraps around to 0 at end", () => {
+            win._spotlightState.index = win.PROJECTS.length - 1;
+            const result = win.nextSpotlight();
+            expect(result).toBe(0);
+        });
+
+        test("renders the new spotlight", () => {
+            win._spotlightState.index = 0;
+            win.nextSpotlight();
+            const container = win.document.getElementById("spotlight-container");
+            expect(container.innerHTML).toContain(win.PROJECTS[1].title);
+        });
+    });
+
+    describe("prevSpotlight", () => {
+        test("decreases index by 1", () => {
+            win._spotlightState.index = 3;
+            const result = win.prevSpotlight();
+            expect(result).toBe(2);
+        });
+
+        test("wraps around to last at index 0", () => {
+            win._spotlightState.index = 0;
+            const result = win.prevSpotlight();
+            expect(result).toBe(win.PROJECTS.length - 1);
+        });
+
+        test("renders the new spotlight", () => {
+            win._spotlightState.index = 2;
+            win.prevSpotlight();
+            const container = win.document.getElementById("spotlight-container");
+            expect(container.innerHTML).toContain(win.PROJECTS[1].title);
+        });
+    });
+
+    describe("goToSpotlight", () => {
+        test("goes to specific index", () => {
+            const result = win.goToSpotlight(5);
+            expect(result).toBe(5);
+            expect(win._spotlightState.index).toBe(5);
+        });
+
+        test("wraps negative index", () => {
+            const result = win.goToSpotlight(-1);
+            expect(result).toBe(win.PROJECTS.length - 1);
+        });
+
+        test("wraps index beyond length", () => {
+            const result = win.goToSpotlight(win.PROJECTS.length + 3);
+            expect(result).toBe(3);
+        });
+
+        test("goes to index 0", () => {
+            win._spotlightState.index = 5;
+            const result = win.goToSpotlight(0);
+            expect(result).toBe(0);
+        });
+    });
+
+    describe("toggleSpotlightPause", () => {
+        test("pauses when running", () => {
+            win._spotlightState.paused = false;
+            const result = win.toggleSpotlightPause();
+            expect(result).toBe(true);
+            expect(win._spotlightState.paused).toBe(true);
+        });
+
+        test("resumes when paused", () => {
+            win._spotlightState.paused = true;
+            const result = win.toggleSpotlightPause();
+            expect(result).toBe(false);
+            expect(win._spotlightState.paused).toBe(false);
+        });
+
+        test("stops timer when pausing", () => {
+            win._spotlightState.paused = false;
+            win.startSpotlightTimer();
+            win.toggleSpotlightPause();
+            expect(win._spotlightState.timerId).toBeNull();
+        });
+    });
+
+    describe("startSpotlightTimer / stopSpotlightTimer", () => {
+        test("sets timerId on start", () => {
+            win.startSpotlightTimer();
+            expect(win._spotlightState.timerId).not.toBeNull();
+            win.stopSpotlightTimer();
+        });
+
+        test("clears timerId on stop", () => {
+            win.startSpotlightTimer();
+            win.stopSpotlightTimer();
+            expect(win._spotlightState.timerId).toBeNull();
+        });
+
+        test("stop is idempotent", () => {
+            win.stopSpotlightTimer();
+            win.stopSpotlightTimer();
+            expect(win._spotlightState.timerId).toBeNull();
+        });
+
+        test("start clears previous timer", () => {
+            win.startSpotlightTimer();
+            const id1 = win._spotlightState.timerId;
+            win.startSpotlightTimer();
+            const id2 = win._spotlightState.timerId;
+            // Should be a different timer ID
+            expect(id2).not.toBe(id1);
+            win.stopSpotlightTimer();
+        });
+    });
+
+    describe("renderSpotlight", () => {
+        test("renders first project on init", () => {
+            win._spotlightState.index = 0;
+            win.renderSpotlight();
+            const container = win.document.getElementById("spotlight-container");
+            expect(container.innerHTML).toContain(win.PROJECTS[0].title);
+        });
+
+        test("renders spotlight-inner structure", () => {
+            win.renderSpotlight();
+            const container = win.document.getElementById("spotlight-container");
+            expect(container.innerHTML).toContain("spotlight-inner");
+            expect(container.innerHTML).toContain("spotlight-content");
+            expect(container.innerHTML).toContain("spotlight-dots");
+        });
+
+        test("renders correct project at index", () => {
+            win._spotlightState.index = 3;
+            win.renderSpotlight();
+            const container = win.document.getElementById("spotlight-container");
+            expect(container.innerHTML).toContain(win.PROJECTS[3].title);
+        });
+    });
+
+    describe("initSpotlight", () => {
+        test("resets index to 0", () => {
+            win._spotlightState.index = 5;
+            win.initSpotlight();
+            expect(win._spotlightState.index).toBe(0);
+            win.stopSpotlightTimer();
+        });
+
+        test("resets paused to false", () => {
+            win._spotlightState.paused = true;
+            win.initSpotlight();
+            expect(win._spotlightState.paused).toBe(false);
+            win.stopSpotlightTimer();
+        });
+
+        test("starts the auto-rotation timer", () => {
+            win.initSpotlight();
+            expect(win._spotlightState.timerId).not.toBeNull();
+            win.stopSpotlightTimer();
+        });
+
+        test("renders the spotlight container", () => {
+            win.initSpotlight();
+            const container = win.document.getElementById("spotlight-container");
+            expect(container.innerHTML.length).toBeGreaterThan(0);
+            win.stopSpotlightTimer();
+        });
+    });
+
+    describe("wireSpotlightEvents", () => {
+        test("prev button click goes to previous project", () => {
+            win._spotlightState.index = 3;
+            win.renderSpotlight();
+            const container = win.document.getElementById("spotlight-container");
+            const prevBtn = container.querySelector(".spotlight-prev");
+            prevBtn.click();
+            expect(win._spotlightState.index).toBe(2);
+        });
+
+        test("next button click goes to next project", () => {
+            win._spotlightState.index = 3;
+            win.renderSpotlight();
+            const container = win.document.getElementById("spotlight-container");
+            const nextBtn = container.querySelector(".spotlight-next");
+            nextBtn.click();
+            expect(win._spotlightState.index).toBe(4);
+        });
+
+        test("dot click navigates to specific project", () => {
+            win._spotlightState.index = 0;
+            win.renderSpotlight();
+            const container = win.document.getElementById("spotlight-container");
+            const dots = container.querySelectorAll(".spotlight-dot");
+            if (dots.length > 5) {
+                dots[5].click();
+                expect(win._spotlightState.index).toBe(5);
+            }
+        });
+
+        test("pause button toggles pause state", () => {
+            win._spotlightState.paused = false;
+            win.renderSpotlight();
+            const container = win.document.getElementById("spotlight-container");
+            const pauseBtn = container.querySelector(".spotlight-pause");
+            pauseBtn.click();
+            expect(win._spotlightState.paused).toBe(true);
+        });
+    });
+
+    describe("spotlight state", () => {
+        test("default intervalMs is 6000", () => {
+            expect(win._spotlightState.intervalMs).toBe(6000);
+        });
+
+        test("state tracks index correctly through navigation", () => {
+            win._spotlightState.index = 0;
+            win.nextSpotlight();
+            win.nextSpotlight();
+            win.nextSpotlight();
+            expect(win._spotlightState.index).toBe(3);
+            win.prevSpotlight();
+            expect(win._spotlightState.index).toBe(2);
+        });
+
+        test("full cycle returns to 0", () => {
+            win._spotlightState.index = 0;
+            for (let i = 0; i < win.PROJECTS.length; i++) {
+                win.nextSpotlight();
+            }
+            expect(win._spotlightState.index).toBe(0);
+        });
     });
 });
