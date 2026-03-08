@@ -180,6 +180,44 @@ var PROJECTS = [
     }
 ];
 
+// ── Pre-computed Search Index ────────────────────────────────────────
+//
+// Instead of calling .toLowerCase() on every project field on every
+// keystroke / filter change, we pre-compute a search index once at load
+// time.  Each entry holds a single concatenated lowercase string for
+// full-text matching and a Set of lowercase tag names for O(1) tag
+// filtering.  This eliminates ~O(N*T) repeated toLowerCase() calls in
+// filterProjects() and projectMatchesQuery(), where N = number of
+// projects and T = average tags per project.
+
+var _searchIndex = (function() {
+    var idx = [];
+    for (var i = 0; i < PROJECTS.length; i++) {
+        var p = PROJECTS[i];
+        // Concatenate all searchable fields into one lowercase string.
+        // Separated by \0 (won't appear in user queries) to prevent
+        // false cross-field matches like "codeai" matching "code" + "ai".
+        var parts = [
+            p.title.toLowerCase(),
+            p.desc.toLowerCase(),
+            p.repo.toLowerCase()
+        ];
+        for (var t = 0; t < p.tags.length; t++) {
+            parts.push(p.tags[t].toLowerCase());
+        }
+        var searchText = parts.join("\0");
+
+        // Build a Set of lowercase tags for O(1) tag-filter lookups
+        var tagSet = Object.create(null);
+        for (var j = 0; j < p.tags.length; j++) {
+            tagSet[p.tags[j].toLowerCase()] = true;
+        }
+
+        idx.push({ text: searchText, tagSet: tagSet });
+    }
+    return idx;
+})();
+
 /**
  * Escape HTML entities to prevent XSS.
  *
@@ -311,12 +349,20 @@ function buildCard(p) {
  * Check if a project matches a text query (case-insensitive).
  * Searches across title, description, repo name, and tags.
  *
+ * Uses the pre-computed _searchIndex for O(1) lowercase lookups
+ * instead of calling .toLowerCase() on every field per call.
+ *
  * @param {Object} p - Project from PROJECTS array.
  * @param {string} query - Lowercase search query.
  * @returns {boolean}
  */
 function projectMatchesQuery(p, query) {
     if (!query) return true;
+    var idx = PROJECTS.indexOf(p);
+    if (idx >= 0 && idx < _searchIndex.length) {
+        return _searchIndex[idx].text.indexOf(query) !== -1;
+    }
+    // Fallback for dynamically added projects (shouldn't happen, but safe)
     if (p.title.toLowerCase().indexOf(query) !== -1) return true;
     if (p.desc.toLowerCase().indexOf(query) !== -1) return true;
     if (p.repo.toLowerCase().indexOf(query) !== -1) return true;
@@ -331,8 +377,9 @@ function projectMatchesQuery(p, query) {
  * Returns the filtered list without mutating PROJECTS.
  *
  * Text search matches against title, desc, tags, and repo name
- * (case-insensitive).  Category filter matches the category field
- * exactly.  Tag filter matches any tag case-insensitively.
+ * (case-insensitive) via the pre-computed _searchIndex.  Category
+ * filter matches the category field exactly.  Tag filter uses the
+ * pre-computed tagSet for O(1) lookups.
  * All filters are AND-combined.
  *
  * @returns {Object[]}
@@ -341,21 +388,17 @@ function filterProjects() {
     var q = _filterState.query.toLowerCase();
     var cat = _filterState.category;
     var tag = _filterState.tag;
+    var tagLower = tag ? tag.toLowerCase() : null;
     var onlyBookmarked = _filterState.bookmarked;
 
-    return PROJECTS.filter(function(p) {
+    return PROJECTS.filter(function(p, idx) {
         if (onlyBookmarked && !isBookmarked(p.repo)) return false;
         if (cat && p.category !== cat) return false;
-        if (tag) {
-            var tagLower = tag.toLowerCase();
-            var hasTag = false;
-            for (var i = 0; i < p.tags.length; i++) {
-                if (p.tags[i].toLowerCase() === tagLower) {
-                    hasTag = true;
-                    break;
-                }
+        if (tagLower) {
+            // Use pre-computed tagSet for O(1) lookup
+            if (idx < _searchIndex.length && !_searchIndex[idx].tagSet[tagLower]) {
+                return false;
             }
-            if (!hasTag) return false;
         }
         return projectMatchesQuery(p, q);
     });
@@ -431,7 +474,7 @@ function renderProjects(projects) {
         items.forEach(function(p) {
             html += '<div class="card" tabindex="-1">';
             html += buildCardHeader(p);
-            html += '<p>' + escapeHTML(p.description) + '</p>';
+            html += '<p>' + escapeHTML(p.desc) + '</p>';
             html += buildCardTags(p.tags);
             html += buildCardLinks(p.links);
             html += '</div>';
@@ -1635,6 +1678,8 @@ if (typeof module !== "undefined" && module.exports) {
         serializeFilterState: serializeFilterState,
         deserializeFilterState: deserializeFilterState,
         pushFilterState: pushFilterState,
-        initDeepLink: initDeepLink
+        initDeepLink: initDeepLink,
+        // Search index (perf)
+        _searchIndex: _searchIndex
     };
 }
