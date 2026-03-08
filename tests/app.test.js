@@ -1480,3 +1480,218 @@ describe("keyboard event handling", () => {
         expect(search.value).toBe("");
     });
 });
+
+// ── Sort & View Toggle ──────────────────────────────────────────────
+
+describe("SORT_ORDERS", () => {
+    test("has default, a-z, z-a, most-tags, most-links", () => {
+        expect(win.SORT_ORDERS).toBeDefined();
+        expect(Object.keys(win.SORT_ORDERS)).toEqual(
+            expect.arrayContaining(["default", "a-z", "z-a", "most-tags", "most-links"])
+        );
+    });
+
+    test("each sort order has label and compare function", () => {
+        for (const key of Object.keys(win.SORT_ORDERS)) {
+            expect(typeof win.SORT_ORDERS[key].label).toBe("string");
+            expect(typeof win.SORT_ORDERS[key].compare).toBe("function");
+        }
+    });
+});
+
+describe("sortProjects", () => {
+    test("returns copy of array (does not mutate)", () => {
+        const original = win.PROJECTS.slice();
+        const sorted = win.sortProjects(win.PROJECTS, "a-z");
+        expect(sorted).not.toBe(win.PROJECTS);
+        expect(win.PROJECTS.map(p => p.repo)).toEqual(original.map(p => p.repo));
+    });
+
+    test("default sort preserves original order", () => {
+        const sorted = win.sortProjects(win.PROJECTS, "default");
+        expect(sorted.map(p => p.repo)).toEqual(win.PROJECTS.map(p => p.repo));
+    });
+
+    test("a-z sorts alphabetically by title", () => {
+        const sorted = win.sortProjects(win.PROJECTS, "a-z");
+        for (let i = 1; i < sorted.length; i++) {
+            expect(sorted[i].title.toLowerCase().localeCompare(
+                sorted[i - 1].title.toLowerCase()
+            )).toBeGreaterThanOrEqual(0);
+        }
+    });
+
+    test("z-a sorts reverse alphabetically by title", () => {
+        const sorted = win.sortProjects(win.PROJECTS, "z-a");
+        for (let i = 1; i < sorted.length; i++) {
+            expect(sorted[i - 1].title.toLowerCase().localeCompare(
+                sorted[i].title.toLowerCase()
+            )).toBeGreaterThanOrEqual(0);
+        }
+    });
+
+    test("most-tags sorts by descending tag count", () => {
+        const sorted = win.sortProjects(win.PROJECTS, "most-tags");
+        for (let i = 1; i < sorted.length; i++) {
+            expect(sorted[i - 1].tags.length).toBeGreaterThanOrEqual(sorted[i].tags.length);
+        }
+    });
+
+    test("most-links sorts by descending link count", () => {
+        const sorted = win.sortProjects(win.PROJECTS, "most-links");
+        for (let i = 1; i < sorted.length; i++) {
+            expect(sorted[i - 1].links.length).toBeGreaterThanOrEqual(sorted[i].links.length);
+        }
+    });
+
+    test("null sort key returns unsorted copy", () => {
+        const sorted = win.sortProjects(win.PROJECTS, null);
+        expect(sorted.map(p => p.repo)).toEqual(win.PROJECTS.map(p => p.repo));
+    });
+
+    test("unknown sort key returns unsorted copy", () => {
+        const sorted = win.sortProjects(win.PROJECTS, "nonexistent");
+        expect(sorted.map(p => p.repo)).toEqual(win.PROJECTS.map(p => p.repo));
+    });
+
+    test("empty array returns empty array", () => {
+        expect(win.sortProjects([], "a-z")).toEqual([]);
+    });
+});
+
+describe("setSortOrder", () => {
+    beforeEach(() => {
+        win._filterState.sort = "default";
+    });
+
+    afterEach(() => {
+        win._filterState.sort = "default";
+    });
+
+    test("updates _filterState.sort", () => {
+        win.setSortOrder("a-z");
+        expect(win._filterState.sort).toBe("a-z");
+        // Reset immediately to avoid polluting renderProjects state
+        win.setSortOrder("default");
+    });
+
+    test("ignores unknown sort keys", () => {
+        win.setSortOrder("bogus");
+        expect(win._filterState.sort).toBe("default");
+    });
+});
+
+describe("setViewMode", () => {
+    beforeEach(() => {
+        win._filterState.view = "grid";
+    });
+
+    test("updates _filterState.view to list", () => {
+        win.setViewMode("list");
+        expect(win._filterState.view).toBe("list");
+    });
+
+    test("updates _filterState.view to grid", () => {
+        win._filterState.view = "list";
+        win.setViewMode("grid");
+        expect(win._filterState.view).toBe("grid");
+    });
+
+    test("ignores invalid modes", () => {
+        win.setViewMode("table");
+        expect(win._filterState.view).toBe("grid");
+    });
+});
+
+describe("sort & view integration", () => {
+    let sortDom, sortWin;
+
+    beforeAll(() => {
+        sortDom = new JSDOM(
+            '<!DOCTYPE html><html><body>' +
+            '<div id="projects-container"></div>' +
+            '<input id="project-search">' +
+            '<div id="category-filters"></div>' +
+            '<div id="sort-controls"></div>' +
+            '<div id="view-toggle"></div>' +
+            '<div id="active-tag-indicator" class="hidden"></div>' +
+            '<div id="no-results" class="hidden"></div>' +
+            '</body></html>',
+            { runScripts: "dangerously", resources: "usable" }
+        );
+        const code = fs.readFileSync(path.join(__dirname, "..", "docs", "app.js"), "utf-8");
+        sortDom.window.eval(code);
+        sortWin = sortDom.window;
+    });
+
+    afterAll(() => {
+        sortDom.window.close();
+    });
+
+    test("buildSortControls creates pills for each sort order", () => {
+        const container = sortDom.window.document.getElementById("sort-controls");
+        expect(container.querySelectorAll(".sort-pill").length).toBe(
+            Object.keys(sortWin.SORT_ORDERS).length
+        );
+    });
+
+    test("buildSortControls includes sort label", () => {
+        const container = sortDom.window.document.getElementById("sort-controls");
+        const label = container.querySelector(".sort-label");
+        expect(label).not.toBeNull();
+        expect(label.textContent).toBe("Sort:");
+    });
+
+    test("sort pill click changes sort order", () => {
+        const container = sortDom.window.document.getElementById("sort-controls");
+        const azPill = container.querySelector('[data-sort="a-z"]');
+        azPill.click();
+        expect(sortWin._filterState.sort).toBe("a-z");
+        expect(azPill.classList.contains("active")).toBe(true);
+    });
+
+    test("buildViewToggle creates grid and list buttons", () => {
+        const container = sortDom.window.document.getElementById("view-toggle");
+        expect(container.querySelector('[data-view="grid"]')).not.toBeNull();
+        expect(container.querySelector('[data-view="list"]')).not.toBeNull();
+    });
+
+    test("view toggle click changes to list mode", () => {
+        const container = sortDom.window.document.getElementById("view-toggle");
+        const listBtn = container.querySelector('[data-view="list"]');
+        listBtn.click();
+        expect(sortWin._filterState.view).toBe("list");
+        const projContainer = sortDom.window.document.getElementById("projects-container");
+        expect(projContainer.classList.contains("view-list")).toBe(true);
+    });
+
+    test("view toggle click changes back to grid mode", () => {
+        const container = sortDom.window.document.getElementById("view-toggle");
+        const gridBtn = container.querySelector('[data-view="grid"]');
+        gridBtn.click();
+        expect(sortWin._filterState.view).toBe("grid");
+        const projContainer = sortDom.window.document.getElementById("projects-container");
+        expect(projContainer.classList.contains("view-list")).toBe(false);
+    });
+
+    test("a-z sort renders cards in alphabetical order", () => {
+        sortWin.setSortOrder("a-z");
+        const projContainer = sortDom.window.document.getElementById("projects-container");
+        const titles = Array.from(projContainer.querySelectorAll(".card h3 a"))
+            .map(a => a.textContent);
+        for (let i = 1; i < titles.length; i++) {
+            expect(titles[i].toLowerCase().localeCompare(
+                titles[i - 1].toLowerCase()
+            )).toBeGreaterThanOrEqual(0);
+        }
+    });
+
+    test("default sort restores original order", () => {
+        sortWin.setSortOrder("default");
+        const projContainer = sortDom.window.document.getElementById("projects-container");
+        const titles = Array.from(projContainer.querySelectorAll(".card h3 a"))
+            .map(a => a.textContent);
+        const expected = sortWin.PROJECTS.map(p => p.title);
+        expect(titles).toEqual(expected);
+    });
+});

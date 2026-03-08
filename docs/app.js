@@ -5,13 +5,13 @@
  * The HTML template is generated automatically.
  */
 
-/* exported PROJECTS, _filterState, renderProjects, filterProjects, initFilters, buildCardHeader, buildCardTags, buildCardLinks, buildCategoryHTML, projectMatchesQuery, groupByCategory, _extractUnique, extractCategories, createFilterPills, wireFilterEvents, updateTagIndicator, clearTagFilter, setTagFilter, extractTags, wireTagClicks, getPreferredTheme, applyTheme, toggleTheme, initTheme, _kbState, getVisibleCards, focusCard, blurCards, openFocusedCard, showKeyboardHelp, hideKeyboardHelp, toggleKeyboardHelp, initKeyboardNav, buildHelpOverlay */
+/* exported PROJECTS, _filterState, renderProjects, filterProjects, initFilters, buildCardHeader, buildCardTags, buildCardLinks, buildCategoryHTML, projectMatchesQuery, groupByCategory, _extractUnique, extractCategories, createFilterPills, wireFilterEvents, updateTagIndicator, clearTagFilter, setTagFilter, extractTags, wireTagClicks, getPreferredTheme, applyTheme, toggleTheme, initTheme, _kbState, getVisibleCards, focusCard, blurCards, openFocusedCard, showKeyboardHelp, hideKeyboardHelp, toggleKeyboardHelp, initKeyboardNav, buildHelpOverlay, sortProjects, setSortOrder, setViewMode, initSortAndView, buildSortControls, buildViewToggle, SORT_ORDERS */
 
 /**
  * Active filter state.
  * @type {{ query: string, category: string|null, tag: string|null }}
  */
-var _filterState = { query: "", category: null, tag: null };
+var _filterState = { query: "", category: null, tag: null, sort: "default", view: "grid" };
 
 var PROJECTS = [
     // --- AI & Agents ---
@@ -415,8 +415,24 @@ function renderProjects(projects) {
         }
     }
 
-    var groups = groupByCategory(items);
-    container.innerHTML = groups.map(buildCategoryHTML).join("");
+    // When sorted (non-default), render a flat grid without category headers.
+    // Category grouping only makes sense in default order.
+    if (_filterState.sort && _filterState.sort !== "default") {
+        var html = '<div class="projects-grid">';
+        items.forEach(function(p) {
+            html += '<div class="card" tabindex="-1">';
+            html += buildCardHeader(p);
+            html += '<p>' + escapeHTML(p.description) + '</p>';
+            html += buildCardTags(p.tags);
+            html += buildCardLinks(p.links);
+            html += '</div>';
+        });
+        html += '</div>';
+        container.innerHTML = html;
+    } else {
+        var groups = groupByCategory(items);
+        container.innerHTML = groups.map(buildCategoryHTML).join("");
+    }
 
     // Update active tag indicator
     updateTagIndicator();
@@ -532,10 +548,12 @@ function wireFilterEvents(filtersContainer, searchInput) {
 var _lastRenderedIds = null;
 function _applyFilters() {
     var filtered = filterProjects();
+    filtered = sortProjects(filtered, _filterState.sort);
     var ids = filtered.map(function(p) { return p.repo; }).join(",");
     if (ids === _lastRenderedIds) return;
     _lastRenderedIds = ids;
     renderProjects(filtered);
+    _applyViewMode();
 }
 
 /**
@@ -606,6 +624,236 @@ function initFilters() {
     createFilterPills(filtersContainer, categories);
     wireFilterEvents(filtersContainer, searchInput);
     wireTagClicks();
+}
+
+// ── Sort & View Toggle ──────────────────────────────────────────────
+
+/**
+ * Available sort orders.
+ * Each entry has a label (for UI) and a comparator function.
+ * "default" preserves the original PROJECTS array order (by category).
+ */
+var SORT_ORDERS = {
+    "default": {
+        label: "Default",
+        compare: function() { return 0; }
+    },
+    "a-z": {
+        label: "A → Z",
+        compare: function(a, b) {
+            return a.title.toLowerCase().localeCompare(b.title.toLowerCase());
+        }
+    },
+    "z-a": {
+        label: "Z → A",
+        compare: function(a, b) {
+            return b.title.toLowerCase().localeCompare(a.title.toLowerCase());
+        }
+    },
+    "most-tags": {
+        label: "Most Tags",
+        compare: function(a, b) {
+            return b.tags.length - a.tags.length;
+        }
+    },
+    "most-links": {
+        label: "Most Links",
+        compare: function(a, b) {
+            return b.links.length - a.links.length;
+        }
+    }
+};
+
+/**
+ * Sort a project array according to the given sort key.
+ * Returns a new array (does not mutate the input).
+ *
+ * "default" returns the array in its original insertion order.
+ * Other keys use stable sort via the comparator in SORT_ORDERS.
+ *
+ * @param {Object[]} projects - Array of projects to sort.
+ * @param {string} sortKey - Key from SORT_ORDERS.
+ * @returns {Object[]}
+ */
+function sortProjects(projects, sortKey) {
+    if (!sortKey || sortKey === "default" || !SORT_ORDERS[sortKey]) {
+        return projects.slice();
+    }
+    return projects.slice().sort(SORT_ORDERS[sortKey].compare);
+}
+
+/**
+ * Set the active sort order and re-render.
+ * Persists choice in localStorage.
+ *
+ * @param {string} sortKey - Sort key (must be a key in SORT_ORDERS).
+ */
+function setSortOrder(sortKey) {
+    if (!SORT_ORDERS[sortKey]) return;
+    _filterState.sort = sortKey;
+    if (typeof localStorage !== "undefined") {
+        localStorage.setItem("sort-order", sortKey);
+    }
+    _updateSortPillActive();
+    _applyFilters();
+}
+
+/**
+ * Set the view mode (grid or list) and update the DOM.
+ * Persists choice in localStorage.
+ *
+ * @param {"grid"|"list"} mode - View mode.
+ */
+function setViewMode(mode) {
+    if (mode !== "grid" && mode !== "list") return;
+    _filterState.view = mode;
+    if (typeof localStorage !== "undefined") {
+        localStorage.setItem("view-mode", mode);
+    }
+    _applyViewMode();
+    _updateViewToggleActive();
+}
+
+/**
+ * Apply the current view mode class to the projects container.
+ */
+function _applyViewMode() {
+    if (typeof document === "undefined") return;
+    var container = document.getElementById("projects-container");
+    if (!container) return;
+    if (_filterState.view === "list") {
+        container.classList.add("view-list");
+    } else {
+        container.classList.remove("view-list");
+    }
+}
+
+/**
+ * Update sort pill active states in the DOM.
+ */
+function _updateSortPillActive() {
+    if (typeof document === "undefined") return;
+    var sortContainer = document.getElementById("sort-controls");
+    if (!sortContainer) return;
+    var pills = sortContainer.querySelectorAll(".sort-pill");
+    for (var i = 0; i < pills.length; i++) {
+        var key = pills[i].getAttribute("data-sort");
+        if (key === _filterState.sort) {
+            pills[i].classList.add("active");
+        } else {
+            pills[i].classList.remove("active");
+        }
+    }
+}
+
+/**
+ * Update view toggle button active states in the DOM.
+ */
+function _updateViewToggleActive() {
+    if (typeof document === "undefined") return;
+    var viewContainer = document.getElementById("view-toggle");
+    if (!viewContainer) return;
+    var btns = viewContainer.querySelectorAll(".view-btn");
+    for (var i = 0; i < btns.length; i++) {
+        var mode = btns[i].getAttribute("data-view");
+        if (mode === _filterState.view) {
+            btns[i].classList.add("active");
+        } else {
+            btns[i].classList.remove("active");
+        }
+    }
+}
+
+/**
+ * Build sort control pills into a container element.
+ *
+ * @param {HTMLElement} container - DOM element for sort pills.
+ */
+function buildSortControls(container) {
+    var label = document.createElement("span");
+    label.className = "sort-label";
+    label.textContent = "Sort:";
+    container.appendChild(label);
+
+    var keys = Object.keys(SORT_ORDERS);
+    for (var i = 0; i < keys.length; i++) {
+        var key = keys[i];
+        var pill = document.createElement("button");
+        pill.type = "button";
+        pill.className = "sort-pill" + (key === _filterState.sort ? " active" : "");
+        pill.textContent = SORT_ORDERS[key].label;
+        pill.setAttribute("data-sort", key);
+        container.appendChild(pill);
+    }
+
+    container.addEventListener("click", function(e) {
+        var pill = e.target;
+        if (!pill.classList.contains("sort-pill")) return;
+        var sortKey = pill.getAttribute("data-sort");
+        if (sortKey) setSortOrder(sortKey);
+    });
+}
+
+/**
+ * Build view mode toggle buttons into a container element.
+ *
+ * @param {HTMLElement} container - DOM element for view toggle.
+ */
+function buildViewToggle(container) {
+    var gridBtn = document.createElement("button");
+    gridBtn.type = "button";
+    gridBtn.className = "view-btn" + (_filterState.view === "grid" ? " active" : "");
+    gridBtn.setAttribute("data-view", "grid");
+    gridBtn.setAttribute("aria-label", "Grid view");
+    gridBtn.setAttribute("title", "Grid view");
+    gridBtn.innerHTML = "&#9638;&#9638;"; // ▦▦ grid icon
+    container.appendChild(gridBtn);
+
+    var listBtn = document.createElement("button");
+    listBtn.type = "button";
+    listBtn.className = "view-btn" + (_filterState.view === "list" ? " active" : "");
+    listBtn.setAttribute("data-view", "list");
+    listBtn.setAttribute("aria-label", "List view");
+    listBtn.setAttribute("title", "List view");
+    listBtn.innerHTML = "&#9776;"; // ☰ list icon
+    container.appendChild(listBtn);
+
+    container.addEventListener("click", function(e) {
+        var btn = e.target.closest ? e.target.closest(".view-btn") : e.target;
+        if (!btn || !btn.classList.contains("view-btn")) return;
+        var mode = btn.getAttribute("data-view");
+        if (mode) setViewMode(mode);
+    });
+}
+
+/**
+ * Initialize sort controls and view toggle.
+ * Restores persisted preferences from localStorage.
+ */
+function initSortAndView() {
+    // Restore persisted preferences
+    if (typeof localStorage !== "undefined") {
+        var storedSort = localStorage.getItem("sort-order");
+        if (storedSort && SORT_ORDERS[storedSort]) {
+            _filterState.sort = storedSort;
+        }
+        var storedView = localStorage.getItem("view-mode");
+        if (storedView === "grid" || storedView === "list") {
+            _filterState.view = storedView;
+        }
+    }
+
+    var sortContainer = document.getElementById("sort-controls");
+    if (sortContainer) {
+        buildSortControls(sortContainer);
+    }
+
+    var viewContainer = document.getElementById("view-toggle");
+    if (viewContainer) {
+        buildViewToggle(viewContainer);
+    }
+
+    _applyViewMode();
 }
 
 // ── Theme toggle ────────────────────────────────────────────────────
@@ -958,12 +1206,14 @@ function initKeyboardNav() {
 if (typeof document !== "undefined") {
     if (document.readyState === "loading") {
         document.addEventListener("DOMContentLoaded", function() {
+            initSortAndView();
             renderProjects();
             initFilters();
             initTheme();
             initKeyboardNav();
         });
     } else {
+        initSortAndView();
         renderProjects();
         initFilters();
         initTheme();
@@ -1016,6 +1266,14 @@ if (typeof module !== "undefined" && module.exports) {
         hideKeyboardHelp: hideKeyboardHelp,
         toggleKeyboardHelp: toggleKeyboardHelp,
         initKeyboardNav: initKeyboardNav,
-        buildHelpOverlay: buildHelpOverlay
+        buildHelpOverlay: buildHelpOverlay,
+        // Sort & View
+        SORT_ORDERS: SORT_ORDERS,
+        sortProjects: sortProjects,
+        setSortOrder: setSortOrder,
+        setViewMode: setViewMode,
+        initSortAndView: initSortAndView,
+        buildSortControls: buildSortControls,
+        buildViewToggle: buildViewToggle
     };
 }
