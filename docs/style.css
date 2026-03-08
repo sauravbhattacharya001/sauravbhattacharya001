@@ -377,6 +377,71 @@ a:hover { color: var(--accent-hover); }
     .spotlight-title { font-size: 1.2rem; }
 }
 
+/* ── Tech Stack Radar ────────────────────────────────────────────── */
+.techradar-panel { margin-bottom: 1rem; }
+.techradar {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: 12px; padding: 1.25rem; margin-top: 0.5rem;
+}
+.techradar-header {
+    display: flex; justify-content: space-between; align-items: center;
+    flex-wrap: wrap; gap: 0.5rem; margin-bottom: 0.75rem;
+}
+.techradar-title { font-weight: 700; font-size: 1.1rem; color: var(--text); }
+.techradar-summary {
+    display: flex; gap: 1rem; font-size: 0.8rem; color: var(--text-secondary);
+}
+.techradar-pills {
+    display: flex; flex-wrap: wrap; gap: 0.4rem; margin-bottom: 0.75rem;
+}
+.techradar-pill {
+    font-size: 0.8rem; padding: 0.25rem 0.6rem; border-radius: 6px;
+    border: 1px solid var(--border); background: var(--surface);
+    color: var(--text); cursor: pointer; transition: background 0.2s, border-color 0.2s;
+}
+.techradar-pill:hover { border-color: var(--accent); }
+.techradar-pill.active { background: var(--accent); color: #fff; border-color: var(--accent); }
+.techradar-pill-count {
+    font-size: 0.7rem; opacity: 0.7; margin-left: 0.2rem;
+}
+.techradar-grid {
+    display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 0.5rem;
+}
+.techradar-item {
+    display: grid; grid-template-columns: 1fr auto auto;
+    align-items: center; gap: 0.4rem; padding: 0.5rem 0.6rem;
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: 8px; cursor: pointer;
+    transition: border-color 0.2s, background 0.2s;
+    text-align: left; position: relative; overflow: hidden;
+}
+.techradar-item:hover { border-color: var(--accent); background: var(--tag-bg); }
+.techradar-bar-bg {
+    position: absolute; left: 0; top: 0; bottom: 0; width: 100%;
+    pointer-events: none;
+}
+.techradar-bar {
+    height: 100%; background: var(--accent); opacity: 0.08;
+    border-radius: 8px 0 0 8px; transition: width 0.3s;
+}
+.techradar-tag-name {
+    font-size: 0.85rem; font-weight: 600; color: var(--text);
+    position: relative; z-index: 1; grid-column: 1;
+}
+.techradar-tag-count {
+    font-size: 0.8rem; font-weight: 700; color: var(--accent);
+    position: relative; z-index: 1;
+}
+.techradar-tag-type {
+    font-size: 0.65rem; color: var(--text-secondary); text-transform: uppercase;
+    letter-spacing: 0.05em; position: relative; z-index: 1;
+}
+@media (max-width: 600px) {
+    .techradar-grid { grid-template-columns: 1fr; }
+    .techradar-summary { flex-direction: column; gap: 0.25rem; }
+}
+
 /* ── Clickable tag filtering ─────────────────────────────────────── */
 .tag-clickable {
     cursor: pointer;

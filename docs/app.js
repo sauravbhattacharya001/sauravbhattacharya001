@@ -5,7 +5,7 @@
  * The HTML template is generated automatically.
  */
 
-/* exported PROJECTS, _filterState, renderProjects, filterProjects, initFilters, buildCardHeader, buildCardTags, buildCardLinks, buildCategoryHTML, projectMatchesQuery, groupByCategory, _extractUnique, extractCategories, createFilterPills, wireFilterEvents, updateTagIndicator, clearTagFilter, setTagFilter, extractTags, wireTagClicks, getPreferredTheme, applyTheme, toggleTheme, initTheme, _kbState, getVisibleCards, focusCard, blurCards, openFocusedCard, showKeyboardHelp, hideKeyboardHelp, toggleKeyboardHelp, initKeyboardNav, buildHelpOverlay, sortProjects, setSortOrder, setViewMode, initSortAndView, buildSortControls, buildViewToggle, SORT_ORDERS, _bookmarks, isBookmarked, toggleBookmark, setBookmarkFilter, initBookmarks, getBookmarkCount, serializeFilterState, deserializeFilterState, pushFilterState, initDeepLink, _deepLinkEnabled, computeCategoryDistribution, computeTagDistribution, computePortfolioSummary, buildBarChart, buildTagCloud, buildAnalyticsPanel, toggleAnalytics, initAnalytics, _spotlightState, buildSpotlightCard, renderSpotlight, nextSpotlight, prevSpotlight, goToSpotlight, toggleSpotlightPause, startSpotlightTimer, stopSpotlightTimer, wireSpotlightEvents, initSpotlight */
+/* exported PROJECTS, _filterState, renderProjects, filterProjects, initFilters, buildCardHeader, buildCardTags, buildCardLinks, buildCategoryHTML, projectMatchesQuery, groupByCategory, _extractUnique, extractCategories, createFilterPills, wireFilterEvents, updateTagIndicator, clearTagFilter, setTagFilter, extractTags, wireTagClicks, getPreferredTheme, applyTheme, toggleTheme, initTheme, _kbState, getVisibleCards, focusCard, blurCards, openFocusedCard, showKeyboardHelp, hideKeyboardHelp, toggleKeyboardHelp, initKeyboardNav, buildHelpOverlay, sortProjects, setSortOrder, setViewMode, initSortAndView, buildSortControls, buildViewToggle, SORT_ORDERS, _bookmarks, isBookmarked, toggleBookmark, setBookmarkFilter, initBookmarks, getBookmarkCount, serializeFilterState, deserializeFilterState, pushFilterState, initDeepLink, _deepLinkEnabled, computeCategoryDistribution, computeTagDistribution, computePortfolioSummary, buildBarChart, buildTagCloud, buildAnalyticsPanel, toggleAnalytics, initAnalytics, _spotlightState, buildSpotlightCard, renderSpotlight, nextSpotlight, prevSpotlight, goToSpotlight, toggleSpotlightPause, startSpotlightTimer, stopSpotlightTimer, wireSpotlightEvents, initSpotlight, TECH_CATEGORIES, _techRadarState, computeTechStack, groupTechByType, buildTechRadar, renderTechRadar, toggleTechRadar, setTechRadarFilter, wireTechRadarEvents, initTechRadar */
 
 /**
  * Active filter state.
@@ -1991,6 +1991,240 @@ function initSpotlight() {
     startSpotlightTimer();
 }
 
+// ── Tech Stack Radar ────────────────────────────────────────────────
+
+/**
+ * Classification map: tag name → category type.
+ * Tags not listed default to "Domain".
+ */
+var TECH_CATEGORIES = {
+    "Python": "Language", "JavaScript": "Language", "C#": "Language",
+    "C": "Language", "Java": "Language", "OCaml": "Language",
+    "Dart": "Language", "Swift": "Language", "HTML/JS": "Language",
+    "Node.js": "Framework", ".NET 8": "Framework", "ASP.NET": "Framework",
+    "Flutter": "Framework", "WPF": "Framework", "BLoC": "Framework",
+    "MVC": "Framework", "GPT-4o": "Framework", "Azure OpenAI": "Framework",
+    "Compiler": "Tool", "Observability": "Tool", "Analytics": "Tool",
+    "Data Viz": "Tool", "Visualization": "Tool", "Code Execution": "Tool",
+    "Monte Carlo": "Tool", "RSS": "Tool"
+};
+
+/**
+ * Compute tag usage across all projects.
+ * @returns {Array<{tag:string, count:number, type:string, projects:string[]}>}
+ *   Sorted by count descending, then alphabetically.
+ */
+function computeTechStack() {
+    var map = {};
+    for (var i = 0; i < PROJECTS.length; i++) {
+        var p = PROJECTS[i];
+        for (var j = 0; j < p.tags.length; j++) {
+            var t = p.tags[j];
+            if (!map[t]) {
+                map[t] = { tag: t, count: 0, type: TECH_CATEGORIES[t] || "Domain", projects: [] };
+            }
+            map[t].count++;
+            map[t].projects.push(p.title);
+        }
+    }
+    var arr = [];
+    for (var key in map) {
+        if (map.hasOwnProperty(key)) arr.push(map[key]);
+    }
+    arr.sort(function(a, b) {
+        if (b.count !== a.count) return b.count - a.count;
+        return a.tag < b.tag ? -1 : a.tag > b.tag ? 1 : 0;
+    });
+    return arr;
+}
+
+/**
+ * Group tech stack items by type.
+ * @param {Array} stack - Output of computeTechStack.
+ * @returns {Object<string, Array>} Grouped by type.
+ */
+function groupTechByType(stack) {
+    var groups = {};
+    var order = ["Language", "Framework", "Tool", "Domain"];
+    for (var o = 0; o < order.length; o++) groups[order[o]] = [];
+    for (var i = 0; i < stack.length; i++) {
+        var item = stack[i];
+        if (!groups[item.type]) groups[item.type] = [];
+        groups[item.type].push(item);
+    }
+    return groups;
+}
+
+/**
+ * Build HTML for the tech stack radar panel.
+ * @param {string|null} activeType - Currently active type filter, or null.
+ * @returns {string} HTML string.
+ */
+function buildTechRadar(activeType) {
+    var stack = computeTechStack();
+    var groups = groupTechByType(stack);
+    var typeNames = ["Language", "Framework", "Tool", "Domain"];
+    var typeIcons = { Language: "💻", Framework: "⚙️", Tool: "🔧", Domain: "🎯" };
+
+    // Type filter pills
+    var pillsHtml = '<div class="techradar-pills">';
+    pillsHtml += '<button type="button" class="techradar-pill' +
+        (activeType === null ? ' active' : '') +
+        '" data-techradar-type="all">All</button>';
+    for (var p = 0; p < typeNames.length; p++) {
+        var tn = typeNames[p];
+        if (groups[tn] && groups[tn].length > 0) {
+            pillsHtml += '<button type="button" class="techradar-pill' +
+                (activeType === tn ? ' active' : '') +
+                '" data-techradar-type="' + escapeHTML(tn) + '">' +
+                escapeHTML(typeIcons[tn] || "") + " " + escapeHTML(tn) +
+                ' <span class="techradar-pill-count">' + groups[tn].length + '</span></button>';
+        }
+    }
+    pillsHtml += '</div>';
+
+    // Tech items
+    var maxCount = stack.length > 0 ? stack[0].count : 1;
+    var itemsHtml = '<div class="techradar-grid">';
+    for (var g = 0; g < typeNames.length; g++) {
+        var type = typeNames[g];
+        if (activeType !== null && activeType !== type) continue;
+        var items = groups[type];
+        if (!items || items.length === 0) continue;
+        for (var k = 0; k < items.length; k++) {
+            var item = items[k];
+            var pct = Math.round((item.count / maxCount) * 100);
+            var projectList = "";
+            for (var m = 0; m < item.projects.length; m++) {
+                if (m > 0) projectList += ", ";
+                projectList += item.projects[m];
+            }
+            itemsHtml += '<button type="button" class="techradar-item" ' +
+                'data-techradar-tag="' + escapeHTML(item.tag) + '" ' +
+                'title="' + escapeHTML(item.tag) + ' — used in: ' + escapeHTML(projectList) + '">' +
+                '<div class="techradar-bar-bg">' +
+                    '<div class="techradar-bar" style="width:' + pct + '%"></div>' +
+                '</div>' +
+                '<span class="techradar-tag-name">' + escapeHTML(item.tag) + '</span>' +
+                '<span class="techradar-tag-count">' + item.count + '</span>' +
+                '<span class="techradar-tag-type">' + escapeHTML(type) + '</span>' +
+            '</button>';
+        }
+    }
+    itemsHtml += '</div>';
+
+    // Summary stats
+    var langCount = (groups.Language || []).length;
+    var fwCount = (groups.Framework || []).length;
+    var toolCount = (groups.Tool || []).length;
+    var domainCount = (groups.Domain || []).length;
+    var summaryHtml = '<div class="techradar-summary">' +
+        '<span>' + stack.length + ' technologies</span>' +
+        '<span>' + langCount + ' languages</span>' +
+        '<span>' + fwCount + ' frameworks</span>' +
+        '<span>' + PROJECTS.length + ' projects</span>' +
+    '</div>';
+
+    return '<div class="techradar">' +
+        '<div class="techradar-header">' +
+            '<span class="techradar-title">🛠️ Tech Stack</span>' +
+            summaryHtml +
+        '</div>' +
+        pillsHtml + itemsHtml +
+    '</div>';
+}
+
+/** Tech radar state */
+var _techRadarState = { expanded: false, activeType: null };
+
+/**
+ * Render the tech radar into its container.
+ */
+function renderTechRadar() {
+    if (typeof document === "undefined") return;
+    var panel = document.getElementById("techradar-panel");
+    if (!panel) return;
+    if (!_techRadarState.expanded) {
+        panel.innerHTML = "";
+        return;
+    }
+    panel.innerHTML = buildTechRadar(_techRadarState.activeType);
+    wireTechRadarEvents();
+}
+
+/**
+ * Toggle the tech radar panel visibility.
+ * @returns {boolean} True if now expanded.
+ */
+function toggleTechRadar() {
+    _techRadarState.expanded = !_techRadarState.expanded;
+    if (typeof document !== "undefined") {
+        var btn = document.getElementById("techradar-toggle");
+        if (btn) {
+            btn.setAttribute("aria-expanded", _techRadarState.expanded ? "true" : "false");
+        }
+    }
+    renderTechRadar();
+    return _techRadarState.expanded;
+}
+
+/**
+ * Set the active type filter.
+ * @param {string|null} type - "Language", "Framework", "Tool", "Domain", or null for all.
+ */
+function setTechRadarFilter(type) {
+    _techRadarState.activeType = type;
+    renderTechRadar();
+}
+
+/**
+ * Wire click events for type pills and tag items.
+ */
+function wireTechRadarEvents() {
+    if (typeof document === "undefined") return;
+    var panel = document.getElementById("techradar-panel");
+    if (!panel) return;
+
+    var pills = panel.querySelectorAll(".techradar-pill");
+    for (var i = 0; i < pills.length; i++) {
+        (function(pill) {
+            pill.addEventListener("click", function() {
+                var type = pill.getAttribute("data-techradar-type");
+                if (type === "all") {
+                    setTechRadarFilter(null);
+                } else {
+                    setTechRadarFilter(_techRadarState.activeType === type ? null : type);
+                }
+            });
+        })(pills[i]);
+    }
+
+    var items = panel.querySelectorAll(".techradar-item");
+    for (var j = 0; j < items.length; j++) {
+        (function(item) {
+            item.addEventListener("click", function() {
+                var tag = item.getAttribute("data-techradar-tag");
+                if (tag) {
+                    setTagFilter(tag);
+                }
+            });
+        })(items[j]);
+    }
+}
+
+/**
+ * Initialize the tech radar toggle button.
+ */
+function initTechRadar() {
+    if (typeof document === "undefined") return;
+    var btn = document.getElementById("techradar-toggle");
+    if (btn) {
+        btn.addEventListener("click", function() {
+            toggleTechRadar();
+        });
+    }
+}
+
 // Auto-initialize on DOM ready
 if (typeof document !== "undefined") {
     if (document.readyState === "loading") {
@@ -2004,6 +2238,7 @@ if (typeof document !== "undefined") {
             initKeyboardNav();
             initAnalytics();
             initSpotlight();
+            initTechRadar();
         });
     } else {
         initSortAndView();
@@ -2015,6 +2250,7 @@ if (typeof document !== "undefined") {
         initKeyboardNav();
         initAnalytics();
         initSpotlight();
+        initTechRadar();
     }
 }
 
@@ -2107,6 +2343,17 @@ if (typeof module !== "undefined" && module.exports) {
         startSpotlightTimer: startSpotlightTimer,
         stopSpotlightTimer: stopSpotlightTimer,
         wireSpotlightEvents: wireSpotlightEvents,
-        initSpotlight: initSpotlight
+        initSpotlight: initSpotlight,
+        // Tech Stack Radar
+        TECH_CATEGORIES: TECH_CATEGORIES,
+        _techRadarState: _techRadarState,
+        computeTechStack: computeTechStack,
+        groupTechByType: groupTechByType,
+        buildTechRadar: buildTechRadar,
+        renderTechRadar: renderTechRadar,
+        toggleTechRadar: toggleTechRadar,
+        setTechRadarFilter: setTechRadarFilter,
+        wireTechRadarEvents: wireTechRadarEvents,
+        initTechRadar: initTechRadar
     };
 }

@@ -12,7 +12,7 @@ const fs = require("fs");
 // Load app.js in a JSDOM environment
 function loadApp() {
     const dom = new JSDOM(
-        '<!DOCTYPE html><html><body><div id="projects-container"></div><input id="project-search"><div id="category-filters"></div><div id="active-tag-indicator" class="active-tag-indicator hidden"></div><div id="no-results" class="hidden"></div><button id="analytics-toggle" aria-expanded="false" aria-controls="analytics-panel">📊 Portfolio Analytics <span class="toggle-arrow">▾</span></button><div id="analytics-panel" role="region" aria-label="Portfolio analytics"></div><div id="spotlight-container"></div></body></html>',
+        '<!DOCTYPE html><html><body><div id="projects-container"></div><input id="project-search"><div id="category-filters"></div><div id="active-tag-indicator" class="active-tag-indicator hidden"></div><div id="no-results" class="hidden"></div><button id="analytics-toggle" aria-expanded="false" aria-controls="analytics-panel">📊 Portfolio Analytics <span class="toggle-arrow">▾</span></button><div id="analytics-panel" role="region" aria-label="Portfolio analytics"></div><div id="spotlight-container"></div><button id="techradar-toggle" aria-expanded="false" aria-controls="techradar-panel">🛠️ Tech Stack <span class="toggle-arrow">▾</span></button><div id="techradar-panel" role="region" aria-label="Tech stack radar"></div></body></html>',
         { runScripts: "dangerously", resources: "usable" }
     );
     const code = fs.readFileSync(path.join(__dirname, "..", "docs", "app.js"), "utf-8");
@@ -2762,6 +2762,271 @@ describe("Spotlight Carousel", () => {
                 win.nextSpotlight();
             }
             expect(win._spotlightState.index).toBe(0);
+        });
+    });
+});
+
+// ── Tech Stack Radar ────────────────────────────────────────────────
+
+describe("Tech Stack Radar", () => {
+    beforeEach(() => {
+        win._techRadarState.expanded = false;
+        win._techRadarState.activeType = null;
+    });
+
+    describe("computeTechStack", () => {
+        test("returns an array of tech items", () => {
+            const stack = win.computeTechStack();
+            expect(Array.isArray(stack)).toBe(true);
+            expect(stack.length).toBeGreaterThan(0);
+        });
+
+        test("each item has tag, count, type, and projects", () => {
+            const stack = win.computeTechStack();
+            for (const item of stack) {
+                expect(item).toHaveProperty("tag");
+                expect(item).toHaveProperty("count");
+                expect(item).toHaveProperty("type");
+                expect(item).toHaveProperty("projects");
+                expect(typeof item.tag).toBe("string");
+                expect(typeof item.count).toBe("number");
+                expect(item.count).toBeGreaterThan(0);
+                expect(Array.isArray(item.projects)).toBe(true);
+            }
+        });
+
+        test("sorted by count descending", () => {
+            const stack = win.computeTechStack();
+            for (let i = 1; i < stack.length; i++) {
+                expect(stack[i].count).toBeLessThanOrEqual(stack[i - 1].count);
+            }
+        });
+
+        test("Python appears with count >= 4", () => {
+            const stack = win.computeTechStack();
+            const python = stack.find(s => s.tag === "Python");
+            expect(python).toBeDefined();
+            expect(python.count).toBeGreaterThanOrEqual(4);
+        });
+
+        test("assigns correct type from TECH_CATEGORIES", () => {
+            const stack = win.computeTechStack();
+            const python = stack.find(s => s.tag === "Python");
+            expect(python.type).toBe("Language");
+            const flutter = stack.find(s => s.tag === "Flutter");
+            if (flutter) expect(flutter.type).toBe("Framework");
+        });
+
+        test("unrecognized tags default to Domain", () => {
+            const stack = win.computeTechStack();
+            const safety = stack.find(s => s.tag === "AI Safety");
+            if (safety) expect(safety.type).toBe("Domain");
+        });
+
+        test("projects list matches count", () => {
+            const stack = win.computeTechStack();
+            for (const item of stack) {
+                expect(item.projects.length).toBe(item.count);
+            }
+        });
+    });
+
+    describe("groupTechByType", () => {
+        test("groups by type categories", () => {
+            const stack = win.computeTechStack();
+            const groups = win.groupTechByType(stack);
+            expect(groups).toHaveProperty("Language");
+            expect(groups).toHaveProperty("Framework");
+            expect(groups).toHaveProperty("Tool");
+            expect(groups).toHaveProperty("Domain");
+        });
+
+        test("Language group contains Python", () => {
+            const stack = win.computeTechStack();
+            const groups = win.groupTechByType(stack);
+            const langTags = groups.Language.map(i => i.tag);
+            expect(langTags).toContain("Python");
+        });
+
+        test("all items are accounted for", () => {
+            const stack = win.computeTechStack();
+            const groups = win.groupTechByType(stack);
+            let total = 0;
+            for (const key in groups) {
+                total += groups[key].length;
+            }
+            expect(total).toBe(stack.length);
+        });
+    });
+
+    describe("buildTechRadar", () => {
+        test("returns HTML with techradar class", () => {
+            const html = win.buildTechRadar(null);
+            expect(html).toContain('class="techradar"');
+        });
+
+        test("includes type filter pills", () => {
+            const html = win.buildTechRadar(null);
+            expect(html).toContain("techradar-pill");
+            expect(html).toContain("Language");
+        });
+
+        test("includes tech items", () => {
+            const html = win.buildTechRadar(null);
+            expect(html).toContain("techradar-item");
+            expect(html).toContain("Python");
+        });
+
+        test("includes summary stats", () => {
+            const html = win.buildTechRadar(null);
+            expect(html).toContain("technologies");
+            expect(html).toContain("languages");
+            expect(html).toContain("projects");
+        });
+
+        test("filters by type when activeType set", () => {
+            const htmlAll = win.buildTechRadar(null);
+            const htmlLang = win.buildTechRadar("Language");
+            // Language-only should be shorter (fewer items)
+            expect(htmlLang.length).toBeLessThan(htmlAll.length);
+            // Should still contain Python
+            expect(htmlLang).toContain("Python");
+        });
+
+        test("escapes tag names", () => {
+            // All real tags are safe, but the function uses escapeHTML
+            const html = win.buildTechRadar(null);
+            expect(html).not.toContain("<script>");
+        });
+
+        test("active pill gets active class", () => {
+            const html = win.buildTechRadar("Language");
+            // The Language pill should be active
+            expect(html).toMatch(/techradar-pill active.*Language/);
+        });
+    });
+
+    describe("toggleTechRadar", () => {
+        test("toggles expanded state", () => {
+            expect(win._techRadarState.expanded).toBe(false);
+            win.toggleTechRadar();
+            expect(win._techRadarState.expanded).toBe(true);
+            win.toggleTechRadar();
+            expect(win._techRadarState.expanded).toBe(false);
+        });
+
+        test("renders panel when expanded", () => {
+            win.toggleTechRadar();
+            const panel = win.document.getElementById("techradar-panel");
+            expect(panel.innerHTML.length).toBeGreaterThan(0);
+        });
+
+        test("clears panel when collapsed", () => {
+            win.toggleTechRadar(); // expand
+            win.toggleTechRadar(); // collapse
+            const panel = win.document.getElementById("techradar-panel");
+            expect(panel.innerHTML).toBe("");
+        });
+
+        test("updates aria-expanded on toggle button", () => {
+            const btn = win.document.getElementById("techradar-toggle");
+            expect(btn.getAttribute("aria-expanded")).toBe("false");
+            win.toggleTechRadar();
+            expect(btn.getAttribute("aria-expanded")).toBe("true");
+            win.toggleTechRadar();
+            expect(btn.getAttribute("aria-expanded")).toBe("false");
+        });
+    });
+
+    describe("setTechRadarFilter", () => {
+        test("sets activeType and re-renders", () => {
+            win._techRadarState.expanded = true;
+            win.renderTechRadar();
+            win.setTechRadarFilter("Framework");
+            expect(win._techRadarState.activeType).toBe("Framework");
+        });
+
+        test("null clears filter", () => {
+            win._techRadarState.expanded = true;
+            win._techRadarState.activeType = "Language";
+            win.setTechRadarFilter(null);
+            expect(win._techRadarState.activeType).toBeNull();
+        });
+    });
+
+    describe("wireTechRadarEvents", () => {
+        test("type pill click toggles filter", () => {
+            win._techRadarState.expanded = true;
+            win.renderTechRadar();
+            const panel = win.document.getElementById("techradar-panel");
+            const langPill = Array.from(panel.querySelectorAll(".techradar-pill"))
+                .find(p => p.getAttribute("data-techradar-type") === "Language");
+            if (langPill) {
+                langPill.click();
+                expect(win._techRadarState.activeType).toBe("Language");
+                // Re-render triggers; click same pill to toggle off
+                const langPill2 = Array.from(
+                    win.document.getElementById("techradar-panel")
+                        .querySelectorAll(".techradar-pill")
+                ).find(p => p.getAttribute("data-techradar-type") === "Language");
+                if (langPill2) {
+                    langPill2.click();
+                    expect(win._techRadarState.activeType).toBeNull();
+                }
+            }
+        });
+
+        test("All pill resets filter", () => {
+            win._techRadarState.expanded = true;
+            win._techRadarState.activeType = "Language";
+            win.renderTechRadar();
+            const panel = win.document.getElementById("techradar-panel");
+            const allPill = Array.from(panel.querySelectorAll(".techradar-pill"))
+                .find(p => p.getAttribute("data-techradar-type") === "all");
+            if (allPill) {
+                allPill.click();
+                expect(win._techRadarState.activeType).toBeNull();
+            }
+        });
+
+        test("tech item click triggers tag filter", () => {
+            win._techRadarState.expanded = true;
+            win.renderTechRadar();
+            const panel = win.document.getElementById("techradar-panel");
+            const item = panel.querySelector(".techradar-item");
+            if (item) {
+                const tag = item.getAttribute("data-techradar-tag");
+                item.click();
+                // Should have set the tag filter
+                expect(win._filterState.tag).toBe(tag);
+            }
+        });
+    });
+
+    describe("TECH_CATEGORIES", () => {
+        test("maps known tags to types", () => {
+            expect(win.TECH_CATEGORIES["Python"]).toBe("Language");
+            expect(win.TECH_CATEGORIES["Node.js"]).toBe("Framework");
+            expect(win.TECH_CATEGORIES["Compiler"]).toBe("Tool");
+        });
+
+        test("all Language entries are strings", () => {
+            for (const key in win.TECH_CATEGORIES) {
+                expect(typeof win.TECH_CATEGORIES[key]).toBe("string");
+            }
+        });
+    });
+
+    describe("initTechRadar", () => {
+        test("wires toggle button", () => {
+            // initTechRadar already called during loadApp
+            const btn = win.document.getElementById("techradar-toggle");
+            expect(btn).not.toBeNull();
+            // Clicking should toggle
+            btn.click();
+            expect(win._techRadarState.expanded).toBe(true);
+            btn.click();
+            expect(win._techRadarState.expanded).toBe(false);
         });
     });
 });
