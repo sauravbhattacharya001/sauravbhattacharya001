@@ -587,3 +587,115 @@ a:hover { color: var(--accent-hover); }
     box-shadow: 0 1px 0 var(--border);
 }
 .kb-help-desc { color: var(--text-secondary); font-size: 0.85rem; }
+
+/* ── Analytics Panel ─────────────────────────────────────────────── */
+
+.analytics-toggle {
+    display: inline-flex; align-items: center; gap: 0.5rem;
+    background: var(--surface); border: 1px solid var(--border);
+    color: var(--text-secondary); padding: 0.4rem 0.9rem;
+    border-radius: 6px; cursor: pointer; font-size: 0.85rem;
+    transition: all 0.2s;
+}
+.analytics-toggle:hover { color: var(--accent); border-color: var(--accent); }
+.analytics-toggle.active { color: var(--accent); border-color: var(--accent);
+    background: var(--pill-active-bg); }
+.analytics-toggle .toggle-arrow { transition: transform 0.2s; display: inline-block; }
+.analytics-toggle.active .toggle-arrow { transform: rotate(180deg); }
+
+.analytics-panel {
+    display: none; margin-top: 1rem;
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: 10px; padding: 1.5rem;
+    animation: analyticsFadeIn 0.25s ease-out;
+}
+.analytics-panel.visible { display: block; }
+
+@keyframes analyticsFadeIn {
+    from { opacity: 0; transform: translateY(-8px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.analytics-grid {
+    display: grid; grid-template-columns: 1fr 1fr;
+    gap: 1.5rem;
+}
+@media (max-width: 768px) {
+    .analytics-grid { grid-template-columns: 1fr; }
+}
+
+.analytics-card {
+    background: var(--bg); border: 1px solid var(--border);
+    border-radius: 8px; padding: 1rem 1.25rem;
+}
+.analytics-card h4 {
+    font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.05em;
+    color: var(--text-secondary); margin: 0 0 0.75rem 0; font-weight: 600;
+}
+
+/* Bar chart rows */
+.bar-row {
+    display: flex; align-items: center; gap: 0.5rem;
+    margin-bottom: 0.5rem; font-size: 0.85rem;
+}
+.bar-label {
+    min-width: 100px; color: var(--text); font-weight: 500;
+    text-align: right; white-space: nowrap;
+}
+.bar-track {
+    flex: 1; height: 22px; background: var(--surface);
+    border-radius: 4px; overflow: hidden; position: relative;
+}
+.bar-fill {
+    height: 100%; border-radius: 4px; transition: width 0.4s ease-out;
+    min-width: 2px;
+}
+.bar-value {
+    min-width: 28px; color: var(--text-secondary); font-size: 0.8rem;
+    text-align: left; font-weight: 600;
+}
+
+/* Color palette for bars */
+.bar-fill.c0 { background: var(--accent); }
+.bar-fill.c1 { background: var(--green); }
+.bar-fill.c2 { background: var(--purple); }
+.bar-fill.c3 { background: var(--orange); }
+.bar-fill.c4 { background: var(--red); }
+.bar-fill.c5 { background: #f778ba; }
+.bar-fill.c6 { background: #79c0ff; }
+.bar-fill.c7 { background: #7ee787; }
+.bar-fill.c8 { background: #d2a8ff; }
+.bar-fill.c9 { background: #e3b341; }
+
+/* Tag cloud */
+.tag-cloud { display: flex; flex-wrap: wrap; gap: 0.4rem; }
+.tag-cloud-item {
+    display: inline-block; padding: 0.2rem 0.55rem;
+    background: var(--tag-bg); border: 1px solid var(--tag-border);
+    border-radius: 4px; font-size: 0.75rem; color: var(--text);
+    white-space: nowrap; cursor: default;
+    transition: transform 0.15s;
+}
+.tag-cloud-item:hover { transform: scale(1.05); }
+.tag-cloud-item.size-1 { font-size: 0.7rem; opacity: 0.7; }
+.tag-cloud-item.size-2 { font-size: 0.8rem; opacity: 0.8; }
+.tag-cloud-item.size-3 { font-size: 0.9rem; opacity: 0.9; }
+.tag-cloud-item.size-4 { font-size: 1rem; font-weight: 500; }
+.tag-cloud-item.size-5 { font-size: 1.1rem; font-weight: 600; }
+
+/* Summary strip */
+.analytics-summary {
+    display: flex; flex-wrap: wrap; gap: 1rem; margin-top: 1rem;
+    padding-top: 1rem; border-top: 1px solid var(--border);
+    justify-content: center;
+}
+.summary-item {
+    text-align: center; min-width: 80px;
+}
+.summary-value {
+    font-size: 1.3rem; font-weight: 700; color: var(--accent);
+}
+.summary-label {
+    font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.04em;
+    color: var(--text-secondary); margin-top: 0.15rem;
+}

@@ -5,7 +5,7 @@
  * The HTML template is generated automatically.
  */
 
-/* exported PROJECTS, _filterState, renderProjects, filterProjects, initFilters, buildCardHeader, buildCardTags, buildCardLinks, buildCategoryHTML, projectMatchesQuery, groupByCategory, _extractUnique, extractCategories, createFilterPills, wireFilterEvents, updateTagIndicator, clearTagFilter, setTagFilter, extractTags, wireTagClicks, getPreferredTheme, applyTheme, toggleTheme, initTheme, _kbState, getVisibleCards, focusCard, blurCards, openFocusedCard, showKeyboardHelp, hideKeyboardHelp, toggleKeyboardHelp, initKeyboardNav, buildHelpOverlay, sortProjects, setSortOrder, setViewMode, initSortAndView, buildSortControls, buildViewToggle, SORT_ORDERS, _bookmarks, isBookmarked, toggleBookmark, setBookmarkFilter, initBookmarks, getBookmarkCount, serializeFilterState, deserializeFilterState, pushFilterState, initDeepLink, _deepLinkEnabled */
+/* exported PROJECTS, _filterState, renderProjects, filterProjects, initFilters, buildCardHeader, buildCardTags, buildCardLinks, buildCategoryHTML, projectMatchesQuery, groupByCategory, _extractUnique, extractCategories, createFilterPills, wireFilterEvents, updateTagIndicator, clearTagFilter, setTagFilter, extractTags, wireTagClicks, getPreferredTheme, applyTheme, toggleTheme, initTheme, _kbState, getVisibleCards, focusCard, blurCards, openFocusedCard, showKeyboardHelp, hideKeyboardHelp, toggleKeyboardHelp, initKeyboardNav, buildHelpOverlay, sortProjects, setSortOrder, setViewMode, initSortAndView, buildSortControls, buildViewToggle, SORT_ORDERS, _bookmarks, isBookmarked, toggleBookmark, setBookmarkFilter, initBookmarks, getBookmarkCount, serializeFilterState, deserializeFilterState, pushFilterState, initDeepLink, _deepLinkEnabled, computeCategoryDistribution, computeTagDistribution, computePortfolioSummary, buildBarChart, buildTagCloud, buildAnalyticsPanel, toggleAnalytics, initAnalytics */
 
 /**
  * Active filter state.
@@ -1589,6 +1589,202 @@ function initKeyboardNav() {
     });
 }
 
+// ── Portfolio Analytics ──────────────────────────────────────────────
+
+/**
+ * Compute category distribution from projects.
+ * Returns sorted array of { name, count } objects (descending by count).
+ */
+function computeCategoryDistribution(projects) {
+    var items = projects || PROJECTS;
+    var map = Object.create(null);
+    for (var i = 0; i < items.length; i++) {
+        var cat = items[i].category;
+        map[cat] = (map[cat] || 0) + 1;
+    }
+    var result = [];
+    for (var key in map) {
+        result.push({ name: key, count: map[key] });
+    }
+    result.sort(function(a, b) { return b.count - a.count; });
+    return result;
+}
+
+/**
+ * Compute language/tag frequency from projects.
+ * Returns sorted array of { name, count } objects (descending by count).
+ */
+function computeTagDistribution(projects) {
+    var items = projects || PROJECTS;
+    var map = Object.create(null);
+    for (var i = 0; i < items.length; i++) {
+        var tags = items[i].tags || [];
+        for (var j = 0; j < tags.length; j++) {
+            map[tags[j]] = (map[tags[j]] || 0) + 1;
+        }
+    }
+    var result = [];
+    for (var key in map) {
+        result.push({ name: key, count: map[key] });
+    }
+    result.sort(function(a, b) { return b.count - a.count; });
+    return result;
+}
+
+/**
+ * Compute portfolio summary statistics.
+ */
+function computePortfolioSummary(projects) {
+    var items = projects || PROJECTS;
+    var categories = Object.create(null);
+    var uniqueTags = Object.create(null);
+    var totalLinks = 0;
+    var totalTags = 0;
+
+    for (var i = 0; i < items.length; i++) {
+        var p = items[i];
+        categories[p.category] = true;
+        totalLinks += (p.links || []).length;
+        var tags = p.tags || [];
+        totalTags += tags.length;
+        for (var j = 0; j < tags.length; j++) {
+            uniqueTags[tags[j]] = true;
+        }
+    }
+
+    var catCount = 0;
+    for (var c in categories) { if (categories[c]) catCount++; }
+    var tagCount = 0;
+    for (var t in uniqueTags) { if (uniqueTags[t]) tagCount++; }
+
+    return {
+        totalProjects: items.length,
+        totalCategories: catCount,
+        totalTags: tagCount,
+        totalLinks: totalLinks,
+        avgTagsPerProject: items.length > 0 ? Math.round((totalTags / items.length) * 10) / 10 : 0
+    };
+}
+
+/**
+ * Build a horizontal bar chart HTML string.
+ */
+function buildBarChart(data, maxBars) {
+    if (!data || data.length === 0) return '<p class="bar-empty">No data</p>';
+    var limit = maxBars || 10;
+    var items = data.slice(0, limit);
+    var max = items[0].count;
+    var html = '';
+    for (var i = 0; i < items.length; i++) {
+        var pct = max > 0 ? Math.round((items[i].count / max) * 100) : 0;
+        html += '<div class="bar-row">' +
+            '<span class="bar-label">' + escapeHTML(items[i].name) + '</span>' +
+            '<div class="bar-track"><div class="bar-fill c' + (i % 10) + '" style="width:' + pct + '%"></div></div>' +
+            '<span class="bar-value">' + items[i].count + '</span>' +
+            '</div>';
+    }
+    return html;
+}
+
+/**
+ * Build a tag cloud HTML string with frequency-based sizing (1-5).
+ */
+function buildTagCloud(tags, maxTags) {
+    if (!tags || tags.length === 0) return '<p class="bar-empty">No tags</p>';
+    var limit = maxTags || 20;
+    var items = tags.slice(0, limit);
+    var max = items[0].count;
+    var min = items[items.length - 1].count;
+    var range = max - min;
+
+    var sorted = items.slice().sort(function(a, b) {
+        return a.name.toLowerCase().localeCompare(b.name.toLowerCase());
+    });
+
+    var html = '<div class="tag-cloud">';
+    for (var i = 0; i < sorted.length; i++) {
+        var size;
+        if (range === 0) {
+            size = 3;
+        } else {
+            size = Math.ceil(((sorted[i].count - min) / range) * 4) + 1;
+            if (size > 5) size = 5;
+        }
+        html += '<span class="tag-cloud-item size-' + size + '" title="' +
+            escapeHTML(sorted[i].name) + ': ' + sorted[i].count + ' project' +
+            (sorted[i].count !== 1 ? 's' : '') + '">' +
+            escapeHTML(sorted[i].name) + '</span>';
+    }
+    html += '</div>';
+    return html;
+}
+
+/**
+ * Build the complete analytics panel inner HTML.
+ */
+function buildAnalyticsPanel(projects) {
+    var catDist = computeCategoryDistribution(projects);
+    var tagDist = computeTagDistribution(projects);
+    var summary = computePortfolioSummary(projects);
+
+    var html = '<div class="analytics-grid">' +
+        '<div class="analytics-card"><h4>Projects by Category</h4>' +
+        buildBarChart(catDist) + '</div>' +
+        '<div class="analytics-card"><h4>Technology Tags</h4>' +
+        buildTagCloud(tagDist) + '</div>' +
+        '</div>' +
+        '<div class="analytics-summary">' +
+        '<div class="summary-item"><div class="summary-value">' + summary.totalProjects + '</div><div class="summary-label">Projects</div></div>' +
+        '<div class="summary-item"><div class="summary-value">' + summary.totalCategories + '</div><div class="summary-label">Categories</div></div>' +
+        '<div class="summary-item"><div class="summary-value">' + summary.totalTags + '</div><div class="summary-label">Unique Tags</div></div>' +
+        '<div class="summary-item"><div class="summary-value">' + summary.totalLinks + '</div><div class="summary-label">Links</div></div>' +
+        '<div class="summary-item"><div class="summary-value">' + summary.avgTagsPerProject + '</div><div class="summary-label">Avg Tags/Project</div></div>' +
+        '</div>';
+    return html;
+}
+
+/**
+ * Toggle the analytics panel visibility. Lazily renders on first open.
+ */
+var _analyticsRendered = false;
+function toggleAnalytics() {
+    var panel = (typeof document !== "undefined") ? document.getElementById("analytics-panel") : null;
+    var btn = (typeof document !== "undefined") ? document.getElementById("analytics-toggle") : null;
+    if (!panel) return false;
+
+    var isVisible = panel.classList.contains("visible");
+    if (isVisible) {
+        panel.classList.remove("visible");
+        if (btn) {
+            btn.classList.remove("active");
+            btn.setAttribute("aria-expanded", "false");
+        }
+        return false;
+    }
+
+    if (!_analyticsRendered) {
+        panel.innerHTML = buildAnalyticsPanel();
+        _analyticsRendered = true;
+    }
+    panel.classList.add("visible");
+    if (btn) {
+        btn.classList.add("active");
+        btn.setAttribute("aria-expanded", "true");
+    }
+    return true;
+}
+
+/**
+ * Initialize the analytics panel toggle button.
+ */
+function initAnalytics() {
+    if (typeof document === "undefined") return;
+    var btn = document.getElementById("analytics-toggle");
+    if (btn) {
+        btn.addEventListener("click", toggleAnalytics);
+    }
+}
+
 // Auto-initialize on DOM ready
 if (typeof document !== "undefined") {
     if (document.readyState === "loading") {
@@ -1600,6 +1796,7 @@ if (typeof document !== "undefined") {
             initDeepLink();
             initTheme();
             initKeyboardNav();
+            initAnalytics();
         });
     } else {
         initSortAndView();
@@ -1609,6 +1806,7 @@ if (typeof document !== "undefined") {
         initDeepLink();
         initTheme();
         initKeyboardNav();
+        initAnalytics();
     }
 }
 
@@ -1680,6 +1878,15 @@ if (typeof module !== "undefined" && module.exports) {
         pushFilterState: pushFilterState,
         initDeepLink: initDeepLink,
         // Search index (perf)
-        _searchIndex: _searchIndex
+        _searchIndex: _searchIndex,
+        // Analytics
+        computeCategoryDistribution: computeCategoryDistribution,
+        computeTagDistribution: computeTagDistribution,
+        computePortfolioSummary: computePortfolioSummary,
+        buildBarChart: buildBarChart,
+        buildTagCloud: buildTagCloud,
+        buildAnalyticsPanel: buildAnalyticsPanel,
+        toggleAnalytics: toggleAnalytics,
+        initAnalytics: initAnalytics
     };
 }

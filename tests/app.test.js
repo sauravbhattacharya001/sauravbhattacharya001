@@ -12,7 +12,7 @@ const fs = require("fs");
 // Load app.js in a JSDOM environment
 function loadApp() {
     const dom = new JSDOM(
-        '<!DOCTYPE html><html><body><div id="projects-container"></div><input id="project-search"><div id="category-filters"></div><div id="active-tag-indicator" class="active-tag-indicator hidden"></div><div id="no-results" class="hidden"></div></body></html>',
+        '<!DOCTYPE html><html><body><div id="projects-container"></div><input id="project-search"><div id="category-filters"></div><div id="active-tag-indicator" class="active-tag-indicator hidden"></div><div id="no-results" class="hidden"></div><button id="analytics-toggle" aria-expanded="false" aria-controls="analytics-panel">📊 Portfolio Analytics <span class="toggle-arrow">▾</span></button><div id="analytics-panel" role="region" aria-label="Portfolio analytics"></div></body></html>',
         { runScripts: "dangerously", resources: "usable" }
     );
     const code = fs.readFileSync(path.join(__dirname, "..", "docs", "app.js"), "utf-8");
@@ -2106,5 +2106,300 @@ describe("serialize/deserialize roundtrip", () => {
         expect(parsed.sort).toBe("most-tags");
         expect(parsed.view).toBe("list");
         expect(parsed.bm).toBe(true);
+    });
+});
+
+// ── Portfolio Analytics ─────────────────────────────────────────────
+
+describe("computeCategoryDistribution", () => {
+    test("returns all categories with correct counts", () => {
+        const dist = win.computeCategoryDistribution();
+        expect(dist.length).toBeGreaterThan(0);
+        const total = dist.reduce((sum, d) => sum + d.count, 0);
+        expect(total).toBe(win.PROJECTS.length);
+    });
+
+    test("sorted descending by count", () => {
+        const dist = win.computeCategoryDistribution();
+        for (let i = 1; i < dist.length; i++) {
+            expect(dist[i].count).toBeLessThanOrEqual(dist[i - 1].count);
+        }
+    });
+
+    test("each entry has name and count", () => {
+        const dist = win.computeCategoryDistribution();
+        dist.forEach(d => {
+            expect(typeof d.name).toBe("string");
+            expect(d.name.length).toBeGreaterThan(0);
+            expect(typeof d.count).toBe("number");
+            expect(d.count).toBeGreaterThan(0);
+        });
+    });
+
+    test("works with custom project list", () => {
+        const custom = [
+            { category: "A", tags: [], links: [] },
+            { category: "A", tags: [], links: [] },
+            { category: "B", tags: [], links: [] }
+        ];
+        const dist = win.computeCategoryDistribution(custom);
+        expect(dist.length).toBe(2);
+        expect(dist[0].name).toBe("A");
+        expect(dist[0].count).toBe(2);
+        expect(dist[1].name).toBe("B");
+        expect(dist[1].count).toBe(1);
+    });
+
+    test("returns empty array for empty input", () => {
+        const dist = win.computeCategoryDistribution([]);
+        expect(dist).toEqual([]);
+    });
+});
+
+describe("computeTagDistribution", () => {
+    test("returns all unique tags", () => {
+        const dist = win.computeTagDistribution();
+        expect(dist.length).toBeGreaterThan(0);
+        const names = dist.map(d => d.name);
+        expect(new Set(names).size).toBe(names.length);
+    });
+
+    test("sorted descending by count", () => {
+        const dist = win.computeTagDistribution();
+        for (let i = 1; i < dist.length; i++) {
+            expect(dist[i].count).toBeLessThanOrEqual(dist[i - 1].count);
+        }
+    });
+
+    test("counts multiple occurrences", () => {
+        const custom = [
+            { category: "A", tags: ["Python", "AI"], links: [] },
+            { category: "B", tags: ["Python", "Go"], links: [] }
+        ];
+        const dist = win.computeTagDistribution(custom);
+        const python = dist.find(d => d.name === "Python");
+        expect(python.count).toBe(2);
+    });
+
+    test("handles projects with no tags", () => {
+        const custom = [{ category: "A", tags: [], links: [] }];
+        const dist = win.computeTagDistribution(custom);
+        expect(dist).toEqual([]);
+    });
+});
+
+describe("computePortfolioSummary", () => {
+    test("returns correct project count", () => {
+        const summary = win.computePortfolioSummary();
+        expect(summary.totalProjects).toBe(win.PROJECTS.length);
+    });
+
+    test("totalCategories matches extractCategories", () => {
+        const summary = win.computePortfolioSummary();
+        const categories = win.extractCategories();
+        expect(summary.totalCategories).toBe(categories.length);
+    });
+
+    test("totalTags matches extractTags", () => {
+        const summary = win.computePortfolioSummary();
+        const tags = win.extractTags();
+        expect(summary.totalTags).toBe(tags.length);
+    });
+
+    test("totalLinks counts all links", () => {
+        const summary = win.computePortfolioSummary();
+        const expected = win.PROJECTS.reduce((sum, p) => sum + (p.links || []).length, 0);
+        expect(summary.totalLinks).toBe(expected);
+    });
+
+    test("avgTagsPerProject is reasonable", () => {
+        const summary = win.computePortfolioSummary();
+        expect(summary.avgTagsPerProject).toBeGreaterThan(0);
+        expect(summary.avgTagsPerProject).toBeLessThan(20);
+    });
+
+    test("handles empty input", () => {
+        const summary = win.computePortfolioSummary([]);
+        expect(summary.totalProjects).toBe(0);
+        expect(summary.totalCategories).toBe(0);
+        expect(summary.totalTags).toBe(0);
+        expect(summary.totalLinks).toBe(0);
+        expect(summary.avgTagsPerProject).toBe(0);
+    });
+});
+
+describe("buildBarChart", () => {
+    test("returns bar HTML with correct structure", () => {
+        const data = [
+            { name: "AI", count: 5 },
+            { name: "Tools", count: 3 }
+        ];
+        const html = win.buildBarChart(data);
+        expect(html).toContain("bar-row");
+        expect(html).toContain("bar-label");
+        expect(html).toContain("bar-fill");
+        expect(html).toContain("AI");
+        expect(html).toContain("Tools");
+        expect(html).toContain("5");
+        expect(html).toContain("3");
+    });
+
+    test("respects maxBars limit", () => {
+        const data = Array.from({ length: 20 }, (_, i) => ({ name: "Cat" + i, count: 20 - i }));
+        const html = win.buildBarChart(data, 5);
+        const matches = html.match(/bar-row/g);
+        expect(matches.length).toBe(5);
+    });
+
+    test("handles empty data", () => {
+        const html = win.buildBarChart([]);
+        expect(html).toContain("No data");
+    });
+
+    test("handles null data", () => {
+        const html = win.buildBarChart(null);
+        expect(html).toContain("No data");
+    });
+
+    test("first bar is 100% width", () => {
+        const data = [{ name: "A", count: 10 }, { name: "B", count: 5 }];
+        const html = win.buildBarChart(data);
+        expect(html).toContain("width:100%");
+        expect(html).toContain("width:50%");
+    });
+
+    test("escapes HTML in names", () => {
+        const data = [{ name: "<script>alert(1)</script>", count: 1 }];
+        const html = win.buildBarChart(data);
+        expect(html).not.toContain("<script>");
+        expect(html).toContain("&lt;script&gt;");
+    });
+});
+
+describe("buildTagCloud", () => {
+    test("returns tag cloud HTML", () => {
+        const tags = [
+            { name: "Python", count: 5 },
+            { name: "JavaScript", count: 3 },
+            { name: "Go", count: 1 }
+        ];
+        const html = win.buildTagCloud(tags);
+        expect(html).toContain("tag-cloud");
+        expect(html).toContain("tag-cloud-item");
+        expect(html).toContain("Python");
+        expect(html).toContain("JavaScript");
+        expect(html).toContain("Go");
+    });
+
+    test("assigns size classes based on frequency", () => {
+        const tags = [
+            { name: "A", count: 10 },
+            { name: "B", count: 1 }
+        ];
+        const html = win.buildTagCloud(tags);
+        expect(html).toContain("size-5");
+        expect(html).toContain("size-1");
+    });
+
+    test("all same count gets size-3", () => {
+        const tags = [
+            { name: "A", count: 5 },
+            { name: "B", count: 5 },
+            { name: "C", count: 5 }
+        ];
+        const html = win.buildTagCloud(tags);
+        const matches = html.match(/size-3/g);
+        expect(matches.length).toBe(3);
+    });
+
+    test("respects maxTags limit", () => {
+        const tags = Array.from({ length: 30 }, (_, i) => ({ name: "Tag" + i, count: 30 - i }));
+        const html = win.buildTagCloud(tags, 10);
+        const matches = html.match(/tag-cloud-item/g);
+        expect(matches.length).toBe(10);
+    });
+
+    test("sorts alphabetically for display", () => {
+        const tags = [
+            { name: "Zebra", count: 5 },
+            { name: "Apple", count: 3 },
+            { name: "Mango", count: 1 }
+        ];
+        const html = win.buildTagCloud(tags);
+        const appleIdx = html.indexOf("Apple");
+        const mangoIdx = html.indexOf("Mango");
+        const zebraIdx = html.indexOf("Zebra");
+        expect(appleIdx).toBeLessThan(mangoIdx);
+        expect(mangoIdx).toBeLessThan(zebraIdx);
+    });
+
+    test("includes title with count", () => {
+        const tags = [{ name: "Python", count: 3 }];
+        const html = win.buildTagCloud(tags);
+        expect(html).toContain("Python: 3 projects");
+    });
+
+    test("handles singular count", () => {
+        const tags = [{ name: "Go", count: 1 }];
+        const html = win.buildTagCloud(tags);
+        expect(html).toContain("Go: 1 project\"");
+    });
+
+    test("handles empty tags", () => {
+        expect(win.buildTagCloud([])).toContain("No tags");
+        expect(win.buildTagCloud(null)).toContain("No tags");
+    });
+});
+
+describe("buildAnalyticsPanel", () => {
+    test("returns complete panel HTML", () => {
+        const html = win.buildAnalyticsPanel();
+        expect(html).toContain("analytics-grid");
+        expect(html).toContain("analytics-card");
+        expect(html).toContain("analytics-summary");
+        expect(html).toContain("Projects by Category");
+        expect(html).toContain("Technology Tags");
+    });
+
+    test("summary matches PROJECTS data", () => {
+        const html = win.buildAnalyticsPanel();
+        expect(html).toContain(">" + win.PROJECTS.length + "<");
+    });
+
+    test("works with empty projects", () => {
+        const html = win.buildAnalyticsPanel([]);
+        expect(html).toContain("analytics-grid");
+        expect(html).toContain(">0<");
+    });
+});
+
+describe("toggleAnalytics", () => {
+    test("opens panel on first call", () => {
+        const panel = win.document.getElementById("analytics-panel");
+        expect(panel).not.toBeNull();
+        const result = win.toggleAnalytics();
+        expect(result).toBe(true);
+        expect(panel.classList.contains("visible")).toBe(true);
+    });
+
+    test("closes panel on second call", () => {
+        const result = win.toggleAnalytics();
+        expect(result).toBe(false);
+        const panel = win.document.getElementById("analytics-panel");
+        expect(panel.classList.contains("visible")).toBe(false);
+    });
+
+    test("renders content lazily", () => {
+        const panel = win.document.getElementById("analytics-panel");
+        expect(panel.innerHTML).toContain("analytics-grid");
+    });
+
+    test("toggle button updates aria-expanded", () => {
+        const btn = win.document.getElementById("analytics-toggle");
+        expect(btn).not.toBeNull();
+        win.toggleAnalytics();
+        expect(btn.getAttribute("aria-expanded")).toBe("true");
+        win.toggleAnalytics();
+        expect(btn.getAttribute("aria-expanded")).toBe("false");
     });
 });
