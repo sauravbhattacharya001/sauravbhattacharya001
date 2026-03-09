@@ -5,7 +5,7 @@
  * The HTML template is generated automatically.
  */
 
-/* exported PROJECTS, _filterState, renderProjects, filterProjects, initFilters, buildCardHeader, buildCardTags, buildCardLinks, buildCategoryHTML, projectMatchesQuery, groupByCategory, _extractUnique, extractCategories, createFilterPills, wireFilterEvents, updateTagIndicator, clearTagFilter, setTagFilter, extractTags, wireTagClicks, getPreferredTheme, applyTheme, toggleTheme, initTheme, _kbState, getVisibleCards, focusCard, blurCards, openFocusedCard, showKeyboardHelp, hideKeyboardHelp, toggleKeyboardHelp, initKeyboardNav, buildHelpOverlay, sortProjects, setSortOrder, setViewMode, initSortAndView, buildSortControls, buildViewToggle, SORT_ORDERS, _bookmarks, isBookmarked, toggleBookmark, setBookmarkFilter, initBookmarks, getBookmarkCount, serializeFilterState, deserializeFilterState, pushFilterState, initDeepLink, _deepLinkEnabled, computeCategoryDistribution, computeTagDistribution, computePortfolioSummary, buildBarChart, buildTagCloud, buildAnalyticsPanel, toggleAnalytics, initAnalytics, _spotlightState, buildSpotlightCard, renderSpotlight, nextSpotlight, prevSpotlight, goToSpotlight, toggleSpotlightPause, startSpotlightTimer, stopSpotlightTimer, wireSpotlightEvents, initSpotlight, TECH_CATEGORIES, _techRadarState, computeTechStack, groupTechByType, buildTechRadar, renderTechRadar, toggleTechRadar, setTechRadarFilter, wireTechRadarEvents, initTechRadar */
+/* exported PROJECTS, _filterState, renderProjects, filterProjects, initFilters, buildCardHeader, buildCardTags, buildCardLinks, buildTagList, buildLinkList, buildCategoryHTML, projectMatchesQuery, groupByCategory, _extractUnique, extractCategories, createFilterPills, wireFilterEvents, updateTagIndicator, clearTagFilter, setTagFilter, extractTags, wireTagClicks, getPreferredTheme, applyTheme, toggleTheme, initTheme, _kbState, getVisibleCards, focusCard, blurCards, openFocusedCard, showKeyboardHelp, hideKeyboardHelp, toggleKeyboardHelp, initKeyboardNav, buildHelpOverlay, sortProjects, setSortOrder, setViewMode, initSortAndView, buildSortControls, buildViewToggle, SORT_ORDERS, _bookmarks, isBookmarked, toggleBookmark, setBookmarkFilter, initBookmarks, getBookmarkCount, serializeFilterState, deserializeFilterState, pushFilterState, initDeepLink, _deepLinkEnabled, computeCategoryDistribution, computeTagDistribution, computePortfolioSummary, buildBarChart, buildTagCloud, buildAnalyticsPanel, toggleAnalytics, initAnalytics, _spotlightState, buildSpotlightCard, renderSpotlight, nextSpotlight, prevSpotlight, goToSpotlight, toggleSpotlightPause, startSpotlightTimer, stopSpotlightTimer, wireSpotlightEvents, initSpotlight, TECH_CATEGORIES, _techRadarState, computeTechStack, groupTechByType, buildTechRadar, renderTechRadar, toggleTechRadar, setTechRadarFilter, wireTechRadarEvents, initTechRadar */
 
 /**
  * Active filter state.
@@ -302,16 +302,54 @@ function buildCardHeader(p) {
 }
 
 /**
+ * Build a list of tag elements as HTML string.
+ * Used by both project cards (clickable filter buttons) and spotlight
+ * (display-only spans).  Centralises tag rendering to avoid duplication.
+ *
+ * @param {string[]} tags
+ * @param {{ clickable?: boolean, wrapperClass?: string }} [opts]
+ * @returns {string}
+ */
+function buildTagList(tags, opts) {
+    var o = opts || {};
+    var clickable = o.clickable !== false; // default true
+    var cls = o.wrapperClass || "card-tags";
+    return '<div class="' + cls + '">' +
+        tags.map(function(t) {
+            if (clickable) {
+                return '<button type="button" class="tag tag-clickable" data-tag="' +
+                    escapeHTML(t) + '">' + escapeHTML(t) + '</button>';
+            }
+            return '<span class="tag">' + escapeHTML(t) + '</span>';
+        }).join("") +
+        '</div>';
+}
+
+/**
  * Build tag pills for a project card.
  * Tags are clickable buttons that filter to show all projects with that tag.
  * @param {string[]} tags
  * @returns {string}
  */
 function buildCardTags(tags) {
-    return '<div class="card-tags">' +
-        tags.map(function(t) {
-            return '<button type="button" class="tag tag-clickable" data-tag="' +
-                escapeHTML(t) + '">' + escapeHTML(t) + '</button>';
+    return buildTagList(tags, { clickable: true, wrapperClass: "card-tags" });
+}
+
+/**
+ * Build a list of link anchor elements as HTML string.
+ * Used by both project cards and spotlight cards.
+ *
+ * @param {Object[]} links - Array of {label, url} objects.
+ * @param {{ wrapperClass?: string }} [opts]
+ * @returns {string}
+ */
+function buildLinkList(links, opts) {
+    var cls = (opts && opts.wrapperClass) || "card-links";
+    return '<div class="' + cls + '">' +
+        links.map(function(l) {
+            return '<a href="' + sanitizeURL(l.url) +
+                '" target="_blank" rel="noopener">' +
+                escapeHTML(l.label) + '</a>';
         }).join("") +
         '</div>';
 }
@@ -322,22 +360,18 @@ function buildCardTags(tags) {
  * @returns {string}
  */
 function buildCardLinks(links) {
-    return '<div class="card-links">' +
-        links.map(function(l) {
-            return '<a href="' + sanitizeURL(l.url) +
-                '" target="_blank" rel="noopener">' +
-                escapeHTML(l.label) + '</a>';
-        }).join("") +
-        '</div>';
+    return buildLinkList(links, { wrapperClass: "card-links" });
 }
 
 /**
  * Assemble a full project card from its constituent parts.
  * @param {Object} p - Project from PROJECTS array.
+ * @param {{ tabindex?: string }} [opts] - Optional attributes.
  * @returns {string}
  */
-function buildCard(p) {
-    return '<div class="card">' +
+function buildCard(p, opts) {
+    var extra = (opts && opts.tabindex) ? ' tabindex="' + escapeHTML(opts.tabindex) + '"' : '';
+    return '<div class="card"' + extra + '>' +
         buildCardHeader(p) +
         '<p>' + escapeHTML(p.desc) + '</p>' +
         buildCardTags(p.tags) +
@@ -472,12 +506,7 @@ function renderProjects(projects) {
     if (_filterState.sort && _filterState.sort !== "default") {
         var html = '<div class="projects-grid">';
         items.forEach(function(p) {
-            html += '<div class="card" tabindex="-1">';
-            html += buildCardHeader(p);
-            html += '<p>' + escapeHTML(p.desc) + '</p>';
-            html += buildCardTags(p.tags);
-            html += buildCardLinks(p.links);
-            html += '</div>';
+            html += buildCard(p, { tabindex: "-1" });
         });
         html += '</div>';
         container.innerHTML = html;
@@ -1803,20 +1832,8 @@ var _spotlightState = { index: 0, paused: false, timerId: null, intervalMs: 6000
 function buildSpotlightCard(project, index, total) {
     if (!project) return "";
 
-    var tagsHtml = "";
-    for (var i = 0; i < project.tags.length; i++) {
-        tagsHtml += '<span class="tag">' + escapeHTML(project.tags[i]) + '</span>';
-    }
-
-    var linksHtml = "";
-    for (var j = 0; j < project.links.length; j++) {
-        var link = project.links[j];
-        var href = sanitizeURL(link.url);
-        if (href) {
-            linksHtml += '<a href="' + escapeHTML(href) + '" target="_blank" rel="noopener">' +
-                escapeHTML(link.label) + '</a>';
-        }
-    }
+    var tagsHtml = buildTagList(project.tags, { clickable: false, wrapperClass: "spotlight-tags" });
+    var linksHtml = buildLinkList(project.links, { wrapperClass: "spotlight-links" });
 
     var dotsHtml = "";
     for (var d = 0; d < total; d++) {
@@ -1839,8 +1856,8 @@ function buildSpotlightCard(project, index, total) {
                 '<div class="spotlight-label">Featured Project ' + (index + 1) + ' of ' + total + '</div>' +
                 '<div class="spotlight-title">' + escapeHTML(project.title) + '</div>' +
                 '<div class="spotlight-desc">' + escapeHTML(project.desc) + '</div>' +
-                '<div class="spotlight-tags">' + tagsHtml + '</div>' +
-                '<div class="spotlight-links">' + linksHtml + '</div>' +
+                tagsHtml +
+                linksHtml +
             '</div>' +
         '</div>' +
         '<button type="button" class="spotlight-nav spotlight-next" aria-label="Next project" title="Next">' +
@@ -2267,6 +2284,8 @@ if (typeof module !== "undefined" && module.exports) {
         buildCardHeader: buildCardHeader,
         buildCardTags: buildCardTags,
         buildCardLinks: buildCardLinks,
+        buildTagList: buildTagList,
+        buildLinkList: buildLinkList,
         buildCategoryHTML: buildCategoryHTML,
         // Query & filter
         projectMatchesQuery: projectMatchesQuery,
