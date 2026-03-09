@@ -376,6 +376,7 @@ function buildCard(p, opts) {
         '<p>' + escapeHTML(p.desc) + '</p>' +
         buildCardTags(p.tags) +
         buildCardLinks(p.links) +
+        buildCompareCheckbox(p.repo) +
         '</div>';
 }
 
@@ -2242,6 +2243,230 @@ function initTechRadar() {
     }
 }
 
+// ─── Project Comparison ─────────────────────────────────────────────
+//
+// Lets users select 2-5 projects and compare them side-by-side in a
+// table showing icon, title, category, description, tags, and links.
+
+/** @type {Set<string>} repos currently selected for comparison */
+var _compareSet = new Set();
+
+/**
+ * Toggle a project in/out of the comparison set.
+ * @param {string} repo
+ */
+function toggleCompare(repo) {
+    if (_compareSet.has(repo)) {
+        _compareSet.delete(repo);
+    } else {
+        if (_compareSet.size >= 5) return; // cap at 5
+        _compareSet.add(repo);
+    }
+    syncCompareUI();
+}
+
+/**
+ * Clear all comparison selections.
+ */
+function clearCompare() {
+    _compareSet.clear();
+    syncCompareUI();
+}
+
+/**
+ * Sync checkbox state + floating bar + panel.
+ */
+function syncCompareUI() {
+    if (typeof document === "undefined") return;
+    // Update checkboxes
+    var boxes = document.querySelectorAll(".compare-cb");
+    for (var i = 0; i < boxes.length; i++) {
+        boxes[i].checked = _compareSet.has(boxes[i].dataset.repo);
+        // Disable unchecked boxes at cap
+        if (!boxes[i].checked && _compareSet.size >= 5) {
+            boxes[i].disabled = true;
+        } else {
+            boxes[i].disabled = false;
+        }
+    }
+
+    // Floating bar
+    var bar = document.getElementById("compare-bar");
+    if (bar) {
+        if (_compareSet.size > 0) {
+            bar.style.display = "flex";
+            var countSpan = bar.querySelector(".compare-count");
+            if (countSpan) countSpan.textContent = _compareSet.size;
+            var openBtn = bar.querySelector(".compare-open");
+            if (openBtn) openBtn.disabled = _compareSet.size < 2;
+        } else {
+            bar.style.display = "none";
+        }
+    }
+
+    // Hide panel if fewer than 2
+    if (_compareSet.size < 2) {
+        var panel = document.getElementById("compare-panel");
+        if (panel) panel.style.display = "none";
+    }
+}
+
+/**
+ * Render the comparison panel with selected projects side-by-side.
+ */
+function renderComparePanel() {
+    if (typeof document === "undefined") return;
+    if (_compareSet.size < 2) return;
+
+    var panel = document.getElementById("compare-panel");
+    if (!panel) {
+        panel = document.createElement("div");
+        panel.id = "compare-panel";
+        panel.className = "compare-panel";
+        document.body.appendChild(panel);
+    }
+
+    var selected = PROJECTS.filter(function(p) {
+        return _compareSet.has(p.repo);
+    });
+
+    var html = '<div class="compare-header">' +
+        '<h2>Project Comparison</h2>' +
+        '<button class="compare-close" onclick="(typeof App!==\'undefined\'?App:window).closeCompare()" title="Close">&times;</button>' +
+        '</div>';
+
+    // Build comparison table
+    html += '<div class="compare-table-wrap"><table class="compare-table">';
+
+    // Header row — project titles
+    html += '<thead><tr><th></th>';
+    for (var i = 0; i < selected.length; i++) {
+        html += '<th>' + escapeHTML(selected[i].icon) + ' ' + escapeHTML(selected[i].title) + '</th>';
+    }
+    html += '</tr></thead><tbody>';
+
+    // Category row
+    html += '<tr><td class="compare-label">Category</td>';
+    for (i = 0; i < selected.length; i++) {
+        html += '<td>' + escapeHTML(selected[i].category) + '</td>';
+    }
+    html += '</tr>';
+
+    // Description row
+    html += '<tr><td class="compare-label">Description</td>';
+    for (i = 0; i < selected.length; i++) {
+        html += '<td class="compare-desc">' + escapeHTML(selected[i].desc) + '</td>';
+    }
+    html += '</tr>';
+
+    // Tags row — highlight shared tags
+    var allTags = {};
+    for (i = 0; i < selected.length; i++) {
+        for (var t = 0; t < selected[i].tags.length; t++) {
+            var tag = selected[i].tags[t];
+            allTags[tag] = (allTags[tag] || 0) + 1;
+        }
+    }
+    html += '<tr><td class="compare-label">Tags</td>';
+    for (i = 0; i < selected.length; i++) {
+        html += '<td>';
+        for (t = 0; t < selected[i].tags.length; t++) {
+            tag = selected[i].tags[t];
+            var shared = allTags[tag] > 1 ? ' compare-tag-shared' : '';
+            html += '<span class="compare-tag' + shared + '">' + escapeHTML(tag) + '</span> ';
+        }
+        html += '</td>';
+    }
+    html += '</tr>';
+
+    // Links row
+    html += '<tr><td class="compare-label">Links</td>';
+    for (i = 0; i < selected.length; i++) {
+        html += '<td>';
+        for (var l = 0; l < selected[i].links.length; l++) {
+            var link = selected[i].links[l];
+            html += '<a href="' + escapeHTML(link.url) + '" target="_blank" rel="noopener">' +
+                escapeHTML(link.label) + '</a> ';
+        }
+        html += '</td>';
+    }
+    html += '</tr>';
+
+    // Shared tags summary
+    var sharedTags = Object.keys(allTags).filter(function(k) { return allTags[k] > 1; });
+    if (sharedTags.length > 0) {
+        html += '<tr><td class="compare-label">Shared Tags</td>';
+        html += '<td colspan="' + selected.length + '">';
+        for (i = 0; i < sharedTags.length; i++) {
+            html += '<span class="compare-tag compare-tag-shared">' + escapeHTML(sharedTags[i]) +
+                ' (' + allTags[sharedTags[i]] + '/' + selected.length + ')</span> ';
+        }
+        html += '</td></tr>';
+    }
+
+    html += '</tbody></table></div>';
+
+    panel.innerHTML = html;
+    panel.style.display = "block";
+
+    // Scroll into view
+    panel.scrollIntoView({ behavior: "smooth", block: "start" });
+}
+
+/**
+ * Close the comparison panel.
+ */
+function closeCompare() {
+    var panel = document.getElementById("compare-panel");
+    if (panel) panel.style.display = "none";
+}
+
+/**
+ * Build the floating comparison bar HTML.
+ * @returns {string}
+ */
+function buildCompareBar() {
+    return '<div id="compare-bar" class="compare-bar" style="display:none">' +
+        '<span>Comparing <span class="compare-count">0</span> projects</span>' +
+        '<button class="compare-open" onclick="(typeof App!==\'undefined\'?App:window).renderComparePanel()" disabled>Compare</button>' +
+        '<button class="compare-clear" onclick="(typeof App!==\'undefined\'?App:window).clearCompare()">Clear</button>' +
+        '</div>';
+}
+
+/**
+ * Build a compare checkbox for a project card.
+ * @param {string} repo
+ * @returns {string}
+ */
+function buildCompareCheckbox(repo) {
+    var checked = _compareSet.has(repo) ? ' checked' : '';
+    return '<label class="compare-label-cb" title="Add to comparison">' +
+        '<input type="checkbox" class="compare-cb" data-repo="' + escapeHTML(repo) + '"' + checked + '>' +
+        '<span class="compare-cb-text">Compare</span></label>';
+}
+
+/**
+ * Initialize comparison: inject bar, wire checkbox events.
+ */
+function initCompare() {
+    if (typeof document === "undefined") return;
+
+    // Inject floating bar
+    var barContainer = document.getElementById("compare-bar");
+    if (!barContainer) {
+        var div = document.createElement("div");
+        div.innerHTML = buildCompareBar();
+        document.body.appendChild(div.firstChild);
+    }
+
+    // Delegate checkbox clicks
+    document.addEventListener("change", function(e) {
+        if (e.target && e.target.classList.contains("compare-cb")) {
+            toggleCompare(e.target.dataset.repo);
+        }
+    });
+}
+
 // Auto-initialize on DOM ready
 if (typeof document !== "undefined") {
     if (document.readyState === "loading") {
@@ -2256,6 +2481,7 @@ if (typeof document !== "undefined") {
             initAnalytics();
             initSpotlight();
             initTechRadar();
+            initCompare();
         });
     } else {
         initSortAndView();
@@ -2268,6 +2494,7 @@ if (typeof document !== "undefined") {
         initAnalytics();
         initSpotlight();
         initTechRadar();
+        initCompare();
     }
 }
 
@@ -2373,6 +2600,16 @@ if (typeof module !== "undefined" && module.exports) {
         toggleTechRadar: toggleTechRadar,
         setTechRadarFilter: setTechRadarFilter,
         wireTechRadarEvents: wireTechRadarEvents,
-        initTechRadar: initTechRadar
+        initTechRadar: initTechRadar,
+        // Project Comparison
+        _compareSet: _compareSet,
+        toggleCompare: toggleCompare,
+        clearCompare: clearCompare,
+        syncCompareUI: syncCompareUI,
+        renderComparePanel: renderComparePanel,
+        closeCompare: closeCompare,
+        buildCompareBar: buildCompareBar,
+        buildCompareCheckbox: buildCompareCheckbox,
+        initCompare: initCompare
     };
 }
