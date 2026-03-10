@@ -5,7 +5,7 @@
  * The HTML template is generated automatically.
  */
 
-/* exported PROJECTS, _filterState, renderProjects, filterProjects, initFilters, buildCardHeader, buildCardTags, buildCardLinks, buildTagList, buildLinkList, buildCategoryHTML, projectMatchesQuery, groupByCategory, _extractUnique, extractCategories, createFilterPills, wireFilterEvents, updateTagIndicator, clearTagFilter, setTagFilter, extractTags, wireTagClicks, getPreferredTheme, applyTheme, toggleTheme, initTheme, _kbState, getVisibleCards, focusCard, blurCards, openFocusedCard, showKeyboardHelp, hideKeyboardHelp, toggleKeyboardHelp, initKeyboardNav, buildHelpOverlay, sortProjects, setSortOrder, setViewMode, initSortAndView, buildSortControls, buildViewToggle, SORT_ORDERS, _bookmarks, isBookmarked, toggleBookmark, setBookmarkFilter, initBookmarks, getBookmarkCount, serializeFilterState, deserializeFilterState, pushFilterState, initDeepLink, _deepLinkEnabled, computeCategoryDistribution, computeTagDistribution, computePortfolioSummary, buildBarChart, buildTagCloud, buildAnalyticsPanel, toggleAnalytics, initAnalytics, _spotlightState, buildSpotlightCard, renderSpotlight, nextSpotlight, prevSpotlight, goToSpotlight, toggleSpotlightPause, startSpotlightTimer, stopSpotlightTimer, wireSpotlightEvents, initSpotlight, TECH_CATEGORIES, _techRadarState, computeTechStack, groupTechByType, buildTechRadar, renderTechRadar, toggleTechRadar, setTechRadarFilter, wireTechRadarEvents, initTechRadar */
+/* exported PROJECTS, _filterState, renderProjects, filterProjects, initFilters, buildCardHeader, buildCardTags, buildCardLinks, buildTagList, buildLinkList, buildCategoryHTML, projectMatchesQuery, groupByCategory, _extractUnique, extractCategories, createFilterPills, wireFilterEvents, updateTagIndicator, clearTagFilter, setTagFilter, extractTags, wireTagClicks, getPreferredTheme, applyTheme, toggleTheme, initTheme, _kbState, getVisibleCards, focusCard, blurCards, openFocusedCard, showKeyboardHelp, hideKeyboardHelp, toggleKeyboardHelp, initKeyboardNav, buildHelpOverlay, sortProjects, setSortOrder, setViewMode, initSortAndView, buildSortControls, buildViewToggle, SORT_ORDERS, _bookmarks, isBookmarked, toggleBookmark, setBookmarkFilter, initBookmarks, getBookmarkCount, serializeFilterState, deserializeFilterState, pushFilterState, initDeepLink, _deepLinkEnabled, computeCategoryDistribution, computeTagDistribution, computePortfolioSummary, buildBarChart, buildTagCloud, buildAnalyticsPanel, toggleAnalytics, initAnalytics, _spotlightState, buildSpotlightCard, renderSpotlight, nextSpotlight, prevSpotlight, goToSpotlight, toggleSpotlightPause, startSpotlightTimer, stopSpotlightTimer, wireSpotlightEvents, initSpotlight, TECH_CATEGORIES, _techRadarState, computeTechStack, groupTechByType, buildTechRadar, renderTechRadar, toggleTechRadar, setTechRadarFilter, wireTechRadarEvents, initTechRadar, _buildCompareRow, initApp */
 
 /**
  * Active filter state.
@@ -2312,6 +2312,25 @@ function syncCompareUI() {
 }
 
 /**
+ * Build a single <tr> for the comparison table.
+ * Avoids repeating the label-cell + per-project for-loop pattern.
+ *
+ * @param {string} label - Row label.
+ * @param {Object[]} selected - Selected projects.
+ * @param {function(Object, number): string} cellFn - Returns inner HTML for each project cell.
+ * @param {string} [cellClass] - Optional CSS class for <td> cells.
+ * @returns {string}
+ */
+function _buildCompareRow(label, selected, cellFn, cellClass) {
+    var cls = cellClass ? ' class="' + cellClass + '"' : '';
+    var html = '<tr><td class="compare-label">' + escapeHTML(label) + '</td>';
+    for (var i = 0; i < selected.length; i++) {
+        html += '<td' + cls + '>' + cellFn(selected[i], i) + '</td>';
+    }
+    return html + '</tr>';
+}
+
+/**
  * Render the comparison panel with selected projects side-by-side.
  */
 function renderComparePanel() {
@@ -2345,52 +2364,37 @@ function renderComparePanel() {
     }
     html += '</tr></thead><tbody>';
 
-    // Category row
-    html += '<tr><td class="compare-label">Category</td>';
-    for (i = 0; i < selected.length; i++) {
-        html += '<td>' + escapeHTML(selected[i].category) + '</td>';
-    }
-    html += '</tr>';
+    // Data rows via shared helper
+    html += _buildCompareRow("Category", selected, function(p) {
+        return escapeHTML(p.category);
+    });
 
-    // Description row
-    html += '<tr><td class="compare-label">Description</td>';
-    for (i = 0; i < selected.length; i++) {
-        html += '<td class="compare-desc">' + escapeHTML(selected[i].desc) + '</td>';
-    }
-    html += '</tr>';
+    html += _buildCompareRow("Description", selected, function(p) {
+        return escapeHTML(p.desc);
+    }, "compare-desc");
 
-    // Tags row — highlight shared tags
-    var allTags = {};
+    // Pre-compute tag frequency for shared-tag highlighting
+    var allTags = Object.create(null);
     for (i = 0; i < selected.length; i++) {
         for (var t = 0; t < selected[i].tags.length; t++) {
             var tag = selected[i].tags[t];
             allTags[tag] = (allTags[tag] || 0) + 1;
         }
     }
-    html += '<tr><td class="compare-label">Tags</td>';
-    for (i = 0; i < selected.length; i++) {
-        html += '<td>';
-        for (t = 0; t < selected[i].tags.length; t++) {
-            tag = selected[i].tags[t];
-            var shared = allTags[tag] > 1 ? ' compare-tag-shared' : '';
-            html += '<span class="compare-tag' + shared + '">' + escapeHTML(tag) + '</span> ';
-        }
-        html += '</td>';
-    }
-    html += '</tr>';
 
-    // Links row
-    html += '<tr><td class="compare-label">Links</td>';
-    for (i = 0; i < selected.length; i++) {
-        html += '<td>';
-        for (var l = 0; l < selected[i].links.length; l++) {
-            var link = selected[i].links[l];
-            html += '<a href="' + escapeHTML(link.url) + '" target="_blank" rel="noopener">' +
-                escapeHTML(link.label) + '</a> ';
-        }
-        html += '</td>';
-    }
-    html += '</tr>';
+    html += _buildCompareRow("Tags", selected, function(p) {
+        return p.tags.map(function(tg) {
+            var shared = allTags[tg] > 1 ? ' compare-tag-shared' : '';
+            return '<span class="compare-tag' + shared + '">' + escapeHTML(tg) + '</span>';
+        }).join(' ');
+    });
+
+    html += _buildCompareRow("Links", selected, function(p) {
+        return p.links.map(function(lnk) {
+            return '<a href="' + sanitizeURL(lnk.url) + '" target="_blank" rel="noopener">' +
+                escapeHTML(lnk.label) + '</a>';
+        }).join(' ');
+    });
 
     // Shared tags summary
     var sharedTags = Object.keys(allTags).filter(function(k) { return allTags[k] > 1; });
@@ -2712,36 +2716,32 @@ function initQuiz() {
     });
 }
 
+/**
+ * Bootstrap all modules in the correct order.
+ * Extracted to avoid duplicating the init sequence between the
+ * DOMContentLoaded handler and the already-loaded branch.
+ */
+function initApp() {
+    initSortAndView();
+    initBookmarks();
+    renderProjects();
+    initFilters();
+    initDeepLink();
+    initTheme();
+    initKeyboardNav();
+    initAnalytics();
+    initSpotlight();
+    initTechRadar();
+    initCompare();
+    initQuiz();
+}
+
 // Auto-initialize on DOM ready
 if (typeof document !== "undefined") {
     if (document.readyState === "loading") {
-        document.addEventListener("DOMContentLoaded", function() {
-            initSortAndView();
-            initBookmarks();
-            renderProjects();
-            initFilters();
-            initDeepLink();
-            initTheme();
-            initKeyboardNav();
-            initAnalytics();
-            initSpotlight();
-            initTechRadar();
-            initCompare();
-            initQuiz();
-        });
+        document.addEventListener("DOMContentLoaded", initApp);
     } else {
-        initSortAndView();
-        initBookmarks();
-        renderProjects();
-        initFilters();
-        initDeepLink();
-        initTheme();
-        initKeyboardNav();
-        initAnalytics();
-        initSpotlight();
-        initTechRadar();
-        initCompare();
-        initQuiz();
+        initApp();
     }
 }
 
@@ -2850,6 +2850,7 @@ if (typeof module !== "undefined" && module.exports) {
         initTechRadar: initTechRadar,
         // Project Comparison
         _compareSet: _compareSet,
+        _buildCompareRow: _buildCompareRow,
         toggleCompare: toggleCompare,
         clearCompare: clearCompare,
         syncCompareUI: syncCompareUI,
@@ -2867,6 +2868,8 @@ if (typeof module !== "undefined" && module.exports) {
         renderQuizResults: renderQuizResults,
         resetQuiz: resetQuiz,
         toggleQuiz: toggleQuiz,
-        initQuiz: initQuiz
+        initQuiz: initQuiz,
+        // App bootstrap
+        initApp: initApp
     };
 }
