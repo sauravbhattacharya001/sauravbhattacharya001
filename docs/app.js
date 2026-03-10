@@ -5,7 +5,7 @@
  * The HTML template is generated automatically.
  */
 
-/* exported PROJECTS, _filterState, renderProjects, filterProjects, initFilters, buildCardHeader, buildCardTags, buildCardLinks, buildTagList, buildLinkList, buildCategoryHTML, projectMatchesQuery, groupByCategory, _extractUnique, extractCategories, createFilterPills, wireFilterEvents, updateTagIndicator, clearTagFilter, setTagFilter, extractTags, wireTagClicks, getPreferredTheme, applyTheme, toggleTheme, initTheme, _kbState, getVisibleCards, focusCard, blurCards, openFocusedCard, showKeyboardHelp, hideKeyboardHelp, toggleKeyboardHelp, initKeyboardNav, buildHelpOverlay, sortProjects, setSortOrder, setViewMode, initSortAndView, buildSortControls, buildViewToggle, SORT_ORDERS, _bookmarks, isBookmarked, toggleBookmark, setBookmarkFilter, initBookmarks, getBookmarkCount, serializeFilterState, deserializeFilterState, pushFilterState, initDeepLink, _deepLinkEnabled, computeCategoryDistribution, computeTagDistribution, computePortfolioSummary, buildBarChart, buildTagCloud, buildAnalyticsPanel, toggleAnalytics, initAnalytics, _spotlightState, buildSpotlightCard, renderSpotlight, nextSpotlight, prevSpotlight, goToSpotlight, toggleSpotlightPause, startSpotlightTimer, stopSpotlightTimer, wireSpotlightEvents, initSpotlight, TECH_CATEGORIES, _techRadarState, computeTechStack, groupTechByType, buildTechRadar, renderTechRadar, toggleTechRadar, setTechRadarFilter, wireTechRadarEvents, initTechRadar, _buildCompareRow, initApp */
+/* exported PROJECTS, _filterState, renderProjects, filterProjects, initFilters, buildCardHeader, buildCardTags, buildCardLinks, buildTagList, buildLinkList, buildCategoryHTML, projectMatchesQuery, groupByCategory, _extractUnique, extractCategories, createFilterPills, wireFilterEvents, updateTagIndicator, clearTagFilter, setTagFilter, extractTags, wireTagClicks, getPreferredTheme, applyTheme, toggleTheme, initTheme, _kbState, getVisibleCards, focusCard, blurCards, openFocusedCard, showKeyboardHelp, hideKeyboardHelp, toggleKeyboardHelp, initKeyboardNav, buildHelpOverlay, sortProjects, setSortOrder, setViewMode, initSortAndView, buildSortControls, buildViewToggle, SORT_ORDERS, _bookmarks, isBookmarked, toggleBookmark, setBookmarkFilter, initBookmarks, getBookmarkCount, serializeFilterState, deserializeFilterState, pushFilterState, initDeepLink, _deepLinkEnabled, computeCategoryDistribution, computeTagDistribution, computePortfolioSummary, buildBarChart, buildTagCloud, buildAnalyticsPanel, toggleAnalytics, initAnalytics, _spotlightState, buildSpotlightCard, renderSpotlight, nextSpotlight, prevSpotlight, goToSpotlight, toggleSpotlightPause, startSpotlightTimer, stopSpotlightTimer, wireSpotlightEvents, initSpotlight, TECH_CATEGORIES, _techRadarState, computeTechStack, groupTechByType, buildTechRadar, renderTechRadar, toggleTechRadar, setTechRadarFilter, wireTechRadarEvents, initTechRadar, _buildCompareRow, _modalState, _activateModal, _deactivateModal, _handleModalTab, initApp */
 
 /**
  * Active filter state.
@@ -2249,6 +2249,108 @@ function initTechRadar() {
 // table showing icon, title, category, description, tags, and links.
 
 /** @type {Set<string>} repos currently selected for comparison */
+// ── Modal Focus Management (fixes #24) ──────────────────────────────
+//
+// Shared utilities for trapping focus within modal overlays (compare
+// panel, quiz) and restoring focus on close.  Implements:
+//   - Escape key dismissal
+//   - Tab/Shift+Tab focus trapping
+//   - Focus restoration to trigger element
+//   - aria-modal + role=dialog attributes
+
+var _modalState = {
+    /** @type {HTMLElement|null} Element that opened the modal (restored on close) */
+    triggerEl: null,
+    /** @type {HTMLElement|null} Currently active modal container */
+    activeModal: null
+};
+
+/** Selector for keyboard-focusable elements within a container. */
+var _FOCUSABLE_SELECTOR = 'a[href], button:not([disabled]), input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])';
+
+/**
+ * Activate focus trapping on a modal container.
+ * Saves the trigger element, marks the container as a dialog, and
+ * moves focus to the first interactive element inside.
+ *
+ * @param {HTMLElement} container - The modal root element.
+ */
+function _activateModal(container) {
+    _modalState.triggerEl = typeof document !== "undefined" ? document.activeElement : null;
+    _modalState.activeModal = container;
+
+    container.setAttribute("role", "dialog");
+    container.setAttribute("aria-modal", "true");
+
+    // Focus first interactive child (or the container itself)
+    var firstFocusable = container.querySelector(_FOCUSABLE_SELECTOR);
+    if (firstFocusable) {
+        firstFocusable.focus();
+    } else {
+        container.setAttribute("tabindex", "-1");
+        container.focus();
+    }
+}
+
+/**
+ * Deactivate the current modal and restore focus to the trigger.
+ */
+function _deactivateModal() {
+    var trigger = _modalState.triggerEl;
+    _modalState.activeModal = null;
+    _modalState.triggerEl = null;
+    if (trigger && typeof trigger.focus === "function") {
+        trigger.focus();
+    }
+}
+
+/**
+ * Handle Tab key within an active modal to trap focus.
+ * @param {KeyboardEvent} e
+ */
+function _handleModalTab(e) {
+    var modal = _modalState.activeModal;
+    if (!modal) return;
+    if (e.key !== "Tab") return;
+
+    var focusable = modal.querySelectorAll(_FOCUSABLE_SELECTOR);
+    if (focusable.length === 0) return;
+
+    var first = focusable[0];
+    var last = focusable[focusable.length - 1];
+
+    if (e.shiftKey) {
+        if (document.activeElement === first) {
+            e.preventDefault();
+            last.focus();
+        }
+    } else {
+        if (document.activeElement === last) {
+            e.preventDefault();
+            first.focus();
+        }
+    }
+}
+
+// Global keydown handler for Escape and Tab trapping
+if (typeof document !== "undefined") {
+    document.addEventListener("keydown", function(e) {
+        if (e.key === "Escape") {
+            if (_quizState && _quizState.active) {
+                resetQuiz();
+            } else {
+                var comparePanel = document.getElementById("compare-panel");
+                if (comparePanel && comparePanel.style.display !== "none") {
+                    closeCompare();
+                }
+            }
+        }
+        if (e.key === "Tab" && _modalState.activeModal) {
+            _handleModalTab(e);
+        }
+    });
+}
+
 var _compareSet = new Set();
 
 /**
@@ -2415,6 +2517,9 @@ function renderComparePanel() {
 
     // Scroll into view
     panel.scrollIntoView({ behavior: "smooth", block: "start" });
+
+    // Activate modal focus management (#24)
+    _activateModal(panel);
 }
 
 /**
@@ -2423,6 +2528,7 @@ function renderComparePanel() {
 function closeCompare() {
     var panel = document.getElementById("compare-panel");
     if (panel) panel.style.display = "none";
+    _deactivateModal();
 }
 
 /**
@@ -2609,6 +2715,9 @@ function renderQuizStep() {
     panel.innerHTML = html;
     panel.style.display = "block";
 
+    // Activate modal focus management (#24)
+    _activateModal(panel);
+
     // Wire up option clicks
     var buttons = panel.querySelectorAll(".quiz-option");
     for (var b = 0; b < buttons.length; b++) {
@@ -2678,6 +2787,9 @@ function renderQuizResults() {
     html += '</div>';
     html += '</div>';
     panel.innerHTML = html;
+
+    // Re-activate modal focus on results view (#24)
+    _activateModal(panel);
 }
 
 function resetQuiz() {
@@ -2689,6 +2801,7 @@ function resetQuiz() {
         panel.innerHTML = "";
         panel.style.display = "none";
     }
+    _deactivateModal();
 }
 
 function toggleQuiz() {
@@ -2859,6 +2972,11 @@ if (typeof module !== "undefined" && module.exports) {
         buildCompareBar: buildCompareBar,
         buildCompareCheckbox: buildCompareCheckbox,
         initCompare: initCompare,
+        // Modal focus management
+        _modalState: _modalState,
+        _activateModal: _activateModal,
+        _deactivateModal: _deactivateModal,
+        _handleModalTab: _handleModalTab,
         // Project Finder Quiz
         _quizState: _quizState,
         QUIZ_QUESTIONS: QUIZ_QUESTIONS,
