@@ -2332,7 +2332,7 @@ function renderComparePanel() {
 
     var html = '<div class="compare-header">' +
         '<h2>Project Comparison</h2>' +
-        '<button class="compare-close" onclick="(typeof App!==\'undefined\'?App:window).closeCompare()" title="Close">&times;</button>' +
+        '<button class="compare-close" data-action="close-compare" title="Close">&times;</button>' +
         '</div>';
 
     // Build comparison table
@@ -2428,8 +2428,8 @@ function closeCompare() {
 function buildCompareBar() {
     return '<div id="compare-bar" class="compare-bar" style="display:none">' +
         '<span>Comparing <span class="compare-count">0</span> projects</span>' +
-        '<button class="compare-open" onclick="(typeof App!==\'undefined\'?App:window).renderComparePanel()" disabled>Compare</button>' +
-        '<button class="compare-clear" onclick="(typeof App!==\'undefined\'?App:window).clearCompare()">Clear</button>' +
+        '<button class="compare-open" data-action="open-compare" disabled>Compare</button>' +
+        '<button class="compare-clear" data-action="clear-compare">Clear</button>' +
         '</div>';
 }
 
@@ -2464,6 +2464,14 @@ function initCompare() {
         if (e.target && e.target.classList.contains("compare-cb")) {
             toggleCompare(e.target.dataset.repo);
         }
+    });
+
+    // Delegate data-action clicks for compare buttons (CSP-safe, no inline onclick)
+    document.addEventListener("click", function(e) {
+        var action = e.target && e.target.getAttribute("data-action");
+        if (action === "close-compare") closeCompare();
+        else if (action === "open-compare") renderComparePanel();
+        else if (action === "clear-compare") clearCompare();
     });
 }
 
@@ -2583,7 +2591,7 @@ function renderQuizStep() {
     var html = '<div class="quiz-container">';
     html += '<div class="quiz-header">';
     html += '<span class="quiz-progress">Question ' + progress + '</span>';
-    html += '<button type="button" class="quiz-close" onclick="resetQuiz()" aria-label="Close quiz">&times;</button>';
+    html += '<button type="button" class="quiz-close" data-action="reset-quiz" aria-label="Close quiz">&times;</button>';
     html += '</div>';
     html += '<div class="quiz-progress-bar"><div class="quiz-progress-fill" style="width:' + progressPct + '%"></div></div>';
     html += '<h3 class="quiz-question">' + escapeHTML(q.text) + '</h3>';
@@ -2628,7 +2636,7 @@ function renderQuizResults() {
     var html = '<div class="quiz-container quiz-results">';
     html += '<div class="quiz-header">';
     html += '<span class="quiz-progress">Your Matches</span>';
-    html += '<button type="button" class="quiz-close" onclick="resetQuiz()" aria-label="Close quiz">&times;</button>';
+    html += '<button type="button" class="quiz-close" data-action="reset-quiz" aria-label="Close quiz">&times;</button>';
     html += '</div>';
     html += '<div class="quiz-progress-bar"><div class="quiz-progress-fill" style="width:100%"></div></div>';
     html += '<h3 class="quiz-question">🎯 Top projects for you</h3>';
@@ -2661,8 +2669,8 @@ function renderQuizResults() {
 
     html += '</div>';
     html += '<div class="quiz-actions">';
-    html += '<button type="button" class="quiz-retry" onclick="startQuiz()">🔄 Try Again</button>';
-    html += '<button type="button" class="quiz-close-btn" onclick="resetQuiz()">Close</button>';
+    html += '<button type="button" class="quiz-retry" data-action="start-quiz">🔄 Try Again</button>';
+    html += '<button type="button" class="quiz-close-btn" data-action="reset-quiz">Close</button>';
     html += '</div>';
     html += '</div>';
     panel.innerHTML = html;
@@ -2695,6 +2703,13 @@ function initQuiz() {
             toggleQuiz();
         });
     }
+
+    // Delegate data-action clicks for quiz buttons (CSP-safe, no inline onclick)
+    document.addEventListener("click", function(e) {
+        var action = e.target && e.target.getAttribute("data-action");
+        if (action === "reset-quiz") resetQuiz();
+        else if (action === "start-quiz") startQuiz();
+    });
 }
 
 // Auto-initialize on DOM ready
