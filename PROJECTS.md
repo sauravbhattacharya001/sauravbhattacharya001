@@ -73,7 +73,7 @@ Detailed technical overview of all public repositories. For a quick summary, see
 
 **What it does:**
 - Client-side agentic chat with GPT-4o integration
-- **40+ modular features** built as revealing-module-pattern IIFEs
+- **42+ modular features** built as revealing-module-pattern IIFEs
 - **Sandboxed code execution** via postMessage-based iframe isolation
 - **Session management** with auto-save, import/export, and conversation tags
 - **Slash commands** for quick actions (/focus, /tags, /timing, etc.)
@@ -88,13 +88,17 @@ Detailed technical overview of all public repositories. For a quick summary, see
 - **Focus/zen mode** for distraction-free writing
 - **Persona presets** and **model selector** for different AI configurations
 - **Scratchpad**, **quick replies**, **input history**, and **response time badges**
+- **Message reactions** — emoji reactions with per-message toggle, persistence, and usage analytics
+- **Model comparison** — side-by-side multi-model prompting with response diff and winner selection
+- **Project comparison** — side-by-side feature diff for selected conversations with modal focus trapping
+- **Offline support** — Service Worker + PWA for offline conversation access
 - **CSV export** for conversations with timestamps and response times
 - **Response quality rating** — thumbs up/down with per-model satisfaction dashboard
 - **Cost dashboard** — persistent API spend tracker with budget alerts
 - **Conversation merge** — combine sessions chronologically
 - **Data backup/restore** for all user data (21 storage keys)
 
-**Infrastructure:** CI (HTMLHint + ESLint + secret scanning), CodeQL, 1250+ tests, Docker workflow, npm publishing, branch protection, documentation site.
+**Infrastructure:** CI (HTMLHint + ESLint + secret scanning), CodeQL, 1500+ tests (28 test suites), Docker workflow, npm publishing, branch protection, documentation site.
 
 ---
 
@@ -130,12 +134,13 @@ Detailed technical overview of all public repositories. For a quick summary, see
 
 **What it does:**
 - **Dual execution**: `saurav.py` (tree-walk interpreter) and `sauravcc.py` (compiler: `.srv` → C → GCC → native `.exe`)
-- **27 built-in functions**: string ops, math, utilities — all user-overridable
+- **Transpiler**: `sauravtranspile.py` (AST-based `.srv` → Python source, 36 node types, 83 builtins, `--verify` mode)
+- **83 built-in functions**: string ops, math, I/O, type conversion, regex — all user-overridable
 - **Regex builtins** with ReDoS protection (pattern validation, nested quantifier detection)
 - **Module imports**: `import` statement for `.srv` files with circular dependency detection and diamond dependency handling
 - **Interactive REPL** with persistent state, multi-line blocks, command history
 - **Standard library**: upper/lower/trim/replace/split/join/contains, abs/round/floor/ceil/sqrt/power, type_of/to_string/range/sort
-- **600+ tests** covering interpreter, compiler, REPL, and module imports
+- **2400+ tests** covering interpreter, compiler, transpiler, REPL, and module imports
 
 **Full language specification:** [docs/LANGUAGE.md](https://github.com/sauravbhattacharya001/sauravcode/blob/master/docs/LANGUAGE.md) with EBNF grammar.
 
@@ -166,6 +171,9 @@ Detailed technical overview of all public repositories. For a quick summary, see
 - **PromptSanitizer** — PII redaction, injection neutralization, token escaping
 - **PromptChatFormatter** — multi-provider formatting (OpenAI, Anthropic, Gemini)
 - **PromptOutputValidator** — LLM response validation (length, regex, JSON, enums)
+- **PromptAnnotation** — structured inline annotations (`{{# ... #}}` syntax) with strip, extract, validate, insert, metadata, and summarize operations
+- **PromptSlotFiller** — schema-driven slot extraction from natural language with 8 slot types, multi-turn progressive filling, validation, and auto-discovery
+- **SerializationGuards** — payload size limits on all entry points to prevent denial-of-service via oversized input
 
 **Infrastructure:** CI, CodeQL, code coverage (Codecov), Docker workflow, NuGet publishing, branch protection, auto-labeler, stale bot.
 
@@ -184,6 +192,7 @@ Detailed technical overview of all public repositories. For a quick summary, see
 | **Demo** | [sauravbhattacharya001.github.io/VoronoiMap](https://sauravbhattacharya001.github.io/VoronoiMap/) |
 
 **What it does:**
+- **50 modules** covering Voronoi generation, spatial analysis, and visualization
 - **6 color schemes** for Voronoi region rendering
 - **SVG visualization** with scipy-backed region computation
 - **Interactive HTML** with Canvas pan/zoom, hover tooltips, theme toggle
@@ -223,8 +232,9 @@ Detailed technical overview of all public repositories. For a quick summary, see
 - **Topological sort** — Kahn's algorithm with cycle detection for DAGs
 - **Influence spread simulation** — Independent Cascade (IC), Linear Threshold (LT), and SIR models with cached neighbor lookups
 - **Graph similarity** — spectral comparison via Jacobi eigenvalue decomposition
+- **Community evolution tracker** — Jaccard-based temporal community tracking across snapshots with split/merge/birth/death event detection
 
-**Infrastructure:** CI (Java 11/17), CodeQL, Dependabot, auto-labeler, branch protection. 2400+ tests.
+**Infrastructure:** CI (Java 11/17), CodeQL, Dependabot, auto-labeler, branch protection. 2500+ tests.
 
 ---
 
@@ -252,6 +262,7 @@ Detailed technical overview of all public repositories. For a quick summary, see
 - **Streak tracker** — consecutive-day activity analysis with motivational messages
 - **Time budget analysis** — time allocation across tags, priorities, and weekdays with budget targets
 - **Event location** support with venue tracking
+- **Event sharing** — export events as text, JSON, ICS (iCal), or CSV formats
 - **SQLite persistence** with proper BLoC state management
 - **Docker-ready** with multi-stage Dockerfile
 
@@ -276,6 +287,9 @@ Detailed technical overview of all public repositories. For a quick summary, see
 - **Share** via UIActivityViewController
 - **Network reachability** monitoring (SCNetworkReachability)
 - **Hardened ATS** with URL scheme allowlist and HTML sanitization
+- **Article readability analysis** — Flesch-Kincaid, Coleman-Liau, and ARI scoring
+- **Article relationship mapping** — link/topic/entity-based cross-referencing
+- **Article freshness tracking** — decay scoring with configurable refresh policies
 
 **Infrastructure:** CI, CodeQL (Swift), Dependabot, Docker workflow, 20+ security tests.
 
@@ -318,6 +332,7 @@ Detailed technical overview of all public repositories. For a quick summary, see
 - **MetricDescriptor registry** — unified, boilerplate-free endpoint routing
 - **Interactive data explorer** with histograms, scatter plots, regression analysis
 - **Interactive data table** with sorting, search, numeric filtering, CSV export
+- **46 bioprinting tools** including cost estimator, bioink mixing calculator, scaffold geometry analyzer, cell seeding optimizer, GLP compliance checker, and research demos
 
 **Infrastructure:** CI (MSBuild + JSON/whitespace lint), Dependabot, Docker workflow, NuGet publishing, GitHub Pages analytics demo.
 
@@ -357,7 +372,7 @@ Detailed technical overview of all public repositories. For a quick summary, see
 | **Docs** | [sauravbhattacharya001.github.io/Ocaml-sample-code](https://sauravbhattacharya001.github.io/Ocaml-sample-code/) |
 
 **What it does:**
-- **78+ modules** covering the full spectrum of functional programming
+- **84+ modules** covering the full spectrum of functional programming
 - **Data structures**: BST, trie, hashmap, bloom filter, red-black tree, union-find, heap, skip list, segment tree, fenwick tree, interval tree, rope, LRU cache, suffix array, finger tree, persistent vector, deque, zipper
 - **Algorithms**: graph algorithms (BFS, DFS, Dijkstra, network flow), sorting (6 algorithms), string matching (KMP, Boyer-Moore, Rabin-Karp, Aho-Corasick), regex engine (Thompson's NFA), Huffman coding, diff (Myers algorithm)
 - **Concurrency**: software transactional memory (STM), Raft consensus, CSP (communicating sequential processes)
@@ -392,6 +407,8 @@ Detailed technical overview of all public repositories. For a quick summary, see
 - **Watch mode** — continuous live monitoring with change detection
 - **Hardening script generator** — reviewable PowerShell scripts
 - **Security digest** — executive summary with module heatmap
+- **Finding tag manager** — categorize and filter audit findings with bulk operations
+- **Finding risk scorer** — automated risk scoring with severity, CVSS, exposure, and age factors
 
 **Infrastructure:** CI (.NET 8, xUnit), CodeQL, Dependabot, branch protection, auto-labeler. 90+ tests.
 
