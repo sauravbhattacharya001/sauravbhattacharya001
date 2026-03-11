@@ -1818,430 +1818,456 @@ function initAnalytics() {
 // ── Spotlight Carousel ──────────────────────────────────────────────
 
 /**
- * Spotlight state — tracks current index, auto-rotation timer, and pause.
- * @type {{ index: number, paused: boolean, timerId: number|null, intervalMs: number }}
+ * Spotlight Carousel — rotates through featured projects with auto-play,
+ * navigation controls, and dot indicators.
+ *
+ * @namespace Spotlight
  */
-var _spotlightState = { index: 0, paused: false, timerId: null, intervalMs: 6000 };
+var Spotlight = (function () {
+    var _state = { index: 0, paused: false, timerId: null, intervalMs: 6000 };
 
-/**
- * Build the HTML for a single spotlight card.
- * @param {Object} project - A PROJECTS entry.
- * @param {number} index - Current index (0-based).
- * @param {number} total - Total project count.
- * @returns {string} HTML string.
- */
-function buildSpotlightCard(project, index, total) {
-    if (!project) return "";
+    /**
+     * Build the HTML for a single spotlight card.
+     * @param {Object} project - A PROJECTS entry.
+     * @param {number} index - Current index (0-based).
+     * @param {number} total - Total project count.
+     * @returns {string} HTML string.
+     */
+    function buildCard(project, index, total) {
+        if (!project) return "";
 
-    var tagsHtml = buildTagList(project.tags, { clickable: false, wrapperClass: "spotlight-tags" });
-    var linksHtml = buildLinkList(project.links, { wrapperClass: "spotlight-links" });
+        var tagsHtml = buildTagList(project.tags, { clickable: false, wrapperClass: "spotlight-tags" });
+        var linksHtml = buildLinkList(project.links, { wrapperClass: "spotlight-links" });
 
-    var dotsHtml = "";
-    for (var d = 0; d < total; d++) {
-        dotsHtml += '<button type="button" class="spotlight-dot' +
-            (d === index ? ' active' : '') +
-            '" data-spotlight-index="' + d +
-            '" aria-label="Go to project ' + (d + 1) + '"' +
-            ' title="' + escapeHTML(PROJECTS[d].title) + '"></button>';
-    }
-
-    var pauseLabel = _spotlightState.paused ? "Resume" : "Pause";
-
-    return '<div class="spotlight">' +
-        '<button type="button" class="spotlight-nav spotlight-prev" aria-label="Previous project" title="Previous">' +
-            '&#8249;' +
-        '</button>' +
-        '<div class="spotlight-inner">' +
-            '<div class="spotlight-icon">' + escapeHTML(project.icon) + '</div>' +
-            '<div class="spotlight-content">' +
-                '<div class="spotlight-label">Featured Project ' + (index + 1) + ' of ' + total + '</div>' +
-                '<div class="spotlight-title">' + escapeHTML(project.title) + '</div>' +
-                '<div class="spotlight-desc">' + escapeHTML(project.desc) + '</div>' +
-                tagsHtml +
-                linksHtml +
-            '</div>' +
-        '</div>' +
-        '<button type="button" class="spotlight-nav spotlight-next" aria-label="Next project" title="Next">' +
-            '&#8250;' +
-        '</button>' +
-        '<button type="button" class="spotlight-pause" aria-label="' + pauseLabel + ' auto-rotation" title="' + pauseLabel + '">' +
-            pauseLabel +
-        '</button>' +
-        '<div class="spotlight-dots">' + dotsHtml + '</div>' +
-    '</div>';
-}
-
-/**
- * Render the spotlight at the current index.
- */
-function renderSpotlight() {
-    if (typeof document === "undefined") return;
-    var container = document.getElementById("spotlight-container");
-    if (!container) return;
-    if (PROJECTS.length === 0) return;
-
-    var idx = _spotlightState.index % PROJECTS.length;
-    container.innerHTML = buildSpotlightCard(PROJECTS[idx], idx, PROJECTS.length);
-    wireSpotlightEvents();
-}
-
-/**
- * Advance to the next spotlight project.
- * @returns {number} The new index.
- */
-function nextSpotlight() {
-    if (PROJECTS.length === 0) return 0;
-    _spotlightState.index = (_spotlightState.index + 1) % PROJECTS.length;
-    renderSpotlight();
-    return _spotlightState.index;
-}
-
-/**
- * Go to the previous spotlight project.
- * @returns {number} The new index.
- */
-function prevSpotlight() {
-    if (PROJECTS.length === 0) return 0;
-    _spotlightState.index = (_spotlightState.index - 1 + PROJECTS.length) % PROJECTS.length;
-    renderSpotlight();
-    return _spotlightState.index;
-}
-
-/**
- * Go to a specific spotlight index.
- * @param {number} idx
- * @returns {number} The new index.
- */
-function goToSpotlight(idx) {
-    if (PROJECTS.length === 0) return 0;
-    _spotlightState.index = ((idx % PROJECTS.length) + PROJECTS.length) % PROJECTS.length;
-    renderSpotlight();
-    return _spotlightState.index;
-}
-
-/**
- * Toggle auto-rotation pause/resume.
- * @returns {boolean} True if now paused, false if resumed.
- */
-function toggleSpotlightPause() {
-    _spotlightState.paused = !_spotlightState.paused;
-    if (_spotlightState.paused) {
-        stopSpotlightTimer();
-    } else {
-        startSpotlightTimer();
-    }
-    renderSpotlight();
-    return _spotlightState.paused;
-}
-
-/**
- * Start the auto-rotation timer.
- */
-function startSpotlightTimer() {
-    stopSpotlightTimer();
-    if (typeof setInterval === "undefined") return;
-    _spotlightState.timerId = setInterval(function() {
-        if (!_spotlightState.paused) {
-            nextSpotlight();
+        var dotsHtml = "";
+        for (var d = 0; d < total; d++) {
+            dotsHtml += '<button type="button" class="spotlight-dot' +
+                (d === index ? ' active' : '') +
+                '" data-spotlight-index="' + d +
+                '" aria-label="Go to project ' + (d + 1) + '"' +
+                ' title="' + escapeHTML(PROJECTS[d].title) + '"></button>';
         }
-    }, _spotlightState.intervalMs);
-}
 
-/**
- * Stop the auto-rotation timer.
- */
-function stopSpotlightTimer() {
-    if (_spotlightState.timerId !== null && typeof clearInterval !== "undefined") {
-        clearInterval(_spotlightState.timerId);
-        _spotlightState.timerId = null;
-    }
-}
+        var pauseLabel = _state.paused ? "Resume" : "Pause";
 
-/**
- * Wire click events for spotlight navigation buttons.
- */
-function wireSpotlightEvents() {
-    if (typeof document === "undefined") return;
-    var container = document.getElementById("spotlight-container");
-    if (!container) return;
+        return '<div class="spotlight">' +
+            '<button type="button" class="spotlight-nav spotlight-prev" aria-label="Previous project" title="Previous">' +
+                '&#8249;' +
+            '</button>' +
+            '<div class="spotlight-inner">' +
+                '<div class="spotlight-icon">' + escapeHTML(project.icon) + '</div>' +
+                '<div class="spotlight-content">' +
+                    '<div class="spotlight-label">Featured Project ' + (index + 1) + ' of ' + total + '</div>' +
+                    '<div class="spotlight-title">' + escapeHTML(project.title) + '</div>' +
+                    '<div class="spotlight-desc">' + escapeHTML(project.desc) + '</div>' +
+                    tagsHtml +
+                    linksHtml +
+                '</div>' +
+            '</div>' +
+            '<button type="button" class="spotlight-nav spotlight-next" aria-label="Next project" title="Next">' +
+                '&#8250;' +
+            '</button>' +
+            '<button type="button" class="spotlight-pause" aria-label="' + pauseLabel + ' auto-rotation" title="' + pauseLabel + '">' +
+                pauseLabel +
+            '</button>' +
+            '<div class="spotlight-dots">' + dotsHtml + '</div>' +
+        '</div>';
+    }
 
-    var prevBtn = container.querySelector(".spotlight-prev");
-    var nextBtn = container.querySelector(".spotlight-next");
-    var pauseBtn = container.querySelector(".spotlight-pause");
-    var dots = container.querySelectorAll(".spotlight-dot");
+    /** Render the spotlight at the current index. */
+    function render() {
+        if (typeof document === "undefined") return;
+        var container = document.getElementById("spotlight-container");
+        if (!container) return;
+        if (PROJECTS.length === 0) return;
 
-    if (prevBtn) {
-        prevBtn.addEventListener("click", function() {
-            prevSpotlight();
-            if (!_spotlightState.paused) startSpotlightTimer();
-        });
+        var idx = _state.index % PROJECTS.length;
+        container.innerHTML = buildCard(PROJECTS[idx], idx, PROJECTS.length);
+        wireEvents();
     }
-    if (nextBtn) {
-        nextBtn.addEventListener("click", function() {
-            nextSpotlight();
-            if (!_spotlightState.paused) startSpotlightTimer();
-        });
+
+    /** Advance to the next spotlight project. @returns {number} New index. */
+    function next() {
+        if (PROJECTS.length === 0) return 0;
+        _state.index = (_state.index + 1) % PROJECTS.length;
+        render();
+        return _state.index;
     }
-    if (pauseBtn) {
-        pauseBtn.addEventListener("click", function() {
-            toggleSpotlightPause();
-        });
+
+    /** Go to the previous spotlight project. @returns {number} New index. */
+    function prev() {
+        if (PROJECTS.length === 0) return 0;
+        _state.index = (_state.index - 1 + PROJECTS.length) % PROJECTS.length;
+        render();
+        return _state.index;
     }
-    for (var i = 0; i < dots.length; i++) {
-        (function(dot) {
-            dot.addEventListener("click", function() {
-                var idx = parseInt(dot.getAttribute("data-spotlight-index"), 10);
-                goToSpotlight(idx);
-                if (!_spotlightState.paused) startSpotlightTimer();
+
+    /** Go to a specific spotlight index. @returns {number} New index. */
+    function goTo(idx) {
+        if (PROJECTS.length === 0) return 0;
+        _state.index = ((idx % PROJECTS.length) + PROJECTS.length) % PROJECTS.length;
+        render();
+        return _state.index;
+    }
+
+    /** Toggle auto-rotation pause/resume. @returns {boolean} True if now paused. */
+    function togglePause() {
+        _state.paused = !_state.paused;
+        if (_state.paused) {
+            stopTimer();
+        } else {
+            startTimer();
+        }
+        render();
+        return _state.paused;
+    }
+
+    /** Start the auto-rotation timer. */
+    function startTimer() {
+        stopTimer();
+        if (typeof setInterval === "undefined") return;
+        _state.timerId = setInterval(function() {
+            if (!_state.paused) {
+                next();
+            }
+        }, _state.intervalMs);
+    }
+
+    /** Stop the auto-rotation timer. */
+    function stopTimer() {
+        if (_state.timerId !== null && typeof clearInterval !== "undefined") {
+            clearInterval(_state.timerId);
+            _state.timerId = null;
+        }
+    }
+
+    /** Wire click events for spotlight navigation buttons. */
+    function wireEvents() {
+        if (typeof document === "undefined") return;
+        var container = document.getElementById("spotlight-container");
+        if (!container) return;
+
+        var prevBtn = container.querySelector(".spotlight-prev");
+        var nextBtn = container.querySelector(".spotlight-next");
+        var pauseBtn = container.querySelector(".spotlight-pause");
+        var dots = container.querySelectorAll(".spotlight-dot");
+
+        if (prevBtn) {
+            prevBtn.addEventListener("click", function() {
+                prev();
+                if (!_state.paused) startTimer();
             });
-        })(dots[i]);
+        }
+        if (nextBtn) {
+            nextBtn.addEventListener("click", function() {
+                next();
+                if (!_state.paused) startTimer();
+            });
+        }
+        if (pauseBtn) {
+            pauseBtn.addEventListener("click", function() {
+                togglePause();
+            });
+        }
+        for (var i = 0; i < dots.length; i++) {
+            (function(dot) {
+                dot.addEventListener("click", function() {
+                    var idx = parseInt(dot.getAttribute("data-spotlight-index"), 10);
+                    goTo(idx);
+                    if (!_state.paused) startTimer();
+                });
+            })(dots[i]);
+        }
     }
-}
 
-/**
- * Initialize the spotlight carousel: render first card and start timer.
- */
-function initSpotlight() {
-    if (typeof document === "undefined") return;
-    _spotlightState.index = 0;
-    _spotlightState.paused = false;
-    renderSpotlight();
-    startSpotlightTimer();
-}
+    /** Initialize the spotlight carousel: render first card and start timer. */
+    function init() {
+        if (typeof document === "undefined") return;
+        _state.index = 0;
+        _state.paused = false;
+        render();
+        startTimer();
+    }
+
+    return {
+        _state: _state,
+        buildCard: buildCard,
+        render: render,
+        next: next,
+        prev: prev,
+        goTo: goTo,
+        togglePause: togglePause,
+        startTimer: startTimer,
+        stopTimer: stopTimer,
+        wireEvents: wireEvents,
+        init: init
+    };
+})();
+
+// Legacy aliases for backward compatibility with tests
+var _spotlightState = Spotlight._state;
+function buildSpotlightCard(p, i, t) { return Spotlight.buildCard(p, i, t); }
+function renderSpotlight() { Spotlight.render(); }
+function nextSpotlight() { return Spotlight.next(); }
+function prevSpotlight() { return Spotlight.prev(); }
+function goToSpotlight(idx) { return Spotlight.goTo(idx); }
+function toggleSpotlightPause() { return Spotlight.togglePause(); }
+function startSpotlightTimer() { Spotlight.startTimer(); }
+function stopSpotlightTimer() { Spotlight.stopTimer(); }
+function wireSpotlightEvents() { Spotlight.wireEvents(); }
+function initSpotlight() { Spotlight.init(); }
 
 // ── Tech Stack Radar ────────────────────────────────────────────────
 
 /**
- * Classification map: tag name → category type.
- * Tags not listed default to "Domain".
+ * Tech Stack Radar — interactive visualization of technologies used
+ * across all portfolio projects, with type filtering and tag-click
+ * integration.
+ *
+ * @namespace TechRadar
  */
-var TECH_CATEGORIES = {
-    "Python": "Language", "JavaScript": "Language", "C#": "Language",
-    "C": "Language", "Java": "Language", "OCaml": "Language",
-    "Dart": "Language", "Swift": "Language", "HTML/JS": "Language",
-    "Node.js": "Framework", ".NET 8": "Framework", "ASP.NET": "Framework",
-    "Flutter": "Framework", "WPF": "Framework", "BLoC": "Framework",
-    "MVC": "Framework", "GPT-4o": "Framework", "Azure OpenAI": "Framework",
-    "Compiler": "Tool", "Observability": "Tool", "Analytics": "Tool",
-    "Data Viz": "Tool", "Visualization": "Tool", "Code Execution": "Tool",
-    "Monte Carlo": "Tool", "RSS": "Tool"
-};
+var TechRadar = (function () {
+    /**
+     * Classification map: tag name → category type.
+     * Tags not listed default to "Domain".
+     */
+    var CATEGORIES = {
+        "Python": "Language", "JavaScript": "Language", "C#": "Language",
+        "C": "Language", "Java": "Language", "OCaml": "Language",
+        "Dart": "Language", "Swift": "Language", "HTML/JS": "Language",
+        "Node.js": "Framework", ".NET 8": "Framework", "ASP.NET": "Framework",
+        "Flutter": "Framework", "WPF": "Framework", "BLoC": "Framework",
+        "MVC": "Framework", "GPT-4o": "Framework", "Azure OpenAI": "Framework",
+        "Compiler": "Tool", "Observability": "Tool", "Analytics": "Tool",
+        "Data Viz": "Tool", "Visualization": "Tool", "Code Execution": "Tool",
+        "Monte Carlo": "Tool", "RSS": "Tool"
+    };
 
-/**
- * Compute tag usage across all projects.
- * @returns {Array<{tag:string, count:number, type:string, projects:string[]}>}
- *   Sorted by count descending, then alphabetically.
- */
-function computeTechStack() {
-    var map = {};
-    for (var i = 0; i < PROJECTS.length; i++) {
-        var p = PROJECTS[i];
-        for (var j = 0; j < p.tags.length; j++) {
-            var t = p.tags[j];
-            if (!map[t]) {
-                map[t] = { tag: t, count: 0, type: TECH_CATEGORIES[t] || "Domain", projects: [] };
+    var _state = { expanded: false, activeType: null };
+
+    /**
+     * Compute tag usage across all projects.
+     * @returns {Array<{tag:string, count:number, type:string, projects:string[]}>}
+     */
+    function computeStack() {
+        var map = {};
+        for (var i = 0; i < PROJECTS.length; i++) {
+            var p = PROJECTS[i];
+            for (var j = 0; j < p.tags.length; j++) {
+                var t = p.tags[j];
+                if (!map[t]) {
+                    map[t] = { tag: t, count: 0, type: CATEGORIES[t] || "Domain", projects: [] };
+                }
+                map[t].count++;
+                map[t].projects.push(p.title);
             }
-            map[t].count++;
-            map[t].projects.push(p.title);
         }
-    }
-    var arr = [];
-    for (var key in map) {
-        if (map.hasOwnProperty(key)) arr.push(map[key]);
-    }
-    arr.sort(function(a, b) {
-        if (b.count !== a.count) return b.count - a.count;
-        return a.tag < b.tag ? -1 : a.tag > b.tag ? 1 : 0;
-    });
-    return arr;
-}
-
-/**
- * Group tech stack items by type.
- * @param {Array} stack - Output of computeTechStack.
- * @returns {Object<string, Array>} Grouped by type.
- */
-function groupTechByType(stack) {
-    var groups = {};
-    var order = ["Language", "Framework", "Tool", "Domain"];
-    for (var o = 0; o < order.length; o++) groups[order[o]] = [];
-    for (var i = 0; i < stack.length; i++) {
-        var item = stack[i];
-        if (!groups[item.type]) groups[item.type] = [];
-        groups[item.type].push(item);
-    }
-    return groups;
-}
-
-/**
- * Build HTML for the tech stack radar panel.
- * @param {string|null} activeType - Currently active type filter, or null.
- * @returns {string} HTML string.
- */
-function buildTechRadar(activeType) {
-    var stack = computeTechStack();
-    var groups = groupTechByType(stack);
-    var typeNames = ["Language", "Framework", "Tool", "Domain"];
-    var typeIcons = { Language: "💻", Framework: "⚙️", Tool: "🔧", Domain: "🎯" };
-
-    // Type filter pills
-    var pillsHtml = '<div class="techradar-pills">';
-    pillsHtml += '<button type="button" class="techradar-pill' +
-        (activeType === null ? ' active' : '') +
-        '" data-techradar-type="all">All</button>';
-    for (var p = 0; p < typeNames.length; p++) {
-        var tn = typeNames[p];
-        if (groups[tn] && groups[tn].length > 0) {
-            pillsHtml += '<button type="button" class="techradar-pill' +
-                (activeType === tn ? ' active' : '') +
-                '" data-techradar-type="' + escapeHTML(tn) + '">' +
-                escapeHTML(typeIcons[tn] || "") + " " + escapeHTML(tn) +
-                ' <span class="techradar-pill-count">' + groups[tn].length + '</span></button>';
+        var arr = [];
+        for (var key in map) {
+            if (map.hasOwnProperty(key)) arr.push(map[key]);
         }
+        arr.sort(function(a, b) {
+            if (b.count !== a.count) return b.count - a.count;
+            return a.tag < b.tag ? -1 : a.tag > b.tag ? 1 : 0;
+        });
+        return arr;
     }
-    pillsHtml += '</div>';
 
-    // Tech items
-    var maxCount = stack.length > 0 ? stack[0].count : 1;
-    var itemsHtml = '<div class="techradar-grid">';
-    for (var g = 0; g < typeNames.length; g++) {
-        var type = typeNames[g];
-        if (activeType !== null && activeType !== type) continue;
-        var items = groups[type];
-        if (!items || items.length === 0) continue;
-        for (var k = 0; k < items.length; k++) {
-            var item = items[k];
-            var pct = Math.round((item.count / maxCount) * 100);
-            var projectList = "";
-            for (var m = 0; m < item.projects.length; m++) {
-                if (m > 0) projectList += ", ";
-                projectList += item.projects[m];
+    /**
+     * Group tech stack items by type.
+     * @param {Array} stack - Output of computeStack.
+     * @returns {Object<string, Array>} Grouped by type.
+     */
+    function groupByType(stack) {
+        var groups = {};
+        var order = ["Language", "Framework", "Tool", "Domain"];
+        for (var o = 0; o < order.length; o++) groups[order[o]] = [];
+        for (var i = 0; i < stack.length; i++) {
+            var item = stack[i];
+            if (!groups[item.type]) groups[item.type] = [];
+            groups[item.type].push(item);
+        }
+        return groups;
+    }
+
+    /**
+     * Build HTML for the tech stack radar panel.
+     * @param {string|null} activeType - Currently active type filter, or null.
+     * @returns {string} HTML string.
+     */
+    function buildPanel(activeType) {
+        var stack = computeStack();
+        var groups = groupByType(stack);
+        var typeNames = ["Language", "Framework", "Tool", "Domain"];
+        var typeIcons = { Language: "💻", Framework: "⚙️", Tool: "🔧", Domain: "🎯" };
+
+        // Type filter pills
+        var pillsHtml = '<div class="techradar-pills">';
+        pillsHtml += '<button type="button" class="techradar-pill' +
+            (activeType === null ? ' active' : '') +
+            '" data-techradar-type="all">All</button>';
+        for (var p = 0; p < typeNames.length; p++) {
+            var tn = typeNames[p];
+            if (groups[tn] && groups[tn].length > 0) {
+                pillsHtml += '<button type="button" class="techradar-pill' +
+                    (activeType === tn ? ' active' : '') +
+                    '" data-techradar-type="' + escapeHTML(tn) + '">' +
+                    escapeHTML(typeIcons[tn] || "") + " " + escapeHTML(tn) +
+                    ' <span class="techradar-pill-count">' + groups[tn].length + '</span></button>';
             }
-            itemsHtml += '<button type="button" class="techradar-item" ' +
-                'data-techradar-tag="' + escapeHTML(item.tag) + '" ' +
-                'title="' + escapeHTML(item.tag) + ' — used in: ' + escapeHTML(projectList) + '">' +
-                '<div class="techradar-bar-bg">' +
-                    '<div class="techradar-bar" style="width:' + pct + '%"></div>' +
-                '</div>' +
-                '<span class="techradar-tag-name">' + escapeHTML(item.tag) + '</span>' +
-                '<span class="techradar-tag-count">' + item.count + '</span>' +
-                '<span class="techradar-tag-type">' + escapeHTML(type) + '</span>' +
-            '</button>';
+        }
+        pillsHtml += '</div>';
+
+        // Tech items
+        var maxCount = stack.length > 0 ? stack[0].count : 1;
+        var itemsHtml = '<div class="techradar-grid">';
+        for (var g = 0; g < typeNames.length; g++) {
+            var type = typeNames[g];
+            if (activeType !== null && activeType !== type) continue;
+            var items = groups[type];
+            if (!items || items.length === 0) continue;
+            for (var k = 0; k < items.length; k++) {
+                var item = items[k];
+                var pct = Math.round((item.count / maxCount) * 100);
+                var projectList = "";
+                for (var m = 0; m < item.projects.length; m++) {
+                    if (m > 0) projectList += ", ";
+                    projectList += item.projects[m];
+                }
+                itemsHtml += '<button type="button" class="techradar-item" ' +
+                    'data-techradar-tag="' + escapeHTML(item.tag) + '" ' +
+                    'title="' + escapeHTML(item.tag) + ' — used in: ' + escapeHTML(projectList) + '">' +
+                    '<div class="techradar-bar-bg">' +
+                        '<div class="techradar-bar" style="width:' + pct + '%"></div>' +
+                    '</div>' +
+                    '<span class="techradar-tag-name">' + escapeHTML(item.tag) + '</span>' +
+                    '<span class="techradar-tag-count">' + item.count + '</span>' +
+                    '<span class="techradar-tag-type">' + escapeHTML(type) + '</span>' +
+                '</button>';
+            }
+        }
+        itemsHtml += '</div>';
+
+        // Summary stats
+        var langCount = (groups.Language || []).length;
+        var fwCount = (groups.Framework || []).length;
+        var summaryHtml = '<div class="techradar-summary">' +
+            '<span>' + stack.length + ' technologies</span>' +
+            '<span>' + langCount + ' languages</span>' +
+            '<span>' + fwCount + ' frameworks</span>' +
+            '<span>' + PROJECTS.length + ' projects</span>' +
+        '</div>';
+
+        return '<div class="techradar">' +
+            '<div class="techradar-header">' +
+                '<span class="techradar-title">🛠️ Tech Stack</span>' +
+                summaryHtml +
+            '</div>' +
+            pillsHtml + itemsHtml +
+        '</div>';
+    }
+
+    /** Render the tech radar into its container. */
+    function render() {
+        if (typeof document === "undefined") return;
+        var panel = document.getElementById("techradar-panel");
+        if (!panel) return;
+        if (!_state.expanded) {
+            panel.innerHTML = "";
+            return;
+        }
+        panel.innerHTML = buildPanel(_state.activeType);
+        wireEvents();
+    }
+
+    /** Toggle the tech radar panel visibility. @returns {boolean} True if now expanded. */
+    function toggle() {
+        _state.expanded = !_state.expanded;
+        if (typeof document !== "undefined") {
+            var btn = document.getElementById("techradar-toggle");
+            if (btn) {
+                btn.setAttribute("aria-expanded", _state.expanded ? "true" : "false");
+            }
+        }
+        render();
+        return _state.expanded;
+    }
+
+    /** Set the active type filter. @param {string|null} type */
+    function setFilter(type) {
+        _state.activeType = type;
+        render();
+    }
+
+    /** Wire click events for type pills and tag items. */
+    function wireEvents() {
+        if (typeof document === "undefined") return;
+        var panel = document.getElementById("techradar-panel");
+        if (!panel) return;
+
+        var pills = panel.querySelectorAll(".techradar-pill");
+        for (var i = 0; i < pills.length; i++) {
+            (function(pill) {
+                pill.addEventListener("click", function() {
+                    var type = pill.getAttribute("data-techradar-type");
+                    if (type === "all") {
+                        setFilter(null);
+                    } else {
+                        setFilter(_state.activeType === type ? null : type);
+                    }
+                });
+            })(pills[i]);
+        }
+
+        var items = panel.querySelectorAll(".techradar-item");
+        for (var j = 0; j < items.length; j++) {
+            (function(item) {
+                item.addEventListener("click", function() {
+                    var tag = item.getAttribute("data-techradar-tag");
+                    if (tag) {
+                        setTagFilter(tag);
+                    }
+                });
+            })(items[j]);
         }
     }
-    itemsHtml += '</div>';
 
-    // Summary stats
-    var langCount = (groups.Language || []).length;
-    var fwCount = (groups.Framework || []).length;
-    var toolCount = (groups.Tool || []).length;
-    var domainCount = (groups.Domain || []).length;
-    var summaryHtml = '<div class="techradar-summary">' +
-        '<span>' + stack.length + ' technologies</span>' +
-        '<span>' + langCount + ' languages</span>' +
-        '<span>' + fwCount + ' frameworks</span>' +
-        '<span>' + PROJECTS.length + ' projects</span>' +
-    '</div>';
-
-    return '<div class="techradar">' +
-        '<div class="techradar-header">' +
-            '<span class="techradar-title">🛠️ Tech Stack</span>' +
-            summaryHtml +
-        '</div>' +
-        pillsHtml + itemsHtml +
-    '</div>';
-}
-
-/** Tech radar state */
-var _techRadarState = { expanded: false, activeType: null };
-
-/**
- * Render the tech radar into its container.
- */
-function renderTechRadar() {
-    if (typeof document === "undefined") return;
-    var panel = document.getElementById("techradar-panel");
-    if (!panel) return;
-    if (!_techRadarState.expanded) {
-        panel.innerHTML = "";
-        return;
-    }
-    panel.innerHTML = buildTechRadar(_techRadarState.activeType);
-    wireTechRadarEvents();
-}
-
-/**
- * Toggle the tech radar panel visibility.
- * @returns {boolean} True if now expanded.
- */
-function toggleTechRadar() {
-    _techRadarState.expanded = !_techRadarState.expanded;
-    if (typeof document !== "undefined") {
+    /** Initialize the tech radar toggle button. */
+    function init() {
+        if (typeof document === "undefined") return;
         var btn = document.getElementById("techradar-toggle");
         if (btn) {
-            btn.setAttribute("aria-expanded", _techRadarState.expanded ? "true" : "false");
+            btn.addEventListener("click", function() {
+                toggle();
+            });
         }
     }
-    renderTechRadar();
-    return _techRadarState.expanded;
-}
 
-/**
- * Set the active type filter.
- * @param {string|null} type - "Language", "Framework", "Tool", "Domain", or null for all.
- */
-function setTechRadarFilter(type) {
-    _techRadarState.activeType = type;
-    renderTechRadar();
-}
+    return {
+        CATEGORIES: CATEGORIES,
+        _state: _state,
+        computeStack: computeStack,
+        groupByType: groupByType,
+        buildPanel: buildPanel,
+        render: render,
+        toggle: toggle,
+        setFilter: setFilter,
+        wireEvents: wireEvents,
+        init: init
+    };
+})();
 
-/**
- * Wire click events for type pills and tag items.
- */
-function wireTechRadarEvents() {
-    if (typeof document === "undefined") return;
-    var panel = document.getElementById("techradar-panel");
-    if (!panel) return;
-
-    var pills = panel.querySelectorAll(".techradar-pill");
-    for (var i = 0; i < pills.length; i++) {
-        (function(pill) {
-            pill.addEventListener("click", function() {
-                var type = pill.getAttribute("data-techradar-type");
-                if (type === "all") {
-                    setTechRadarFilter(null);
-                } else {
-                    setTechRadarFilter(_techRadarState.activeType === type ? null : type);
-                }
-            });
-        })(pills[i]);
-    }
-
-    var items = panel.querySelectorAll(".techradar-item");
-    for (var j = 0; j < items.length; j++) {
-        (function(item) {
-            item.addEventListener("click", function() {
-                var tag = item.getAttribute("data-techradar-tag");
-                if (tag) {
-                    setTagFilter(tag);
-                }
-            });
-        })(items[j]);
-    }
-}
-
-/**
- * Initialize the tech radar toggle button.
- */
-function initTechRadar() {
-    if (typeof document === "undefined") return;
-    var btn = document.getElementById("techradar-toggle");
-    if (btn) {
-        btn.addEventListener("click", function() {
-            toggleTechRadar();
-        });
-    }
-}
+// Legacy aliases for backward compatibility with tests
+var TECH_CATEGORIES = TechRadar.CATEGORIES;
+var _techRadarState = TechRadar._state;
+function computeTechStack() { return TechRadar.computeStack(); }
+function groupTechByType(stack) { return TechRadar.groupByType(stack); }
+function buildTechRadar(activeType) { return TechRadar.buildPanel(activeType); }
+function renderTechRadar() { TechRadar.render(); }
+function toggleTechRadar() { return TechRadar.toggle(); }
+function setTechRadarFilter(type) { TechRadar.setFilter(type); }
+function wireTechRadarEvents() { TechRadar.wireEvents(); }
+function initTechRadar() { TechRadar.init(); }
 
 // ─── Project Comparison ─────────────────────────────────────────────
 //
