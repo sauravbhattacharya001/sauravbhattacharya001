@@ -569,6 +569,10 @@
     (function() {
         'use strict';
 
+        var _escMap = {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'};
+        var _escRe = /[&<>"']/g;
+        function esc(s) { return String(s).replace(_escRe, function(c) { return _escMap[c]; }); }
+
         var rheo = createRheologyModeler();
         var presets = rheo.getBioinkPresets();
 
@@ -731,9 +735,9 @@
                 var div = document.createElement('div');
                 div.className = 'preset-card';
                 div.dataset.id = p.id;
-                div.innerHTML = '<h4>' + p.name + '</h4><p>K=' + p.K + ', n=' + p.n +
-                    (p.yieldStress ? ', τ_y=' + p.yieldStress + ' Pa' : '') + '</p>' +
-                    '<p>' + p.description + '</p>';
+                div.innerHTML = '<h4>' + esc(p.name) + '</h4><p>K=' + esc(p.K) + ', n=' + esc(p.n) +
+                    (p.yieldStress ? ', τ_y=' + esc(p.yieldStress) + ' Pa' : '') + '</p>' +
+                    '<p>' + esc(p.description) + '</p>';
                 div.addEventListener('click', function() {
                     container.querySelectorAll('.preset-card').forEach(function(c) { c.classList.remove('selected'); });
                     div.classList.add('selected');
@@ -795,7 +799,7 @@
                 var legendEl = document.getElementById('viscosityLegend');
                 legendEl.innerHTML = '';
                 viscOverlays.forEach(function(o) {
-                    legendEl.innerHTML += '<div class="legend-item"><div class="legend-dot" style="background:' + o.color + '"></div>' + o.label + '</div>';
+                    legendEl.innerHTML += '<div class="legend-item"><div class="legend-dot" style="background:' + esc(o.color) + '"></div>' + esc(o.label) + '</div>';
                 });
 
                 // Stats for latest
@@ -846,7 +850,7 @@
                     '</div>' +
                     '<div class="btn-group" style="margin-top:0.75rem"><button class="btn btn-outline" onclick="useFitResult(' + result.K + ',' + result.n + ')">Use These Parameters</button></div>';
             } catch (e) {
-                document.getElementById('fitResults').innerHTML = '<p style="color:var(--error)">' + e.message + '</p>';
+                document.getElementById('fitResults').innerHTML = '<p style="color:var(--error)">' + esc(e.message) + '</p>';
             }
         };
 
@@ -942,7 +946,7 @@
 
                 document.getElementById('printResults').innerHTML = html;
             } catch (e) {
-                document.getElementById('printResults').innerHTML = '<p style="color:var(--error)">' + e.message + '</p>';
+                document.getElementById('printResults').innerHTML = '<p style="color:var(--error)">' + esc(e.message) + '</p>';
             }
         };
 
@@ -1006,7 +1010,7 @@
                 var legendEl = document.getElementById('tempLegend');
                 legendEl.innerHTML = '';
                 tempOverlays.forEach(function(o) {
-                    legendEl.innerHTML += '<div class="legend-item"><div class="legend-dot" style="background:' + o.color + '"></div>' + o.label + '</div>';
+                    legendEl.innerHTML += '<div class="legend-item"><div class="legend-dot" style="background:' + esc(o.color) + '"></div>' + esc(o.label) + '</div>';
                 });
 
                 // Stats
@@ -1053,7 +1057,7 @@
                     ((3 * n + 1) / (4 * n)).toFixed(3) + ' adjusts the Newtonian shear rate (' + newtonianShear.toFixed(1) +
                     ' s⁻¹) for non-Newtonian flow behavior (n=' + n + ').</p>';
             } catch (e) {
-                document.getElementById('nozzleResults').innerHTML = '<p style="color:var(--error)">' + e.message + '</p>';
+                document.getElementById('nozzleResults').innerHTML = '<p style="color:var(--error)">' + esc(e.message) + '</p>';
             }
         };
 
