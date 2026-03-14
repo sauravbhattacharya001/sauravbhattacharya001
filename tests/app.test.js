@@ -12,7 +12,7 @@ const fs = require("fs");
 // Load app.js in a JSDOM environment
 function loadApp() {
     const dom = new JSDOM(
-        '<!DOCTYPE html><html><body><div id="projects-container"></div><input id="project-search"><div id="category-filters"></div><div id="active-tag-indicator" class="active-tag-indicator hidden"></div><div id="no-results" class="hidden"></div><button id="analytics-toggle" aria-expanded="false" aria-controls="analytics-panel">📊 Portfolio Analytics <span class="toggle-arrow">▾</span></button><div id="analytics-panel" role="region" aria-label="Portfolio analytics"></div><div id="spotlight-container"></div><button id="techradar-toggle" aria-expanded="false" aria-controls="techradar-panel">🛠️ Tech Stack <span class="toggle-arrow">▾</span></button><div id="techradar-panel" role="region" aria-label="Tech stack radar"></div></body></html>',
+        '<!DOCTYPE html><html><body><div id="projects-container"></div><input id="project-search"><div id="category-filters"></div><div id="active-tag-indicator" class="active-tag-indicator hidden"></div><div id="no-results" class="hidden"></div><button id="analytics-toggle" aria-expanded="false" aria-controls="analytics-panel">📊 Portfolio Analytics <span class="toggle-arrow">▾</span></button><div id="analytics-panel" role="region" aria-label="Portfolio analytics"></div><div id="spotlight-container"></div><button id="techradar-toggle" aria-expanded="false" aria-controls="techradar-panel">🛠️ Tech Stack <span class="toggle-arrow">▾</span></button><div id="techradar-panel" role="region" aria-label="Tech stack radar"></div><section id="projects"><div class="analytics-bar"></div><div id="timeline-panel" class="timeline-panel hidden"></div></section></body></html>',
         { runScripts: "dangerously", resources: "usable" }
     );
     const code = fs.readFileSync(path.join(__dirname, "..", "docs", "app.js"), "utf-8");
@@ -3027,6 +3027,427 @@ describe("Tech Stack Radar", () => {
             expect(win._techRadarState.expanded).toBe(true);
             btn.click();
             expect(win._techRadarState.expanded).toBe(false);
+        });
+    });
+});
+
+
+// ── Timeline Tests ──────────────────────────────────────────────
+// Tests for the project timeline feature.
+
+describe("Timeline", function() {
+
+    describe("TIMELINE_DATA", function() {
+        it("should have data for every win.PROJECTS entry", function() {
+            for (var i = 0; i < win.PROJECTS.length; i++) {
+                var repo = win.PROJECTS[i].repo;
+                expect(win.TIMELINE_DATA[repo]).toBeDefined();
+                expect(typeof win.TIMELINE_DATA[repo].created).toBe("string");
+                expect(Array.isArray(win.TIMELINE_DATA[repo].releases)).toBe(true);
+            }
+        });
+
+        it("should have valid ISO date strings for created", function() {
+            for (var repo in win.TIMELINE_DATA) {
+                if (!win.TIMELINE_DATA.hasOwnProperty(repo)) continue;
+                var d = win.TIMELINE_DATA[repo].created;
+                expect(d).toMatch(/^\d{4}-\d{2}-\d{2}$/,
+                    "Bad created date for " + repo + ": " + d);
+                expect(isNaN(win.parseTimelineDate(d))).toBe(false);
+            }
+        });
+
+        it("should have valid release entries", function() {
+            for (var repo in win.TIMELINE_DATA) {
+                if (!win.TIMELINE_DATA.hasOwnProperty(repo)) continue;
+                var releases = win.TIMELINE_DATA[repo].releases;
+                for (var j = 0; j < releases.length; j++) {
+                    expect(releases[j].tag).toBeDefined();
+                    expect(releases[j].date).toMatch(/^\d{4}-\d{2}-\d{2}$/);
+                }
+            }
+        });
+
+        it("should have at least one release per project", function() {
+            for (var repo in win.TIMELINE_DATA) {
+                if (!win.TIMELINE_DATA.hasOwnProperty(repo)) continue;
+                expect(win.TIMELINE_DATA[repo].releases.length).toBeGreaterThan(0,
+                    repo + " should have releases");
+            }
+        });
+    });
+
+    describe("parseTimelineDate", function() {
+        it("should parse valid ISO date strings", function() {
+            var ts = win.parseTimelineDate("2026-02-14");
+            expect(ts).toBeGreaterThan(0);
+            var d = new Date(ts);
+            expect(d.getUTCFullYear()).toBe(2026);
+            expect(d.getUTCMonth()).toBe(1); // February = 1
+            expect(d.getUTCDate()).toBe(14);
+        });
+
+        it("should return NaN for invalid dates", function() {
+            var ts = win.parseTimelineDate("not-a-date");
+            expect(isNaN(ts)).toBe(true);
+        });
+    });
+
+    describe("formatTimelineDate", function() {
+        it("should format short dates as 'Mon YYYY'", function() {
+            expect(win.formatTimelineDate("2026-02-14")).toBe("Feb 2026");
+            expect(win.formatTimelineDate("2015-01-23")).toBe("Jan 2015");
+            expect(win.formatTimelineDate("2026-12-01")).toBe("Dec 2026");
+        });
+
+        it("should format full dates as 'Mon DD, YYYY'", function() {
+            expect(win.formatTimelineDate("2026-02-14", true)).toBe("Feb 14, 2026");
+            expect(win.formatTimelineDate("2026-03-07", true)).toBe("Mar 7, 2026");
+        });
+    });
+
+    describe("buildTimelineEntries", function() {
+        it("should return entries sorted by creation date", function() {
+            var entries = win.buildTimelineEntries(null);
+            expect(entries.length).toBeGreaterThan(0);
+            for (var i = 1; i < entries.length; i++) {
+                expect(entries[i].createdTs).toBeGreaterThanOrEqual(
+                    entries[i - 1].createdTs);
+            }
+        });
+
+        it("should include all projects when no filter", function() {
+            var entries = win.buildTimelineEntries(null);
+            expect(entries.length).toBe(win.PROJECTS.length);
+        });
+
+        it("should filter by category", function() {
+            var entries = win.buildTimelineEntries("AI & Agents");
+            expect(entries.length).toBeGreaterThan(0);
+            for (var i = 0; i < entries.length; i++) {
+                expect(entries[i].project.category).toBe("AI & Agents");
+            }
+        });
+
+        it("should return empty for non-existent category", function() {
+            var entries = win.buildTimelineEntries("Nonexistent Category");
+            expect(entries.length).toBe(0);
+        });
+
+        it("should attach project object to each entry", function() {
+            var entries = win.buildTimelineEntries(null);
+            for (var i = 0; i < entries.length; i++) {
+                expect(entries[i].project).toBeDefined();
+                expect(entries[i].project.repo).toBeDefined();
+                expect(entries[i].project.title).toBeDefined();
+            }
+        });
+    });
+
+    describe("computeTimelineRange", function() {
+        it("should compute range spanning all entries", function() {
+            var entries = win.buildTimelineEntries(null);
+            var range = win.computeTimelineRange(entries);
+            expect(range.min).toBeLessThan(range.max);
+            // Min should be before or at the earliest created date
+            for (var i = 0; i < entries.length; i++) {
+                expect(range.min).toBeLessThanOrEqual(entries[i].createdTs);
+            }
+        });
+
+        it("should include release dates in range", function() {
+            var entries = win.buildTimelineEntries(null);
+            var range = win.computeTimelineRange(entries);
+            for (var i = 0; i < entries.length; i++) {
+                for (var j = 0; j < entries[i].releases.length; j++) {
+                    var rts = win.parseTimelineDate(entries[i].releases[j].date);
+                    expect(rts).toBeGreaterThanOrEqual(range.min);
+                    expect(rts).toBeLessThanOrEqual(range.max);
+                }
+            }
+        });
+
+        it("should handle single-entry case", function() {
+            var entries = [{ createdTs: 1000, releases: [{ date: "2026-01-01" }] }];
+            var range = win.computeTimelineRange(entries);
+            expect(range.min).toBeLessThan(range.max);
+        });
+    });
+
+    describe("timelinePosition", function() {
+        it("should return 0 for min value", function() {
+            expect(win.timelinePosition(0, 0, 100)).toBe(0);
+        });
+
+        it("should return 100 for max value", function() {
+            expect(win.timelinePosition(100, 0, 100)).toBe(100);
+        });
+
+        it("should return 50 for midpoint", function() {
+            expect(win.timelinePosition(50, 0, 100)).toBe(50);
+        });
+
+        it("should return 50 for equal min/max", function() {
+            expect(win.timelinePosition(50, 50, 50)).toBe(50);
+        });
+    });
+
+    describe("buildTimelineMarkers", function() {
+        it("should return markers for multi-year range", function() {
+            var range = {
+                min: new Date("2015-01-01T00:00:00Z").getTime(),
+                max: new Date("2026-12-31T00:00:00Z").getTime()
+            };
+            var markers = win.buildTimelineMarkers(range);
+            expect(markers.length).toBeGreaterThan(0);
+            // Should have year labels
+            var hasYear = false;
+            for (var i = 0; i < markers.length; i++) {
+                if (/^\d{4}$/.test(markers[i].label)) hasYear = true;
+            }
+            expect(hasYear).toBe(true);
+        });
+
+        it("should return month markers for short range", function() {
+            var range = {
+                min: new Date("2026-01-01T00:00:00Z").getTime(),
+                max: new Date("2026-06-01T00:00:00Z").getTime()
+            };
+            var markers = win.buildTimelineMarkers(range);
+            expect(markers.length).toBeGreaterThan(0);
+            // Should have month labels
+            var hasMonth = false;
+            for (var i = 0; i < markers.length; i++) {
+                if (/^[A-Z][a-z]+ \d{4}$/.test(markers[i].label)) hasMonth = true;
+            }
+            expect(hasMonth).toBe(true);
+        });
+
+        it("should have positions between 0 and 100", function() {
+            var entries = win.buildTimelineEntries(null);
+            var range = win.computeTimelineRange(entries);
+            var markers = win.buildTimelineMarkers(range);
+            for (var i = 0; i < markers.length; i++) {
+                expect(markers[i].pct).toBeGreaterThanOrEqual(0);
+                expect(markers[i].pct).toBeLessThanOrEqual(100);
+            }
+        });
+    });
+
+    describe("TIMELINE_COLORS", function() {
+        it("should have colors for every category", function() {
+            var cats = {};
+            for (var i = 0; i < win.PROJECTS.length; i++) {
+                cats[win.PROJECTS[i].category] = true;
+            }
+            for (var cat in cats) {
+                expect(win.TIMELINE_COLORS[cat]).toBeDefined();
+                expect(win.TIMELINE_COLORS[cat].bg).toBeDefined();
+                expect(win.TIMELINE_COLORS[cat].accent).toBeDefined();
+            }
+        });
+
+        it("should have light theme colors for every category", function() {
+            for (var cat in win.TIMELINE_COLORS) {
+                expect(win.TIMELINE_COLORS_LIGHT[cat]).toBeDefined();
+            }
+        });
+    });
+
+    describe("_timelineState", function() {
+        it("should start hidden", function() {
+            expect(win._timelineState.visible).toBe(false);
+        });
+
+        it("should start with no filter", function() {
+            expect(win._timelineState.filter).toBeNull();
+        });
+
+        it("should default to 'all' zoom", function() {
+            expect(win._timelineState.zoom).toBe("all");
+        });
+    });
+
+    describe("renderTimeline", function() {
+        it("should return HTML string", function() {
+            var html = win.renderTimeline();
+            expect(typeof html).toBe("string");
+            expect(html.length).toBeGreaterThan(100);
+        });
+
+        it("should contain timeline-container", function() {
+            var html = win.renderTimeline();
+            expect(html).toContain("timeline-container");
+        });
+
+        it("should contain all project names", function() {
+            var html = win.renderTimeline();
+            for (var i = 0; i < win.PROJECTS.length; i++) {
+                expect(html).toContain(win.PROJECTS[i].title);
+            }
+        });
+
+        it("should contain zoom buttons", function() {
+            var html = win.renderTimeline();
+            expect(html).toContain("All Time");
+            expect(html).toContain("Past Year");
+            expect(html).toContain("6 Months");
+        });
+
+        it("should contain category filter buttons", function() {
+            var html = win.renderTimeline();
+            expect(html).toContain("AI &amp; Agents");
+            expect(html).toContain("Security");
+        });
+
+        it("should contain stats summary", function() {
+            var html = win.renderTimeline();
+            expect(html).toContain("projects");
+            expect(html).toContain("releases");
+            expect(html).toContain("years");
+        });
+
+        it("should contain legend", function() {
+            var html = win.renderTimeline();
+            expect(html).toContain("timeline-legend");
+            expect(html).toContain("Created");
+            expect(html).toContain("Release");
+        });
+
+        it("should show dots for releases", function() {
+            var html = win.renderTimeline();
+            expect(html).toContain("timeline-dot-release");
+            expect(html).toContain("timeline-dot-created");
+        });
+
+        it("should show span lines", function() {
+            var html = win.renderTimeline();
+            expect(html).toContain("timeline-span");
+        });
+
+        it("should respect category filter", function() {
+            win._timelineState.filter = "Security";
+            var html = win.renderTimeline();
+            expect(html).toContain("WinSentinel");
+            expect(html).not.toContain("AgentLens");
+            win._timelineState.filter = null; // reset
+        });
+
+        it("should show empty message for no-match filter", function() {
+            win._timelineState.filter = "Nonexistent";
+            var html = win.renderTimeline();
+            expect(html).toContain("timeline-empty");
+            win._timelineState.filter = null;
+        });
+
+        it("should contain repo data attributes on rows", function() {
+            var html = win.renderTimeline();
+            expect(html).toContain('data-repo="agentlens"');
+            expect(html).toContain('data-repo="VoronoiMap"');
+        });
+
+        it("should show created date tooltips", function() {
+            var html = win.renderTimeline();
+            expect(html).toContain("Created:");
+        });
+
+        it("should show release tag in tooltips", function() {
+            var html = win.renderTimeline();
+            expect(html).toContain("v1.0.0");
+        });
+    });
+
+    describe("setTimelineZoom", function() {
+        it("should update zoom state", function() {
+            var original = win._timelineState.zoom;
+            win.setTimelineZoom("recent");
+            expect(win._timelineState.zoom).toBe("recent");
+            win.setTimelineZoom("year");
+            expect(win._timelineState.zoom).toBe("year");
+            win._timelineState.zoom = original;
+        });
+    });
+
+    describe("setTimelineFilter", function() {
+        it("should update filter state", function() {
+            var original = win._timelineState.filter;
+            win.setTimelineFilter("Security");
+            expect(win._timelineState.filter).toBe("Security");
+            win.setTimelineFilter("");
+            expect(win._timelineState.filter).toBeNull();
+            win._timelineState.filter = original;
+        });
+    });
+
+    describe("getTimelineColors", function() {
+        it("should return dark colors by default (no document)", function() {
+            var colors = win.getTimelineColors();
+            expect(colors).toBeDefined();
+            expect(colors["AI & Agents"]).toBeDefined();
+        });
+    });
+
+    describe("timeline rendering with zoom", function() {
+        it("should render with 'recent' zoom", function() {
+            win._timelineState.zoom = "recent";
+            var html = win.renderTimeline();
+            expect(html).toContain("timeline-container");
+            // Recent zoom should still have some projects visible
+            expect(html).toContain("timeline-row");
+            win._timelineState.zoom = "all";
+        });
+
+        it("should render with 'year' zoom", function() {
+            win._timelineState.zoom = "year";
+            var html = win.renderTimeline();
+            expect(html).toContain("timeline-container");
+            win._timelineState.zoom = "all";
+        });
+    });
+
+    describe("edge cases", function() {
+        it("should handle project with only one release", function() {
+            // VoronoiMap has only 1 release
+            var entries = win.buildTimelineEntries(null);
+            var voronoi = null;
+            for (var i = 0; i < entries.length; i++) {
+                if (entries[i].project.repo === "VoronoiMap") {
+                    voronoi = entries[i];
+                    break;
+                }
+            }
+            expect(voronoi).toBeDefined();
+            expect(voronoi.releases.length).toBe(1);
+        });
+
+        it("should handle project with many releases", function() {
+            var entries = win.buildTimelineEntries(null);
+            var ocaml = null;
+            for (var i = 0; i < entries.length; i++) {
+                if (entries[i].project.repo === "Ocaml-sample-code") {
+                    ocaml = entries[i];
+                    break;
+                }
+            }
+            expect(ocaml).toBeDefined();
+            expect(ocaml.releases.length).toBeGreaterThan(3);
+        });
+
+        it("should handle oldest project (Ocaml-sample-code, 2015)", function() {
+            var entries = win.buildTimelineEntries(null);
+            expect(entries[0].created).toBe("2015-01-23");
+        });
+
+        it("should handle newest project (WinSentinel, 2026-02-16)", function() {
+            var entries = win.buildTimelineEntries(null);
+            var hasWinSentinel = false;
+            for (var i = 0; i < entries.length; i++) {
+                if (entries[i].project.repo === "WinSentinel") {
+                    hasWinSentinel = true;
+                    expect(entries[i].created).toBe("2026-02-16");
+                }
+            }
+            expect(hasWinSentinel).toBe(true);
         });
     });
 });
