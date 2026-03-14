@@ -5,7 +5,7 @@
  * The HTML template is generated automatically.
  */
 
-/* exported PROJECTS, _filterState, renderProjects, filterProjects, initFilters, buildCardHeader, buildCardTags, buildCardLinks, buildTagList, buildLinkList, buildCategoryHTML, projectMatchesQuery, groupByCategory, _extractUnique, extractCategories, createFilterPills, wireFilterEvents, updateTagIndicator, clearTagFilter, setTagFilter, extractTags, wireTagClicks, getPreferredTheme, applyTheme, toggleTheme, initTheme, _kbState, getVisibleCards, focusCard, blurCards, openFocusedCard, showKeyboardHelp, hideKeyboardHelp, toggleKeyboardHelp, initKeyboardNav, buildHelpOverlay, sortProjects, setSortOrder, setViewMode, initSortAndView, buildSortControls, buildViewToggle, SORT_ORDERS, _bookmarks, isBookmarked, toggleBookmark, setBookmarkFilter, initBookmarks, getBookmarkCount, serializeFilterState, deserializeFilterState, pushFilterState, initDeepLink, _deepLinkEnabled, computeCategoryDistribution, computeTagDistribution, computePortfolioSummary, buildBarChart, buildTagCloud, buildAnalyticsPanel, toggleAnalytics, initAnalytics, _spotlightState, buildSpotlightCard, renderSpotlight, nextSpotlight, prevSpotlight, goToSpotlight, toggleSpotlightPause, startSpotlightTimer, stopSpotlightTimer, wireSpotlightEvents, initSpotlight, TECH_CATEGORIES, _techRadarState, computeTechStack, groupTechByType, buildTechRadar, renderTechRadar, toggleTechRadar, setTechRadarFilter, wireTechRadarEvents, initTechRadar, _buildCompareRow, _modalState, _activateModal, _deactivateModal, _handleModalTab, initApp */
+/* exported PROJECTS, _filterState, renderProjects, filterProjects, initFilters, buildCardHeader, buildCardTags, buildCardLinks, buildTagList, buildLinkList, buildCategoryHTML, projectMatchesQuery, groupByCategory, _extractUnique, extractCategories, createFilterPills, wireFilterEvents, updateTagIndicator, clearTagFilter, setTagFilter, extractTags, wireTagClicks, getPreferredTheme, applyTheme, toggleTheme, initTheme, _kbState, getVisibleCards, focusCard, blurCards, openFocusedCard, showKeyboardHelp, hideKeyboardHelp, toggleKeyboardHelp, initKeyboardNav, buildHelpOverlay, sortProjects, setSortOrder, setViewMode, initSortAndView, buildSortControls, buildViewToggle, SORT_ORDERS, _bookmarks, isBookmarked, toggleBookmark, setBookmarkFilter, initBookmarks, getBookmarkCount, serializeFilterState, deserializeFilterState, pushFilterState, initDeepLink, _deepLinkEnabled, computeCategoryDistribution, computeTagDistribution, computePortfolioSummary, buildBarChart, buildTagCloud, buildAnalyticsPanel, toggleAnalytics, initAnalytics, _spotlightState, buildSpotlightCard, renderSpotlight, nextSpotlight, prevSpotlight, goToSpotlight, toggleSpotlightPause, startSpotlightTimer, stopSpotlightTimer, wireSpotlightEvents, initSpotlight, TECH_CATEGORIES, _techRadarState, computeTechStack, groupTechByType, buildTechRadar, renderTechRadar, toggleTechRadar, setTechRadarFilter, wireTechRadarEvents, initTechRadar, _buildCompareRow, _modalState, _activateModal, _deactivateModal, _handleModalTab, initTimeline, TIMELINE_DATA, TIMELINE_COLORS, TIMELINE_COLORS_LIGHT, _timelineState, parseTimelineDate, formatTimelineDate, buildTimelineEntries, computeTimelineRange, timelinePosition, buildTimelineMarkers, getTimelineColors, renderTimeline, toggleTimeline, setTimelineZoom, setTimelineFilter, wireTimelineEvents, initApp */
 
 /**
  * Active filter state.
@@ -2860,6 +2860,534 @@ function initQuiz() {
  * Extracted to avoid duplicating the init sequence between the
  * DOMContentLoaded handler and the already-loaded branch.
  */
+// ── Project Timeline ─────────────────────────────────────────────
+//
+// Interactive chronological timeline of project creation and releases.
+// Shows when each project was started, its release history, and
+// portfolio growth over time.
+//
+// Added to the analytics bar as a "📅 Timeline" toggle button.
+
+/**
+ * Timeline data for each project keyed by repo name.
+ * created: ISO date string, releases: array of {tag, date}.
+ * @type {Object.<string, {created: string, releases: Array.<{tag: string, date: string}>}>}
+ */
+var TIMELINE_DATA = {
+    "agentlens":       { created: "2026-02-14", releases: [
+        { tag: "v1.0.0", date: "2026-02-14" }, { tag: "v1.2.0", date: "2026-03-06" },
+        { tag: "v1.3.0", date: "2026-03-10" }, { tag: "v1.4.0", date: "2026-03-10" }
+    ]},
+    "getagentbox":     { created: "2026-02-06", releases: [
+        { tag: "v1.0.0", date: "2026-02-20" }, { tag: "v2.0.0", date: "2026-03-07" },
+        { tag: "v2.1.0", date: "2026-03-08" }, { tag: "v2.2.0", date: "2026-03-09" }
+    ]},
+    "agenticchat":     { created: "2025-07-24", releases: [
+        { tag: "v1.0.0", date: "2026-02-15" }, { tag: "v2.0.0", date: "2026-03-08" }
+    ]},
+    "ai":              { created: "2020-08-02", releases: [
+        { tag: "v1.0.0", date: "2026-02-14" }, { tag: "v1.1.0", date: "2026-03-05" },
+        { tag: "v2.0.0", date: "2026-03-08" }
+    ]},
+    "WinSentinel":     { created: "2026-02-16", releases: [
+        { tag: "v1.0.0", date: "2026-02-17" }, { tag: "v1.1.0", date: "2026-02-20" }
+    ]},
+    "sauravcode":      { created: "2024-11-10", releases: [
+        { tag: "v2.0.0", date: "2026-02-14" }, { tag: "v3.0.0", date: "2026-03-07" }
+    ]},
+    "prompt":          { created: "2023-08-11", releases: [
+        { tag: "v2.0.0", date: "2026-02-14" }, { tag: "v4.0.0", date: "2026-03-07" }
+    ]},
+    "gif-captcha":     { created: "2023-12-16", releases: [
+        { tag: "v1.0.0", date: "2026-02-14" }, { tag: "v1.1.0", date: "2026-02-25" },
+        { tag: "v1.2.0", date: "2026-03-01" }, { tag: "v1.3.0", date: "2026-03-07" }
+    ]},
+    "VoronoiMap":      { created: "2016-09-19", releases: [
+        { tag: "v1.0.0", date: "2026-02-16" }
+    ]},
+    "GraphVisual":     { created: "2016-09-19", releases: [
+        { tag: "v1.0.0", date: "2026-02-14" }, { tag: "v2.0.0", date: "2026-03-07" }
+    ]},
+    "everything":      { created: "2025-01-17", releases: [
+        { tag: "v1.0.0", date: "2026-02-14" }, { tag: "v2.0.0", date: "2026-03-07" },
+        { tag: "v3.0.0", date: "2026-03-08" }
+    ]},
+    "FeedReader":      { created: "2016-09-16", releases: [
+        { tag: "v1.0.0", date: "2026-02-14" }, { tag: "v1.1.0", date: "2026-03-01" }
+    ]},
+    "BioBots":         { created: "2016-09-07", releases: [
+        { tag: "v1.0.0", date: "2026-02-14" }, { tag: "v1.1.0", date: "2026-03-08" }
+    ]},
+    "Vidly":           { created: "2017-06-04", releases: [
+        { tag: "v1.0.0", date: "2026-02-14" }, { tag: "v2.0.0", date: "2026-03-08" }
+    ]},
+    "Ocaml-sample-code": { created: "2015-01-23", releases: [
+        { tag: "v1.0.0", date: "2026-02-14" }, { tag: "v1.1.0", date: "2026-03-06" },
+        { tag: "v1.2.0", date: "2026-03-06" }, { tag: "v1.3.0", date: "2026-03-08" },
+        { tag: "v1.4.0", date: "2026-03-09" }
+    ]}
+};
+
+/** Category colour map for timeline items. */
+var TIMELINE_COLORS = {
+    "AI & Agents":         { bg: "#1f3a5f", accent: "#58a6ff" },
+    "Security":            { bg: "#3a1f1f", accent: "#f85149" },
+    "Languages & Tools":   { bg: "#1f3a2a", accent: "#3fb950" },
+    "Visualization & Data":{ bg: "#3a2f1f", accent: "#d29922" },
+    "Apps & More":         { bg: "#2a1f3a", accent: "#bc8cff" }
+};
+
+/** Light-theme category colours. */
+var TIMELINE_COLORS_LIGHT = {
+    "AI & Agents":         { bg: "#dbeafe", accent: "#2563eb" },
+    "Security":            { bg: "#fee2e2", accent: "#dc2626" },
+    "Languages & Tools":   { bg: "#dcfce7", accent: "#16a34a" },
+    "Visualization & Data":{ bg: "#fef3c7", accent: "#d97706" },
+    "Apps & More":         { bg: "#ede9fe", accent: "#7c3aed" }
+};
+
+/**
+ * Timeline view state.
+ * @type {{ visible: boolean, filter: string|null, zoom: string }}
+ */
+var _timelineState = { visible: false, filter: null, zoom: "all" };
+
+/**
+ * Parse an ISO date string to a timestamp.
+ * @param {string} dateStr  ISO date like "2026-02-14"
+ * @returns {number} Milliseconds since epoch
+ */
+function parseTimelineDate(dateStr) {
+    return new Date(dateStr + "T00:00:00Z").getTime();
+}
+
+/**
+ * Format a timestamp as a short date label.
+ * @param {string} dateStr  ISO date string
+ * @returns {string} "Mon YYYY" or "Mon DD, YYYY"
+ */
+function formatTimelineDate(dateStr, full) {
+    var months = ["Jan","Feb","Mar","Apr","May","Jun",
+                  "Jul","Aug","Sep","Oct","Nov","Dec"];
+    var parts = dateStr.split("-");
+    var m = parseInt(parts[1], 10) - 1;
+    var d = parseInt(parts[2], 10);
+    if (full) {
+        return months[m] + " " + d + ", " + parts[0];
+    }
+    return months[m] + " " + parts[0];
+}
+
+/**
+ * Build sorted timeline entries from PROJECTS + TIMELINE_DATA.
+ * @param {string|null} categoryFilter  Optional category to filter by
+ * @returns {Array.<{project: Object, created: string, releases: Array, createdTs: number}>}
+ */
+function buildTimelineEntries(categoryFilter) {
+    var entries = [];
+    for (var i = 0; i < PROJECTS.length; i++) {
+        var p = PROJECTS[i];
+        if (categoryFilter && p.category !== categoryFilter) continue;
+        var td = TIMELINE_DATA[p.repo];
+        if (!td) continue;
+        entries.push({
+            project: p,
+            created: td.created,
+            releases: td.releases,
+            createdTs: parseTimelineDate(td.created)
+        });
+    }
+    entries.sort(function(a, b) { return a.createdTs - b.createdTs; });
+    return entries;
+}
+
+/**
+ * Compute the global date range across all timeline entries.
+ * @param {Array} entries  Timeline entries
+ * @returns {{ min: number, max: number }}
+ */
+function computeTimelineRange(entries) {
+    var min = Infinity, max = -Infinity;
+    for (var i = 0; i < entries.length; i++) {
+        var ts = entries[i].createdTs;
+        if (ts < min) min = ts;
+        if (ts > max) max = ts;
+        var rels = entries[i].releases;
+        for (var j = 0; j < rels.length; j++) {
+            var rts = parseTimelineDate(rels[j].date);
+            if (rts > max) max = rts;
+        }
+    }
+    // Add 5% padding on each side
+    var range = max - min || 1;
+    return { min: min - range * 0.02, max: max + range * 0.05 };
+}
+
+/**
+ * Compute the position (0-100%) of a timestamp within a range.
+ * @param {number} ts   Timestamp
+ * @param {number} min  Range min
+ * @param {number} max  Range max
+ * @returns {number} Percentage 0-100
+ */
+function timelinePosition(ts, min, max) {
+    var range = max - min;
+    if (range <= 0) return 50;
+    return ((ts - min) / range) * 100;
+}
+
+/**
+ * Build year/month markers for the timeline axis.
+ * @param {{ min: number, max: number }} range
+ * @returns {Array.<{label: string, pct: number}>}
+ */
+function buildTimelineMarkers(range) {
+    var markers = [];
+    var startDate = new Date(range.min);
+    var endDate = new Date(range.max);
+
+    // Calculate span in months
+    var spanMs = range.max - range.min;
+    var spanDays = spanMs / (1000 * 60 * 60 * 24);
+
+    if (spanDays > 365 * 3) {
+        // Use years
+        var startYear = startDate.getUTCFullYear();
+        var endYear = endDate.getUTCFullYear();
+        for (var y = startYear; y <= endYear; y++) {
+            var ts = new Date(y + "-01-01T00:00:00Z").getTime();
+            var pct = timelinePosition(ts, range.min, range.max);
+            if (pct >= 0 && pct <= 100) {
+                markers.push({ label: "" + y, pct: pct });
+            }
+        }
+    } else {
+        // Use months
+        var months = ["Jan","Feb","Mar","Apr","May","Jun",
+                      "Jul","Aug","Sep","Oct","Nov","Dec"];
+        var cur = new Date(Date.UTC(
+            startDate.getUTCFullYear(),
+            startDate.getUTCMonth(), 1));
+        while (cur.getTime() <= range.max) {
+            var ts2 = cur.getTime();
+            var pct2 = timelinePosition(ts2, range.min, range.max);
+            if (pct2 >= 0 && pct2 <= 100) {
+                var label = months[cur.getUTCMonth()] + " " + cur.getUTCFullYear();
+                markers.push({ label: label, pct: pct2 });
+            }
+            cur.setUTCMonth(cur.getUTCMonth() + 1);
+        }
+    }
+    return markers;
+}
+
+/**
+ * Determine which colour palette to use based on current theme.
+ * @returns {Object}
+ */
+function getTimelineColors() {
+    if (typeof document === "undefined") return TIMELINE_COLORS;
+    return document.documentElement.getAttribute("data-theme") === "light"
+        ? TIMELINE_COLORS_LIGHT
+        : TIMELINE_COLORS;
+}
+
+/**
+ * Render the full timeline HTML.
+ * @returns {string} HTML string
+ */
+function renderTimeline() {
+    var entries = buildTimelineEntries(_timelineState.filter);
+    if (entries.length === 0) {
+        return '<div class="timeline-empty">No projects to display.</div>';
+    }
+
+    var range = computeTimelineRange(entries);
+
+    // Apply zoom
+    if (_timelineState.zoom === "recent") {
+        // Last 6 months
+        var sixMonthsAgo = range.max - (180 * 24 * 60 * 60 * 1000);
+        range.min = Math.max(range.min, sixMonthsAgo);
+    } else if (_timelineState.zoom === "year") {
+        var oneYearAgo = range.max - (365 * 24 * 60 * 60 * 1000);
+        range.min = Math.max(range.min, oneYearAgo);
+    }
+
+    var markers = buildTimelineMarkers(range);
+    var colors = getTimelineColors();
+
+    var html = '<div class="timeline-container" role="region" aria-label="Project timeline">';
+
+    // Controls
+    html += '<div class="timeline-controls">';
+    html += '<div class="timeline-zoom">';
+    var zoomOptions = [
+        { key: "all", label: "All Time" },
+        { key: "year", label: "Past Year" },
+        { key: "recent", label: "6 Months" }
+    ];
+    for (var z = 0; z < zoomOptions.length; z++) {
+        var active = _timelineState.zoom === zoomOptions[z].key ? " timeline-zoom-active" : "";
+        html += '<button type="button" class="timeline-zoom-btn' + active +
+            '" data-zoom="' + zoomOptions[z].key + '">' +
+            escapeHTML(zoomOptions[z].label) + '</button>';
+    }
+    html += '</div>';
+
+    // Category filter pills
+    html += '<div class="timeline-filters">';
+    var allActive = !_timelineState.filter ? " timeline-filter-active" : "";
+    html += '<button type="button" class="timeline-filter-btn' + allActive +
+        '" data-tl-cat="">All</button>';
+    var cats = ["AI & Agents", "Security", "Languages & Tools", "Visualization & Data", "Apps & More"];
+    for (var c = 0; c < cats.length; c++) {
+        var catActive = _timelineState.filter === cats[c] ? " timeline-filter-active" : "";
+        var catColor = (colors[cats[c]] || {}).accent || "#888";
+        html += '<button type="button" class="timeline-filter-btn' + catActive +
+            '" data-tl-cat="' + escapeHTML(cats[c]) +
+            '" style="border-color: ' + catColor + '">' +
+            escapeHTML(cats[c]) + '</button>';
+    }
+    html += '</div>';
+    html += '</div>';
+
+    // Stats summary
+    var totalReleases = 0;
+    for (var s = 0; s < entries.length; s++) {
+        totalReleases += entries[s].releases.length;
+    }
+    html += '<div class="timeline-stats">';
+    html += '<span class="timeline-stat-item">' + entries.length + ' projects</span>';
+    html += '<span class="timeline-stat-sep">&middot;</span>';
+    html += '<span class="timeline-stat-item">' + totalReleases + ' releases</span>';
+    html += '<span class="timeline-stat-sep">&middot;</span>';
+    var spanYears = ((range.max - range.min) / (365.25 * 24 * 60 * 60 * 1000)).toFixed(1);
+    html += '<span class="timeline-stat-item">' + spanYears + ' years</span>';
+    html += '</div>';
+
+    // Timeline axis
+    html += '<div class="timeline-axis">';
+    for (var m = 0; m < markers.length; m++) {
+        html += '<div class="timeline-marker" style="left: ' +
+            markers[m].pct.toFixed(2) + '%">' +
+            '<div class="timeline-marker-line"></div>' +
+            '<span class="timeline-marker-label">' +
+            escapeHTML(markers[m].label) + '</span></div>';
+    }
+    html += '</div>';
+
+    // Project rows
+    html += '<div class="timeline-rows">';
+    for (var r = 0; r < entries.length; r++) {
+        var entry = entries[r];
+        var p = entry.project;
+        var catColors = colors[p.category] || { bg: "#1a1a2e", accent: "#888" };
+        var createdPct = timelinePosition(entry.createdTs, range.min, range.max);
+        createdPct = Math.max(0, Math.min(100, createdPct));
+
+        // Find the latest release position
+        var latestPct = createdPct;
+        for (var lr = 0; lr < entry.releases.length; lr++) {
+            var lrPct = timelinePosition(
+                parseTimelineDate(entry.releases[lr].date), range.min, range.max);
+            if (lrPct > latestPct) latestPct = lrPct;
+        }
+        latestPct = Math.max(0, Math.min(100, latestPct));
+
+        html += '<div class="timeline-row" data-repo="' + escapeHTML(p.repo) + '">';
+
+        // Project label
+        html += '<div class="timeline-row-label">';
+        html += '<span class="timeline-row-icon">' + (p.icon || "📦") + '</span>';
+        html += '<span class="timeline-row-name">' + escapeHTML(p.title) + '</span>';
+        html += '</div>';
+
+        // Bar area
+        html += '<div class="timeline-row-bar">';
+
+        // Active span line
+        var barWidth = Math.max(2, latestPct - createdPct);
+        html += '<div class="timeline-span" style="left: ' +
+            createdPct.toFixed(2) + '%; width: ' + barWidth.toFixed(2) +
+            '%; background: ' + catColors.accent + '"></div>';
+
+        // Created dot
+        html += '<div class="timeline-dot timeline-dot-created" style="left: ' +
+            createdPct.toFixed(2) + '%; background: ' + catColors.accent +
+            '" title="Created: ' + formatTimelineDate(entry.created, true) +
+            '" aria-label="Created ' + formatTimelineDate(entry.created, true) + '"></div>';
+
+        // Release dots
+        for (var rd = 0; rd < entry.releases.length; rd++) {
+            var rel = entry.releases[rd];
+            var relPct = timelinePosition(
+                parseTimelineDate(rel.date), range.min, range.max);
+            relPct = Math.max(0, Math.min(100, relPct));
+            html += '<div class="timeline-dot timeline-dot-release" style="left: ' +
+                relPct.toFixed(2) + '%; border-color: ' + catColors.accent +
+                '" title="' + escapeHTML(rel.tag) + ' — ' +
+                formatTimelineDate(rel.date, true) +
+                '" aria-label="Release ' + escapeHTML(rel.tag) + '"></div>';
+        }
+
+        html += '</div>'; // row-bar
+        html += '</div>'; // row
+    }
+    html += '</div>'; // rows
+
+    // Legend
+    html += '<div class="timeline-legend">';
+    html += '<div class="timeline-legend-item">' +
+        '<span class="timeline-legend-dot timeline-legend-created"></span> Created</div>';
+    html += '<div class="timeline-legend-item">' +
+        '<span class="timeline-legend-dot timeline-legend-release"></span> Release</div>';
+    var usedCats = {};
+    for (var uc = 0; uc < entries.length; uc++) {
+        usedCats[entries[uc].project.category] = true;
+    }
+    for (var catName in usedCats) {
+        if (!usedCats.hasOwnProperty(catName)) continue;
+        var cc = colors[catName] || {};
+        html += '<div class="timeline-legend-item">' +
+            '<span class="timeline-legend-color" style="background: ' +
+            (cc.accent || "#888") + '"></span> ' + escapeHTML(catName) + '</div>';
+    }
+    html += '</div>';
+
+    html += '</div>'; // container
+    return html;
+}
+
+/**
+ * Toggle the timeline panel visibility.
+ */
+function toggleTimeline() {
+    _timelineState.visible = !_timelineState.visible;
+    var panel = typeof document !== "undefined" ? document.getElementById("timeline-panel") : null;
+    if (!panel) return;
+    if (_timelineState.visible) {
+        panel.innerHTML = renderTimeline();
+        panel.classList.remove("hidden");
+        wireTimelineEvents();
+    } else {
+        panel.classList.add("hidden");
+        panel.innerHTML = "";
+    }
+}
+
+/**
+ * Set the timeline zoom level and re-render.
+ * @param {string} zoom  "all" | "year" | "recent"
+ */
+function setTimelineZoom(zoom) {
+    _timelineState.zoom = zoom;
+    var panel = typeof document !== "undefined" ? document.getElementById("timeline-panel") : null;
+    if (!panel || !_timelineState.visible) return;
+    panel.innerHTML = renderTimeline();
+    wireTimelineEvents();
+}
+
+/**
+ * Set the timeline category filter and re-render.
+ * @param {string|null} category
+ */
+function setTimelineFilter(category) {
+    _timelineState.filter = category || null;
+    var panel = typeof document !== "undefined" ? document.getElementById("timeline-panel") : null;
+    if (!panel || !_timelineState.visible) return;
+    panel.innerHTML = renderTimeline();
+    wireTimelineEvents();
+}
+
+/**
+ * Wire event listeners for timeline interactive elements.
+ */
+function wireTimelineEvents() {
+    if (typeof document === "undefined") return;
+    var panel = document.getElementById("timeline-panel");
+    if (!panel) return;
+
+    // Zoom buttons
+    var zoomBtns = panel.querySelectorAll(".timeline-zoom-btn");
+    for (var i = 0; i < zoomBtns.length; i++) {
+        zoomBtns[i].addEventListener("click", function() {
+            setTimelineZoom(this.dataset.zoom);
+        });
+    }
+
+    // Category filter buttons
+    var filterBtns = panel.querySelectorAll(".timeline-filter-btn");
+    for (var j = 0; j < filterBtns.length; j++) {
+        filterBtns[j].addEventListener("click", function() {
+            setTimelineFilter(this.dataset.tlCat);
+        });
+    }
+
+    // Row hover — expand on hover for detail
+    var rows = panel.querySelectorAll(".timeline-row");
+    for (var k = 0; k < rows.length; k++) {
+        rows[k].addEventListener("click", function() {
+            var repo = this.dataset.repo;
+            // Find the project and scroll to / highlight its card
+            var cards = document.querySelectorAll(".project-card");
+            for (var ci = 0; ci < cards.length; ci++) {
+                if (cards[ci].dataset.repo === repo) {
+                    cards[ci].scrollIntoView({ behavior: "smooth", block: "center" });
+                    cards[ci].classList.add("timeline-highlight");
+                    setTimeout(function(card) {
+                        card.classList.remove("timeline-highlight");
+                    }.bind(null, cards[ci]), 2000);
+                    break;
+                }
+            }
+        });
+    }
+}
+
+/**
+ * Initialize the timeline feature — add toggle button and panel.
+ */
+function initTimeline() {
+    if (typeof document === "undefined") return;
+
+    // Add toggle button to the analytics bar
+    var analyticsBar = document.querySelector(".analytics-bar");
+    if (analyticsBar) {
+        var btn = document.createElement("button");
+        btn.type = "button";
+        btn.className = "analytics-toggle";
+        btn.id = "timeline-toggle";
+        btn.setAttribute("aria-expanded", "false");
+        btn.setAttribute("aria-controls", "timeline-panel");
+        btn.innerHTML = '📅 Timeline <span class="toggle-arrow">▾</span>';
+        btn.addEventListener("click", function() {
+            toggleTimeline();
+            this.setAttribute("aria-expanded",
+                _timelineState.visible ? "true" : "false");
+        });
+        analyticsBar.appendChild(btn);
+    }
+
+    // Create the timeline panel
+    var section = document.getElementById("projects");
+    if (section) {
+        var panel = document.createElement("div");
+        panel.id = "timeline-panel";
+        panel.className = "timeline-panel hidden";
+        panel.setAttribute("role", "region");
+        panel.setAttribute("aria-label", "Project timeline");
+        // Insert after analytics-bar
+        var bar = section.querySelector(".analytics-bar");
+        if (bar && bar.nextSibling) {
+            section.insertBefore(panel, bar.nextSibling);
+        } else {
+            section.appendChild(panel);
+        }
+    }
+}
+
+
 function initApp() {
     initSortAndView();
     initBookmarks();
@@ -2873,6 +3401,7 @@ function initApp() {
     initTechRadar();
     initCompare();
     initQuiz();
+    initTimeline();
 }
 
 // Auto-initialize on DOM ready
@@ -3013,6 +3542,24 @@ if (typeof module !== "undefined" && module.exports) {
         resetQuiz: resetQuiz,
         toggleQuiz: toggleQuiz,
         initQuiz: initQuiz,
+        // Project Timeline
+        TIMELINE_DATA: TIMELINE_DATA,
+        TIMELINE_COLORS: TIMELINE_COLORS,
+        TIMELINE_COLORS_LIGHT: TIMELINE_COLORS_LIGHT,
+        _timelineState: _timelineState,
+        parseTimelineDate: parseTimelineDate,
+        formatTimelineDate: formatTimelineDate,
+        buildTimelineEntries: buildTimelineEntries,
+        computeTimelineRange: computeTimelineRange,
+        timelinePosition: timelinePosition,
+        buildTimelineMarkers: buildTimelineMarkers,
+        getTimelineColors: getTimelineColors,
+        renderTimeline: renderTimeline,
+        toggleTimeline: toggleTimeline,
+        setTimelineZoom: setTimelineZoom,
+        setTimelineFilter: setTimelineFilter,
+        wireTimelineEvents: wireTimelineEvents,
+        initTimeline: initTimeline,
         // App bootstrap
         initApp: initApp
     };
