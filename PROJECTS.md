@@ -14,7 +14,7 @@ Detailed technical overview of all public repositories. For a quick summary, see
 |---|---|
 | **Language** | JavaScript (Node.js backend) + Python (SDK) |
 | **Architecture** | Python SDK → Node.js API → SQLite → React Dashboard |
-| **Release** | [v1.2.0](https://github.com/sauravbhattacharya001/agentlens/releases/tag/v1.2.0) |
+| **Release** | [v1.4.0](https://github.com/sauravbhattacharya001/agentlens/releases/tag/v1.4.0) |
 | **Docs** | [sauravbhattacharya001.github.io/agentlens](https://sauravbhattacharya001.github.io/agentlens/) |
 
 **What it does:**
@@ -42,7 +42,7 @@ Detailed technical overview of all public repositories. For a quick summary, see
 |---|---|
 | **Language** | Python |
 | **Architecture** | Controller → Workers (sandboxed agents) with HMAC-signed manifests |
-| **Release** | [v1.1.0](https://github.com/sauravbhattacharya001/ai/releases/tag/v1.1.0) |
+| **Release** | [v2.0.0](https://github.com/sauravbhattacharya001/ai/releases/tag/v2.0.0) |
 | **Docs** | [sauravbhattacharya001.github.io/ai](https://sauravbhattacharya001.github.io/ai/) |
 
 **What it does:**
@@ -68,7 +68,7 @@ Detailed technical overview of all public repositories. For a quick summary, see
 |---|---|
 | **Language** | JavaScript (vanilla, no frameworks) |
 | **Architecture** | Modular ES6 (ChatConfig, ConversationManager, ApiKeyManager, UIController, SandboxRunner) |
-| **Release** | [v1.0.0](https://github.com/sauravbhattacharya001/agenticchat/releases/tag/v1.0.0) |
+| **Release** | [v2.0.0](https://github.com/sauravbhattacharya001/agenticchat/releases/tag/v2.0.0) |
 | **Demo** | [sauravbhattacharya001.github.io/agenticchat](https://sauravbhattacharya001.github.io/agenticchat/) |
 
 **What it does:**
@@ -248,7 +248,7 @@ Detailed technical overview of all public repositories. For a quick summary, see
 |---|---|
 | **Language** | Dart / Flutter |
 | **Architecture** | BLoC pattern → SQLite → Material Design 3 |
-| **Release** | [v1.0.0](https://github.com/sauravbhattacharya001/everything/releases/tag/v1.0.0) |
+| **Release** | [v3.0.0](https://github.com/sauravbhattacharya001/everything/releases/tag/v3.0.0) |
 | **App** | [sauravbhattacharya001.github.io/everything](https://sauravbhattacharya001.github.io/everything/) |
 
 **What it does:**
@@ -303,7 +303,7 @@ Detailed technical overview of all public repositories. For a quick summary, see
 |---|---|
 | **Language** | C# / .NET Framework 4.8 |
 | **Architecture** | MVC → Repository Pattern (thread-safe, in-memory) → Razor Views |
-| **Release** | [v1.0.0](https://github.com/sauravbhattacharya001/Vidly/releases/tag/v1.0.0) |
+| **Release** | [v2.0.0](https://github.com/sauravbhattacharya001/Vidly/releases/tag/v2.0.0) |
 | **Docs** | [sauravbhattacharya001.github.io/Vidly](https://sauravbhattacharya001.github.io/Vidly/) |
 
 **What it does:**
@@ -324,7 +324,7 @@ Detailed technical overview of all public repositories. For a quick summary, see
 |---|---|
 | **Language** | C# (backend) + JavaScript (frontend) |
 | **Architecture** | ASP.NET Web API → JSON file cache (Lazy\<T\>) → Chart.js dashboard |
-| **Release** | [v1.0.0](https://github.com/sauravbhattacharya001/BioBots/releases/tag/v1.0.0) |
+| **Release** | [v1.1.0](https://github.com/sauravbhattacharya001/BioBots/releases/tag/v1.1.0) |
 | **Site** | [sauravbhattacharya001.github.io/BioBots](https://sauravbhattacharya001.github.io/BioBots/) |
 
 **What it does:**
@@ -368,7 +368,7 @@ Detailed technical overview of all public repositories. For a quick summary, see
 | | |
 |---|---|
 | **Language** | OCaml 5.2 |
-| **Release** | [v1.2.0](https://github.com/sauravbhattacharya001/Ocaml-sample-code/releases/tag/v1.2.0) |
+| **Release** | [v1.4.0](https://github.com/sauravbhattacharya001/Ocaml-sample-code/releases/tag/v1.4.0) |
 | **Docs** | [sauravbhattacharya001.github.io/Ocaml-sample-code](https://sauravbhattacharya001.github.io/Ocaml-sample-code/) |
 
 **What it does:**
