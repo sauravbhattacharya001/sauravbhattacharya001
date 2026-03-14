@@ -23,7 +23,7 @@ var PROJECTS = [
         links: [
             { label: "Code", url: "https://github.com/sauravbhattacharya001/agentlens" },
             { label: "Docs", url: "https://sauravbhattacharya001.github.io/agentlens/" },
-            { label: "v1.0.0", url: "https://github.com/sauravbhattacharya001/agentlens/releases/tag/v1.0.0" }
+            { label: "v1.4.0", url: "https://github.com/sauravbhattacharya001/agentlens/releases/tag/v1.4.0" }
         ]
     },
     {
@@ -34,7 +34,7 @@ var PROJECTS = [
         links: [
             { label: "Code", url: "https://github.com/sauravbhattacharya001/getagentbox" },
             { label: "Live", url: "https://sauravbhattacharya001.github.io/getagentbox/" },
-            { label: "v2.0.0", url: "https://github.com/sauravbhattacharya001/getagentbox/releases/tag/v2.0.0" }
+            { label: "v2.2.0", url: "https://github.com/sauravbhattacharya001/getagentbox/releases/tag/v2.2.0" }
         ]
     },
     {
