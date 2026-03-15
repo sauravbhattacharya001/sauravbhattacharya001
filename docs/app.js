@@ -171,7 +171,7 @@ var PROJECTS = [
     {
         category: "Apps & More",
         icon: "🐫", repo: "Ocaml-sample-code", title: "OCaml Samples",
-        desc: "80+ module functional programming collection — BST, trie, hashmap, bloom filter, red-black trees, union-find, graph algorithms, regex engine, type inference, lambda calculus, SAT solver, persistent vectors, symbolic integration, and more.",
+        desc: "110+ module functional programming collection — BST, trie, hashmap, bloom filter, red-black trees, union-find, graph algorithms, regex engine, type inference, lambda calculus, SAT solver, persistent vectors, symbolic integration, and more.",
         tags: ["OCaml", "Functional", "Data Structures"],
         links: [
             { label: "Code", url: "https://github.com/sauravbhattacharya001/Ocaml-sample-code" },

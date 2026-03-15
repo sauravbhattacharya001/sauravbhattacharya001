@@ -372,7 +372,7 @@ Detailed technical overview of all public repositories. For a quick summary, see
 | **Docs** | [sauravbhattacharya001.github.io/Ocaml-sample-code](https://sauravbhattacharya001.github.io/Ocaml-sample-code/) |
 
 **What it does:**
-- **84+ modules** covering the full spectrum of functional programming
+- **110+ modules** covering the full spectrum of functional programming
 - **Data structures**: BST, trie, hashmap, bloom filter, red-black tree, union-find, heap, skip list, segment tree, fenwick tree, interval tree, rope, LRU cache, suffix array, finger tree, persistent vector, deque, zipper
 - **Algorithms**: graph algorithms (BFS, DFS, Dijkstra, network flow), sorting (6 algorithms), string matching (KMP, Boyer-Moore, Rabin-Karp, Aho-Corasick), regex engine (Thompson's NFA), Huffman coding, diff (Myers algorithm)
 - **Concurrency**: software transactional memory (STM), Raft consensus, CSP (communicating sequential processes)
