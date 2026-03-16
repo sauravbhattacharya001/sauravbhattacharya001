@@ -234,6 +234,11 @@ var _searchIndex = (function() {
  */
 var _escapeRe = /[&<>"']/g;
 var _escapeMap = { "&": "&amp;", "<": "&lt;", ">": "&gt;", "\"": "&quot;", "'": "&#39;" };
+/**
+ * Escape HTML special characters to prevent XSS in rendered content.
+ * @param {string} str - Raw string to escape.
+ * @returns {string} HTML-safe string with &, <, >, ", ' replaced by entities.
+ */
 function escapeHTML(str) {
     return String(str).replace(_escapeRe, function(ch) { return _escapeMap[ch]; });
 }
@@ -261,6 +266,12 @@ function escapeHTML(str) {
  * @returns {string}
  */
 var _sanitizeStripRe = /[\x00-\x1F\x7F\u00AD\u200B-\u200F\u2028\u2029\u202A-\u202E\u2066-\u2069\uFEFF]/g;
+/**
+ * Sanitize a URL by stripping control characters, zero-width Unicode,
+ * and bidi overrides. Only allows http/https schemes.
+ * @param {string} url - Raw URL to sanitize.
+ * @returns {string} Cleaned URL, or empty string if unsafe.
+ */
 function sanitizeURL(url) {
     // Strip control chars, zero-width Unicode, bidi overrides, and separators
     var cleaned = url.replace(_sanitizeStripRe, "");
@@ -628,6 +639,10 @@ function wireFilterEvents(filtersContainer, searchInput) {
  * sequences where the debounced query yields the same matches.
  */
 var _lastRenderedIds = null;
+/**
+ * Internal: apply current filter/sort state and re-render the project grid.
+ * Skips rendering if the visible set hasn't changed (dedup by repo ids).
+ */
 function _applyFilters() {
     var filtered = filterProjects();
     filtered = sortProjects(filtered, _filterState.sort);
@@ -1777,6 +1792,7 @@ function buildAnalyticsPanel(projects) {
  * Toggle the analytics panel visibility. Lazily renders on first open.
  */
 var _analyticsRendered = false;
+/** Toggle the analytics panel visibility and render charts on first open. */
 function toggleAnalytics() {
     var panel = (typeof document !== "undefined") ? document.getElementById("analytics-panel") : null;
     var btn = (typeof document !== "undefined") ? document.getElementById("analytics-toggle") : null;
@@ -2006,15 +2022,25 @@ var Spotlight = (function () {
 
 // Legacy aliases for backward compatibility with tests
 var _spotlightState = Spotlight._state;
+/** @see Spotlight.buildCard */
 function buildSpotlightCard(p, i, t) { return Spotlight.buildCard(p, i, t); }
+/** @see Spotlight.render */
 function renderSpotlight() { Spotlight.render(); }
+/** @see Spotlight.next */
 function nextSpotlight() { return Spotlight.next(); }
+/** @see Spotlight.prev */
 function prevSpotlight() { return Spotlight.prev(); }
+/** @see Spotlight.goTo */
 function goToSpotlight(idx) { return Spotlight.goTo(idx); }
+/** @see Spotlight.togglePause */
 function toggleSpotlightPause() { return Spotlight.togglePause(); }
+/** @see Spotlight.startTimer */
 function startSpotlightTimer() { Spotlight.startTimer(); }
+/** @see Spotlight.stopTimer */
 function stopSpotlightTimer() { Spotlight.stopTimer(); }
+/** @see Spotlight.wireEvents */
 function wireSpotlightEvents() { Spotlight.wireEvents(); }
+/** @see Spotlight.init */
 function initSpotlight() { Spotlight.init(); }
 
 // ── Tech Stack Radar ────────────────────────────────────────────────
@@ -2260,13 +2286,21 @@ var TechRadar = (function () {
 // Legacy aliases for backward compatibility with tests
 var TECH_CATEGORIES = TechRadar.CATEGORIES;
 var _techRadarState = TechRadar._state;
+/** @see TechRadar.computeStack */
 function computeTechStack() { return TechRadar.computeStack(); }
+/** @see TechRadar.groupByType */
 function groupTechByType(stack) { return TechRadar.groupByType(stack); }
+/** @see TechRadar.buildPanel */
 function buildTechRadar(activeType) { return TechRadar.buildPanel(activeType); }
+/** @see TechRadar.render */
 function renderTechRadar() { TechRadar.render(); }
+/** @see TechRadar.toggle */
 function toggleTechRadar() { return TechRadar.toggle(); }
+/** @see TechRadar.setFilter */
 function setTechRadarFilter(type) { TechRadar.setFilter(type); }
+/** @see TechRadar.wireEvents */
 function wireTechRadarEvents() { TechRadar.wireEvents(); }
+/** @see TechRadar.init */
 function initTechRadar() { TechRadar.init(); }
 
 // ─── Project Comparison ─────────────────────────────────────────────
@@ -2655,6 +2689,9 @@ var _quizState = {
     answers: []
 };
 
+/**
+ * Start the interactive project-finder quiz, resetting state.
+ */
 function startQuiz() {
     _quizState.active = true;
     _quizState.step = 0;
@@ -2662,6 +2699,11 @@ function startQuiz() {
     renderQuizStep();
 }
 
+/**
+ * Record a quiz answer and advance to the next question or results.
+ * @param {number} questionIdx - Index of the current question.
+ * @param {number} optionIdx - Index of the selected option.
+ */
 function answerQuiz(questionIdx, optionIdx) {
     _quizState.answers.push({
         question: QUIZ_QUESTIONS[questionIdx].id,
@@ -2675,6 +2717,12 @@ function answerQuiz(questionIdx, optionIdx) {
     }
 }
 
+/**
+ * Score a project against quiz answers using tag/category matching.
+ * @param {Object} project - Project object with tags and category.
+ * @param {Array} answers - Array of {question, tags} answer objects.
+ * @returns {number} Match score (higher = better fit).
+ */
 function _scoreProject(project, answers) {
     var score = 0;
     var projTags = project.tags || [];
@@ -2716,6 +2764,7 @@ function _scoreProject(project, answers) {
     return score;
 }
 
+/** Render the current quiz question step into the quiz container. */
 function renderQuizStep() {
     var panel = typeof document !== "undefined" ? document.getElementById("quiz-panel") : null;
     if (!panel) return;
@@ -2755,6 +2804,7 @@ function renderQuizStep() {
     }
 }
 
+/** Render quiz results — rank projects by match score and display top picks. */
 function renderQuizResults() {
     var panel = typeof document !== "undefined" ? document.getElementById("quiz-panel") : null;
     if (!panel) return;
@@ -2818,6 +2868,7 @@ function renderQuizResults() {
     _activateModal(panel);
 }
 
+/** Reset quiz state and hide the quiz panel. */
 function resetQuiz() {
     _quizState.active = false;
     _quizState.step = 0;
@@ -2830,6 +2881,7 @@ function resetQuiz() {
     _deactivateModal();
 }
 
+/** Toggle quiz panel visibility; starts quiz on first open. */
 function toggleQuiz() {
     if (_quizState.active) {
         resetQuiz();
@@ -2838,6 +2890,7 @@ function toggleQuiz() {
     }
 }
 
+/** Initialize quiz feature — wire up the quiz button. */
 function initQuiz() {
     if (typeof document === "undefined") return;
     var btn = document.getElementById("quiz-toggle");
@@ -3388,6 +3441,10 @@ function initTimeline() {
 }
 
 
+/**
+ * Initialize the portfolio app — render projects, wire up filters,
+ * theme, keyboard nav, analytics, spotlight, tech radar, quiz, and timeline.
+ */
 function initApp() {
     initSortAndView();
     initBookmarks();
