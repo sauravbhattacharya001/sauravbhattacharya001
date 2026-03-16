@@ -35,7 +35,7 @@ I build software at Microsoft, research AI agent governance, and create tools fo
 ## 🔭 Currently
 
 - 🧬 Building **[AgentLens](https://github.com/sauravbhattacharya001/agentlens)** — observability for AI agents ("Datadog for AI agents") · **v1.4.0** live
-- 🛡️ Building **[WinSentinel](https://github.com/sauravbhattacharya001/WinSentinel)** — always-on Windows security agent with 24 audit modules · **v1.1.0** live
+- 🛡️ Building **[WinSentinel](https://github.com/sauravbhattacharya001/WinSentinel)** — always-on Windows security agent with deep system auditing & threat intelligence · **v1.2.0** live
 - 🤖 Running **[AgentBox](https://sauravbhattacharya001.github.io/getagentbox/)** — AI agents as a service, open access · **v2.2.0** live
 - 🔤 Evolving **[sauravcode](https://github.com/sauravbhattacharya001/sauravcode)** — my own programming language with f-strings, try/catch, and zero noise · just shipped **v3.0.0** (tooling release)
 - 📋 Chairing **ICGIS 2026** (June 6–7) — international conference on global innovations
@@ -58,7 +58,7 @@ I build software at Microsoft, research AI agent governance, and create tools fo
 
 | Project | What it does | Release | Live |
 |---|---|---|---|
-| **[WinSentinel](https://github.com/sauravbhattacharya001/WinSentinel)** ⭐ 2 | Always-on Windows security agent — real-time monitoring, AI-powered threat detection, auto-remediation, 24 audit modules, compliance profiles & finding suppression. | [![v1.1.0](https://img.shields.io/badge/release-v1.1.0-blue?style=flat)](https://github.com/sauravbhattacharya001/WinSentinel/releases/tag/v1.1.0) | [📄 Docs](https://sauravbhattacharya001.github.io/WinSentinel/) |
+| **[WinSentinel](https://github.com/sauravbhattacharya001/WinSentinel)** ⭐ 2 | Always-on Windows security agent — real-time monitoring, AI-powered threat detection, auto-remediation, deep system auditing, threat intelligence, compliance profiles & finding suppression. | [![v1.2.0](https://img.shields.io/badge/release-v1.2.0-blue?style=flat)](https://github.com/sauravbhattacharya001/WinSentinel/releases/tag/v1.2.0) | [📄 Docs](https://sauravbhattacharya001.github.io/WinSentinel/) |
 
 ### Languages & Tools
 
