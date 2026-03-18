@@ -1,0 +1,11 @@
+# CODEOWNERS for sauravbhattacharya001 profile repo
+# https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/about-code-owners
+
+# Default owner for everything
+* @sauravbhattacharya001
+
+# GitHub config files require owner review
+/.github/ @sauravbhattacharya001
+
+# Profile README
+/README.md @sauravbhattacharya001
