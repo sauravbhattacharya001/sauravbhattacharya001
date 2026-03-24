@@ -400,11 +400,13 @@ function buildCard(p, opts) {
  *
  * @param {Object} p - Project from PROJECTS array.
  * @param {string} query - Lowercase search query.
+ * @param {number} [idx] - Pre-computed index into PROJECTS / _searchIndex
+ *   (avoids an O(n) indexOf scan when the caller already knows the position).
  * @returns {boolean}
  */
-function projectMatchesQuery(p, query) {
+function projectMatchesQuery(p, query, idx) {
     if (!query) return true;
-    var idx = PROJECTS.indexOf(p);
+    if (typeof idx !== "number" || idx < 0) idx = PROJECTS.indexOf(p);
     if (idx >= 0 && idx < _searchIndex.length) {
         return _searchIndex[idx].text.indexOf(query) !== -1;
     }
@@ -446,7 +448,7 @@ function filterProjects() {
                 return false;
             }
         }
-        return projectMatchesQuery(p, q);
+        return projectMatchesQuery(p, q, idx);
     });
 }
 
