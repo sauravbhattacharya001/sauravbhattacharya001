@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>404 — Page Not Found | Saurav Bhattacharya</title>
+    <meta name="robots" content="noindex">
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .error-page {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 80vh;
+            text-align: center;
+            padding: 2rem;
+        }
+        .error-code {
+            font-size: 8rem;
+            font-weight: 800;
+            color: var(--accent);
+            line-height: 1;
+            margin-bottom: 0.5rem;
+        }
+        .error-message {
+            font-size: 1.5rem;
+            color: var(--text);
+            margin-bottom: 0.5rem;
+        }
+        .error-hint {
+            color: var(--text-secondary);
+            margin-bottom: 2rem;
+            max-width: 480px;
+        }
+        .error-links {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+        .error-links a {
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.2s;
+        }
+        .error-links .primary {
+            background: var(--accent);
+            color: #fff;
+        }
+        .error-links .primary:hover {
+            filter: brightness(1.15);
+        }
+        .error-links .secondary {
+            border: 1px solid var(--border);
+            color: var(--text);
+        }
+        .error-links .secondary:hover {
+            border-color: var(--accent);
+            color: var(--accent);
+        }
+    </style>
+</head>
+<body>
+    <div class="error-page">
+        <div class="error-code">404</div>
+        <div class="error-message">Page not found</div>
+        <p class="error-hint">
+            The page you're looking for doesn't exist or has been moved.
+        </p>
+        <div class="error-links">
+            <a href="./" class="primary">← Back to Portfolio</a>
+            <a href="https://github.com/sauravbhattacharya001" class="secondary" target="_blank" rel="noopener">GitHub Profile</a>
+        </div>
+    </div>
+</body>
+</html>
