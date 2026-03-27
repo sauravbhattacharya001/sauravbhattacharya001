@@ -1237,12 +1237,12 @@ function _applyDeepLinkState(state) {
     }
     if (typeof state.sort === "string" && SORT_ORDERS[state.sort]) {
         _filterState.sort = state.sort;
-        var sortSelect = document.getElementById("sort-select");
-        if (sortSelect) sortSelect.value = state.sort;
+        _updateSortPillActive();
         changed = true;
     }
     if (typeof state.view === "string" && (state.view === "grid" || state.view === "list")) {
         _filterState.view = state.view;
+        _updateViewToggleActive();
         changed = true;
     }
     if (typeof state.bm === "boolean") {
