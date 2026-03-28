@@ -13,6 +13,16 @@
  */
 function createRheologyModeler() {
 
+    /**
+     * Calculate apparent viscosity using the Power Law (Ostwald-de Waele) model.
+     * η = K · γ̇^(n-1)
+     *
+     * @param {number} K - Consistency index (Pa·s^n). Must be positive.
+     * @param {number} n - Flow behavior index. n<1 = shear-thinning, n=1 = Newtonian, n>1 = shear-thickening.
+     * @param {number} shearRate - Shear rate γ̇ (1/s). Must be positive.
+     * @returns {number} Apparent viscosity in Pa·s.
+     * @throws {Error} If parameters are non-numeric or out of valid range.
+     */
     function powerLawViscosity(K, n, shearRate) {
         if (typeof K !== 'number' || typeof n !== 'number' || typeof shearRate !== 'number') {
             throw new Error('All parameters must be numbers');
@@ -22,6 +32,17 @@ function createRheologyModeler() {
         return K * Math.pow(shearRate, n - 1);
     }
 
+    /**
+     * Generate a Power Law viscosity curve over a logarithmically spaced shear rate range.
+     *
+     * @param {number} K - Consistency index (Pa·s^n).
+     * @param {number} n - Flow behavior index.
+     * @param {number} [minRate=0.1] - Minimum shear rate (1/s).
+     * @param {number} [maxRate=1000] - Maximum shear rate (1/s).
+     * @param {number} [points=50] - Number of data points to generate.
+     * @returns {Array<{shearRate: number, viscosity: number}>} Array of {shearRate, viscosity} objects.
+     * @throws {Error} If rate bounds are invalid or fewer than 2 points requested.
+     */
     function powerLawCurve(K, n, minRate, maxRate, points) {
         minRate = minRate || 0.1;
         maxRate = maxRate || 1000;
@@ -41,6 +62,16 @@ function createRheologyModeler() {
         return curve;
     }
 
+    /**
+     * Fit Power Law parameters (K, n) to experimental shear rate–viscosity data
+     * using log-linear regression.
+     *
+     * @param {Array<{shearRate: number, viscosity: number}>} data - Experimental data points.
+     *   Must contain at least 2 points with positive shearRate and viscosity.
+     * @returns {{K: number, n: number, rSquared: number}} Fitted consistency index,
+     *   flow behavior index, and coefficient of determination (R²).
+     * @throws {Error} If fewer than 2 valid data points are provided.
+     */
     function fitPowerLaw(data) {
         if (!Array.isArray(data) || data.length < 2) {
             throw new Error('Need at least 2 data points for fitting');
@@ -77,6 +108,18 @@ function createRheologyModeler() {
         return { K: K, n: n, rSquared: rSquared };
     }
 
+    /**
+     * Calculate viscosity using the Cross model for shear-thinning fluids.
+     * η = η∞ + (η₀ - η∞) / (1 + (λ·γ̇)^m)
+     *
+     * @param {number} eta0 - Zero-shear viscosity η₀ (Pa·s). Must be positive.
+     * @param {number} etaInf - Infinite-shear viscosity η∞ (Pa·s). Must be non-negative and ≤ η₀.
+     * @param {number} lambda - Relaxation time λ (s). Must be positive.
+     * @param {number} m - Cross rate constant. Must be positive.
+     * @param {number} shearRate - Shear rate γ̇ (1/s). Must be non-negative.
+     * @returns {number} Apparent viscosity in Pa·s.
+     * @throws {Error} If parameters are out of valid range.
+     */
     function crossViscosity(eta0, etaInf, lambda, m, shearRate) {
         if (eta0 <= 0) throw new Error('Zero-shear viscosity must be positive');
         if (etaInf < 0) throw new Error('Infinite-shear viscosity must be non-negative');
@@ -89,6 +132,18 @@ function createRheologyModeler() {
         return etaInf + (eta0 - etaInf) / (1 + Math.pow(lambda * shearRate, m));
     }
 
+    /**
+     * Generate a Cross model viscosity curve over a logarithmically spaced shear rate range.
+     *
+     * @param {number} eta0 - Zero-shear viscosity (Pa·s).
+     * @param {number} etaInf - Infinite-shear viscosity (Pa·s).
+     * @param {number} lambda - Relaxation time (s).
+     * @param {number} m - Cross rate constant.
+     * @param {number} [minRate=0.01] - Minimum shear rate (1/s).
+     * @param {number} [maxRate=10000] - Maximum shear rate (1/s).
+     * @param {number} [points=50] - Number of data points.
+     * @returns {Array<{shearRate: number, viscosity: number}>} Curve data points.
+     */
     function crossCurve(eta0, etaInf, lambda, m, minRate, maxRate, points) {
         minRate = minRate || 0.01;
         maxRate = maxRate || 10000;
@@ -105,6 +160,17 @@ function createRheologyModeler() {
         return curve;
     }
 
+    /**
+     * Calculate shear stress using the Herschel-Bulkley model.
+     * τ = τ₀ + K · γ̇^n
+     *
+     * @param {number} yieldStress - Yield stress τ₀ (Pa). Must be non-negative.
+     * @param {number} K - Consistency index (Pa·s^n). Must be positive.
+     * @param {number} n - Flow index. Must be positive.
+     * @param {number} shearRate - Shear rate γ̇ (1/s). Must be non-negative.
+     * @returns {number} Shear stress in Pa.
+     * @throws {Error} If parameters are out of valid range.
+     */
     function herschelBulkleyStress(yieldStress, K, n, shearRate) {
         if (yieldStress < 0) throw new Error('Yield stress must be non-negative');
         if (K <= 0) throw new Error('Consistency index must be positive');
@@ -113,12 +179,35 @@ function createRheologyModeler() {
         return yieldStress + K * Math.pow(shearRate, n);
     }
 
+    /**
+     * Calculate apparent viscosity using the Herschel-Bulkley model.
+     * η = τ / γ̇ = (τ₀ + K · γ̇^n) / γ̇
+     *
+     * @param {number} yieldStress - Yield stress τ₀ (Pa).
+     * @param {number} K - Consistency index (Pa·s^n).
+     * @param {number} n - Flow index.
+     * @param {number} shearRate - Shear rate γ̇ (1/s). Must be positive.
+     * @returns {number} Apparent viscosity in Pa·s.
+     * @throws {Error} If shear rate is not positive.
+     */
     function herschelBulkleyViscosity(yieldStress, K, n, shearRate) {
         if (shearRate <= 0) throw new Error('Shear rate must be positive for viscosity calculation');
         var stress = herschelBulkleyStress(yieldStress, K, n, shearRate);
         return stress / shearRate;
     }
 
+    /**
+     * Estimate wall shear rate inside a cylindrical nozzle using the
+     * Rabinowitsch–Mooney correction for non-Newtonian fluids.
+     *
+     * γ̇_wall = ((3n+1)/(4n)) · (32Q / (πD³))
+     *
+     * @param {number} flowRate - Volumetric flow rate (mL/min). Must be positive.
+     * @param {number} nozzleDiameter - Nozzle inner diameter (mm). Must be positive.
+     * @param {number} [n=1] - Flow behavior index for Rabinowitsch correction.
+     * @returns {number} Estimated wall shear rate (1/s).
+     * @throws {Error} If flowRate or nozzleDiameter are not positive.
+     */
     function nozzleShearRate(flowRate, nozzleDiameter, n) {
         if (flowRate <= 0) throw new Error('Flow rate must be positive');
         if (nozzleDiameter <= 0) throw new Error('Nozzle diameter must be positive');
@@ -132,6 +221,16 @@ function createRheologyModeler() {
         return correction * newtonian;
     }
 
+    /**
+     * Estimate volumetric flow rate from print parameters assuming a
+     * rectangular cross-section filament (width = nozzle diameter).
+     *
+     * @param {number} printSpeed - Linear print speed (mm/s). Must be positive.
+     * @param {number} nozzleDiameter - Nozzle diameter (mm). Must be positive.
+     * @param {number} layerHeight - Layer height (mm). Must be positive.
+     * @returns {number} Estimated flow rate in mL/min.
+     * @throws {Error} If any parameter is not positive.
+     */
     function estimateFlowRate(printSpeed, nozzleDiameter, layerHeight) {
         if (printSpeed <= 0) throw new Error('Print speed must be positive');
         if (nozzleDiameter <= 0) throw new Error('Nozzle diameter must be positive');
@@ -142,6 +241,17 @@ function createRheologyModeler() {
         return volumeRate * 60 / 1000;
     }
 
+    /**
+     * Predict viscosity at a target temperature using the Arrhenius equation.
+     * η(T) = η_ref · exp((Ea/R) · (1/T - 1/T_ref))
+     *
+     * @param {number} refViscosity - Viscosity at reference temperature (Pa·s). Must be positive.
+     * @param {number} refTemp - Reference temperature (°C).
+     * @param {number} activationEnergy - Flow activation energy (kJ/mol). Must be positive.
+     * @param {number} targetTemp - Target temperature (°C).
+     * @returns {number} Predicted viscosity at target temperature (Pa·s).
+     * @throws {Error} If temperatures are below absolute zero or parameters invalid.
+     */
     function arrheniusViscosity(refViscosity, refTemp, activationEnergy, targetTemp) {
         if (refViscosity <= 0) throw new Error('Reference viscosity must be positive');
         if (activationEnergy <= 0) throw new Error('Activation energy must be positive');
@@ -156,6 +266,18 @@ function createRheologyModeler() {
         return refViscosity * Math.exp(exponent);
     }
 
+    /**
+     * Generate an Arrhenius temperature–viscosity curve over a linear temperature range.
+     *
+     * @param {number} refViscosity - Viscosity at reference temperature (Pa·s).
+     * @param {number} refTemp - Reference temperature (°C).
+     * @param {number} activationEnergy - Flow activation energy (kJ/mol).
+     * @param {number} minTemp - Minimum temperature (°C).
+     * @param {number} maxTemp - Maximum temperature (°C).
+     * @param {number} [step=1] - Temperature step size (°C).
+     * @returns {Array<{temperature: number, viscosity: number}>} Curve data points.
+     * @throws {Error} If minTemp ≥ maxTemp or step ≤ 0.
+     */
     function temperatureCurve(refViscosity, refTemp, activationEnergy, minTemp, maxTemp, step) {
         step = step || 1;
         if (minTemp >= maxTemp) throw new Error('minTemp must be less than maxTemp');
@@ -168,6 +290,22 @@ function createRheologyModeler() {
         return curve;
     }
 
+    /**
+     * Evaluate bioink printability based on rheological parameters.
+     * Scores shear-thinning behavior, viscosity at print shear rate,
+     * viscosity ratio (low vs high shear), and yield stress.
+     *
+     * @param {Object} params - Rheological parameters.
+     * @param {number} params.K - Consistency index (Pa·s^n). Required, must be positive.
+     * @param {number} params.n - Flow behavior index. Required.
+     * @param {number} [params.yieldStress] - Yield stress (Pa).
+     * @param {number} [params.printShearRate=100] - Shear rate during printing (1/s).
+     * @param {number} [params.minViscosity=1] - Lower bound of optimal viscosity window (Pa·s).
+     * @param {number} [params.maxViscosity=1000] - Upper bound of optimal viscosity window (Pa·s).
+     * @returns {{printable: boolean, score: number, factors: Array, viscosityAtPrint: number,
+     *   shearThinning: boolean, flowBehavior: string}} Printability assessment with 0-100 score.
+     * @throws {Error} If required parameters are missing or invalid.
+     */
     function analyzePrintability(params) {
         if (!params || typeof params !== 'object') throw new Error('Parameters required');
         if (!params.K || params.K <= 0) throw new Error('Consistency index K required and must be positive');
@@ -259,6 +397,14 @@ function createRheologyModeler() {
         };
     }
 
+    /**
+     * Get a curated set of common bioink rheology presets with published parameters.
+     * Each preset includes Power Law parameters (K, n), yield stress, recommended
+     * temperature range, and literature citation.
+     *
+     * @returns {Array<{id: string, name: string, K: number, n: number, yieldStress: number,
+     *   tempRange: number[], description: string, citation: string}>} Array of bioink presets.
+     */
     function getBioinkPresets() {
         return [
             { id: 'gelma-5pct', name: 'GelMA 5%', K: 2.5, n: 0.62, yieldStress: 15, tempRange: [20, 37], description: 'Gelatin methacrylate 5% w/v, photocrosslinkable', citation: 'Loessner et al., Nat. Protoc. 2016' },
