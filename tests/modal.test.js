@@ -8,6 +8,12 @@ const { JSDOM } = require("jsdom");
 const path = require("path");
 const fs = require("fs");
 
+/**
+ * Bootstrap a JSDOM environment with custom HTML and evaluate docs/app.js.
+ *
+ * @param {string} html - HTML string to use as the document body.
+ * @returns {JSDOM} Configured JSDOM instance with app.js globals.
+ */
 function loadApp(html) {
     const dom = new JSDOM(html, {
         runScripts: "dangerously",
@@ -131,6 +137,12 @@ describe("Modal Focus Management", () => {
     });
 
     describe("_handleModalTab", () => {
+        /**
+         * Create a synthetic Tab keydown event for modal focus-trap testing.
+         *
+         * @param {boolean} [shiftKey=false] - Whether Shift is held (reverse tab).
+         * @returns {KeyboardEvent} The constructed event.
+         */
         function makeTabEvent(shiftKey) {
             const event = new win.KeyboardEvent("keydown", {
                 key: "Tab",

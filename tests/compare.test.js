@@ -6,6 +6,12 @@ const { JSDOM } = require("jsdom");
 const path = require("path");
 const fs = require("fs");
 
+/**
+ * Bootstrap a JSDOM environment with comparison/modal DOM elements
+ * and evaluate docs/app.js within it.
+ *
+ * @returns {JSDOM} Configured JSDOM instance with app.js globals.
+ */
 function loadApp() {
     const dom = new JSDOM(
         '<!DOCTYPE html><html><body>' +

@@ -6,6 +6,12 @@ const { JSDOM } = require("jsdom");
 const fs = require("fs");
 const path = require("path");
 
+/**
+ * Bootstrap a JSDOM environment with quiz panel DOM elements
+ * and evaluate docs/app.js within it.
+ *
+ * @returns {JSDOM} Configured JSDOM instance with app.js globals.
+ */
 function loadApp() {
     var dom = new JSDOM(
         '<!DOCTYPE html><html><body>' +
@@ -162,6 +168,11 @@ describe("Project Finder Quiz", function() {
     });
 
     describe("results", function() {
+        /**
+         * Run through the quiz by answering each question programmatically.
+         *
+         * @param {number[]} choices - Array of answer indices, one per quiz question.
+         */
         function runQuiz(choices) {
             win.startQuiz();
             for (var i = 0; i < choices.length; i++) {
