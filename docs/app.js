@@ -23,7 +23,7 @@ var PROJECTS = [
         links: [
             { label: "Code", url: "https://github.com/sauravbhattacharya001/agentlens" },
             { label: "Docs", url: "https://sauravbhattacharya001.github.io/agentlens/" },
-            { label: "v1.4.0", url: "https://github.com/sauravbhattacharya001/agentlens/releases/tag/v1.4.0" }
+            { label: "v1.24.0", url: "https://github.com/sauravbhattacharya001/agentlens/releases/tag/v1.24.0" }
         ]
     },
     {
@@ -34,7 +34,7 @@ var PROJECTS = [
         links: [
             { label: "Code", url: "https://github.com/sauravbhattacharya001/getagentbox" },
             { label: "Live", url: "https://sauravbhattacharya001.github.io/getagentbox/" },
-            { label: "v2.2.0", url: "https://github.com/sauravbhattacharya001/getagentbox/releases/tag/v2.2.0" }
+            { label: "v2.3.0", url: "https://github.com/sauravbhattacharya001/getagentbox/releases/tag/v2.3.0" }
         ]
     },
     {
@@ -67,7 +67,7 @@ var PROJECTS = [
         links: [
             { label: "Code", url: "https://github.com/sauravbhattacharya001/WinSentinel" },
             { label: "Docs", url: "https://sauravbhattacharya001.github.io/WinSentinel/" },
-            { label: "v1.1.0", url: "https://github.com/sauravbhattacharya001/WinSentinel/releases/tag/v1.1.0" }
+            { label: "v1.4.1", url: "https://github.com/sauravbhattacharya001/WinSentinel/releases/tag/v1.4.1" }
         ]
     },
 
@@ -90,7 +90,7 @@ var PROJECTS = [
         links: [
             { label: "Code", url: "https://github.com/sauravbhattacharya001/prompt" },
             { label: "Docs", url: "https://sauravbhattacharya001.github.io/prompt/" },
-            { label: "v4.0.0", url: "https://github.com/sauravbhattacharya001/prompt/releases/tag/v4.0.0" }
+            { label: "v5.2.0", url: "https://github.com/sauravbhattacharya001/prompt/releases/tag/v5.2.0" }
         ]
     },
     {
@@ -101,7 +101,7 @@ var PROJECTS = [
         links: [
             { label: "Code", url: "https://github.com/sauravbhattacharya001/gif-captcha" },
             { label: "Demo", url: "https://sauravbhattacharya001.github.io/gif-captcha/" },
-            { label: "v1.3.0", url: "https://github.com/sauravbhattacharya001/gif-captcha/releases/tag/v1.3.0" }
+            { label: "v1.6.1", url: "https://github.com/sauravbhattacharya001/gif-captcha/releases/tag/v1.6.1" }
         ]
     },
 
@@ -2944,55 +2944,72 @@ var Timeline = (function () {
     var DATA = {
         "agentlens":       { created: "2026-02-14", releases: [
             { tag: "v1.0.0", date: "2026-02-14" }, { tag: "v1.2.0", date: "2026-03-06" },
-            { tag: "v1.3.0", date: "2026-03-10" }, { tag: "v1.4.0", date: "2026-03-10" }
+            { tag: "v1.4.0", date: "2026-03-10" }, { tag: "v1.10.0", date: "2026-03-25" },
+            { tag: "v1.16.0", date: "2026-03-30" }, { tag: "v1.24.0", date: "2026-04-02" }
         ]},
         "getagentbox":     { created: "2026-02-06", releases: [
             { tag: "v1.0.0", date: "2026-02-20" }, { tag: "v2.0.0", date: "2026-03-07" },
-            { tag: "v2.1.0", date: "2026-03-08" }, { tag: "v2.2.0", date: "2026-03-09" }
+            { tag: "v2.2.0", date: "2026-03-09" }, { tag: "v2.3.0", date: "2026-03-23" }
         ]},
         "agenticchat":     { created: "2025-07-24", releases: [
-            { tag: "v1.0.0", date: "2026-02-15" }, { tag: "v2.0.0", date: "2026-03-08" }
+            { tag: "v1.0.0", date: "2026-02-15" }, { tag: "v2.0.0", date: "2026-03-08" },
+            { tag: "v2.10.0", date: "2026-03-27" }, { tag: "v2.20.0", date: "2026-03-31" },
+            { tag: "v2.23.1", date: "2026-04-02" }
         ]},
         "ai":              { created: "2020-08-02", releases: [
             { tag: "v1.0.0", date: "2026-02-14" }, { tag: "v1.1.0", date: "2026-03-05" },
-            { tag: "v2.0.0", date: "2026-03-08" }
+            { tag: "v2.0.0", date: "2026-03-08" }, { tag: "v3.0.0", date: "2026-03-19" },
+            { tag: "v3.4.0", date: "2026-03-31" }
         ]},
         "WinSentinel":     { created: "2026-02-16", releases: [
-            { tag: "v1.0.0", date: "2026-02-17" }, { tag: "v1.1.0", date: "2026-02-20" }
+            { tag: "v1.0.0", date: "2026-02-17" }, { tag: "v1.1.0", date: "2026-02-20" },
+            { tag: "v1.2.0", date: "2026-03-16" }, { tag: "v1.3.0", date: "2026-03-20" },
+            { tag: "v1.4.1", date: "2026-04-02" }
         ]},
         "sauravcode":      { created: "2024-11-10", releases: [
-            { tag: "v2.0.0", date: "2026-02-14" }, { tag: "v3.0.0", date: "2026-03-07" }
+            { tag: "v2.0.0", date: "2026-02-14" }, { tag: "v3.0.0", date: "2026-03-07" },
+            { tag: "v4.0.0", date: "2026-03-21" }, { tag: "v5.0.0", date: "2026-03-23" },
+            { tag: "v5.7.0", date: "2026-04-02" }
         ]},
         "prompt":          { created: "2023-08-11", releases: [
-            { tag: "v2.0.0", date: "2026-02-14" }, { tag: "v4.0.0", date: "2026-03-07" }
+            { tag: "v2.0.0", date: "2026-02-14" }, { tag: "v4.0.0", date: "2026-03-07" },
+            { tag: "v4.5.0", date: "2026-03-29" }, { tag: "v5.0.0", date: "2026-04-01" },
+            { tag: "v5.2.0", date: "2026-04-02" }
         ]},
         "gif-captcha":     { created: "2023-12-16", releases: [
             { tag: "v1.0.0", date: "2026-02-14" }, { tag: "v1.1.0", date: "2026-02-25" },
-            { tag: "v1.2.0", date: "2026-03-01" }, { tag: "v1.3.0", date: "2026-03-07" }
+            { tag: "v1.3.0", date: "2026-03-07" }, { tag: "v1.5.0", date: "2026-03-20" },
+            { tag: "v1.6.1", date: "2026-03-25" }
         ]},
         "VoronoiMap":      { created: "2016-09-19", releases: [
-            { tag: "v1.0.0", date: "2026-02-16" }
+            { tag: "v1.0.0", date: "2026-02-16" }, { tag: "v1.10.0", date: "2026-03-28" },
+            { tag: "v1.20.0", date: "2026-04-02" }, { tag: "v1.22.0", date: "2026-04-02" }
         ]},
         "GraphVisual":     { created: "2016-09-19", releases: [
-            { tag: "v1.0.0", date: "2026-02-14" }, { tag: "v2.0.0", date: "2026-03-07" }
+            { tag: "v1.0.0", date: "2026-02-14" }, { tag: "v2.0.0", date: "2026-03-07" },
+            { tag: "v2.10.0", date: "2026-03-26" }, { tag: "v2.20.0", date: "2026-03-30" },
+            { tag: "v2.29.0", date: "2026-04-02" }
         ]},
         "everything":      { created: "2025-01-17", releases: [
-            { tag: "v1.0.0", date: "2026-02-14" }, { tag: "v2.0.0", date: "2026-03-07" },
-            { tag: "v3.0.0", date: "2026-03-08" }
+            { tag: "v1.0.0", date: "2026-02-14" }, { tag: "v3.0.0", date: "2026-03-08" },
+            { tag: "v5.0.0", date: "2026-03-22" }, { tag: "v7.0.0", date: "2026-03-26" },
+            { tag: "v7.23.0", date: "2026-04-02" }
         ]},
         "FeedReader":      { created: "2016-09-16", releases: [
-            { tag: "v1.0.0", date: "2026-02-14" }, { tag: "v1.1.0", date: "2026-03-01" }
+            { tag: "v1.0.0", date: "2026-02-14" }, { tag: "v1.1.0", date: "2026-03-01" },
+            { tag: "v1.3.0", date: "2026-03-27" }, { tag: "v1.6.0", date: "2026-03-31" }
         ]},
         "BioBots":         { created: "2016-09-07", releases: [
-            { tag: "v1.0.0", date: "2026-02-14" }, { tag: "v1.1.0", date: "2026-03-08" }
+            { tag: "v1.0.0", date: "2026-02-14" }, { tag: "v1.1.0", date: "2026-03-08" },
+            { tag: "v1.10.0", date: "2026-03-29" }, { tag: "v1.18.0", date: "2026-04-02" }
         ]},
         "Vidly":           { created: "2017-06-04", releases: [
-            { tag: "v1.0.0", date: "2026-02-14" }, { tag: "v2.0.0", date: "2026-03-08" }
+            { tag: "v1.0.0", date: "2026-02-14" }, { tag: "v2.0.0", date: "2026-03-08" },
+            { tag: "v2.3.0", date: "2026-03-27" }, { tag: "v2.4.0", date: "2026-03-29" }
         ]},
         "Ocaml-sample-code": { created: "2015-01-23", releases: [
             { tag: "v1.0.0", date: "2026-02-14" }, { tag: "v1.1.0", date: "2026-03-06" },
-            { tag: "v1.2.0", date: "2026-03-06" }, { tag: "v1.3.0", date: "2026-03-08" },
-            { tag: "v1.4.0", date: "2026-03-09" }
+            { tag: "v1.3.0", date: "2026-03-08" }, { tag: "v1.4.0", date: "2026-03-09" }
         ]}
     };
 

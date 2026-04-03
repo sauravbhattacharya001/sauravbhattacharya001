@@ -3429,7 +3429,7 @@ describe("Timeline", function() {
                 }
             }
             expect(voronoi).toBeDefined();
-            expect(voronoi.releases.length).toBe(1);
+            expect(voronoi.releases.length).toBe(4);
         });
 
         it("should handle project with many releases", function() {
