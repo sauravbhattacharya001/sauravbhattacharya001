@@ -18,7 +18,20 @@ RUN rm -rf /usr/share/nginx/html/*
 # Copy portfolio site
 COPY --from=validate /app/docs/ /usr/share/nginx/html/
 
-# Custom nginx config for SPA-friendly serving + security headers
+# Security headers snippet — single source of truth, included in every
+# location block to work around nginx's add_header inheritance rules
+# (child blocks with their own add_header silently DROP all parent headers).
+RUN mkdir -p /etc/nginx/snippets && \
+    cat > /etc/nginx/snippets/security-headers.conf <<'HDRS'
+add_header X-Content-Type-Options "nosniff" always;
+add_header X-Frame-Options "SAMEORIGIN" always;
+add_header X-XSS-Protection "1; mode=block" always;
+add_header Referrer-Policy "strict-origin-when-cross-origin" always;
+add_header Content-Security-Policy "default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; font-src 'self'; connect-src 'self'; frame-src 'none'; object-src 'none'; base-uri 'self'; form-action 'self';" always;
+add_header Permissions-Policy "camera=(), microphone=(), geolocation=()" always;
+HDRS
+
+# Custom nginx config for SPA-friendly serving
 RUN cat > /etc/nginx/conf.d/default.conf <<'EOF'
 server {
     listen 80;
@@ -28,26 +41,13 @@ server {
     root /usr/share/nginx/html;
     index index.html;
 
-    # Security headers (defined in map block above to avoid
-    # the nginx add_header inheritance pitfall — child blocks
-    # with their own add_header silently DROP all parent headers).
-    add_header X-Content-Type-Options "nosniff" always;
-    add_header X-Frame-Options "SAMEORIGIN" always;
-    add_header X-XSS-Protection "1; mode=block" always;
-    add_header Referrer-Policy "strict-origin-when-cross-origin" always;
-    add_header Content-Security-Policy "default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; font-src 'self'; connect-src 'self'; frame-src 'none'; object-src 'none'; base-uri 'self'; form-action 'self';" always;
-    add_header Permissions-Policy "camera=(), microphone=(), geolocation=()" always;
+    include /etc/nginx/snippets/security-headers.conf;
 
-    # Cache static assets — repeat security headers so they are
-    # not silently dropped by nginx's add_header inheritance rules.
+    # Cache static assets
     location ~* \.(css|js|png|jpg|jpeg|gif|ico|svg|woff|woff2|ttf|eot)$ {
         expires 7d;
         add_header Cache-Control "public, immutable" always;
-        add_header X-Content-Type-Options "nosniff" always;
-        add_header X-Frame-Options "SAMEORIGIN" always;
-        add_header Referrer-Policy "strict-origin-when-cross-origin" always;
-        add_header Content-Security-Policy "default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; font-src 'self'; connect-src 'self'; frame-src 'none'; object-src 'none'; base-uri 'self'; form-action 'self';" always;
-        add_header Permissions-Policy "camera=(), microphone=(), geolocation=()" always;
+        include /etc/nginx/snippets/security-headers.conf;
     }
 
     # Gzip compression
