@@ -22,7 +22,7 @@
   },
   "homepage": "https://github.com/sauravbhattacharya001/sauravbhattacharya001#readme",
   "devDependencies": {
-    "jest": "^29.7.0",
+    "jest": "^30.3.0",
     "jsdom": "^29.0.2"
   }
 }
