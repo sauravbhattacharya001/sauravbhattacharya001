@@ -54,8 +54,9 @@ function createRheologyModeler() {
         var curve = [];
         var logMin = Math.log10(minRate);
         var logMax = Math.log10(maxRate);
+        var logStep = (logMax - logMin) / (points - 1);
         for (var i = 0; i < points; i++) {
-            var logRate = logMin + (logMax - logMin) * i / (points - 1);
+            var logRate = logMin + logStep * i;
             var rate = Math.pow(10, logRate);
             curve.push({ shearRate: rate, viscosity: powerLawViscosity(K, n, rate) });
         }
@@ -82,28 +83,24 @@ function createRheologyModeler() {
         if (valid.length < 2) throw new Error('Need at least 2 valid positive data points');
 
         var N = valid.length;
-        var sumX = 0, sumY = 0, sumXX = 0, sumXY = 0;
+        var sumX = 0, sumY = 0, sumXX = 0, sumXY = 0, sumYY = 0;
+        // Single-pass: collect all sums needed for both regression and R²
         for (var i = 0; i < N; i++) {
             var x = Math.log(valid[i].shearRate);
             var y = Math.log(valid[i].viscosity);
-            sumX += x; sumY += y; sumXX += x * x; sumXY += x * y;
+            sumX += x; sumY += y; sumXX += x * x; sumXY += x * y; sumYY += y * y;
         }
 
-        var slope = (N * sumXY - sumX * sumY) / (N * sumXX - sumX * sumX);
+        var denom = N * sumXX - sumX * sumX;
+        var slope = (N * sumXY - sumX * sumY) / denom;
         var intercept = (sumY - slope * sumX) / N;
         var K = Math.exp(intercept);
         var n = slope + 1;
 
-        var meanY = sumY / N;
-        var ssTotal = 0, ssResidual = 0;
-        for (var j = 0; j < N; j++) {
-            var xj = Math.log(valid[j].shearRate);
-            var yj = Math.log(valid[j].viscosity);
-            var predicted = intercept + slope * xj;
-            ssTotal += (yj - meanY) * (yj - meanY);
-            ssResidual += (yj - predicted) * (yj - predicted);
-        }
-        var rSquared = ssTotal > 0 ? 1 - ssResidual / ssTotal : 0;
+        // R² from sums directly: avoids second pass over the data
+        // SSTotal = sumYY - (sumY²/N), SSResidual = SSTotal - slope²·(sumXX - sumX²/N)
+        var ssTotal = sumYY - (sumY * sumY) / N;
+        var rSquared = ssTotal > 0 ? (slope * (sumXY - sumX * sumY / N)) / ssTotal : 0;
 
         return { K: K, n: n, rSquared: rSquared };
     }
@@ -152,8 +149,9 @@ function createRheologyModeler() {
         var curve = [];
         var logMin = Math.log10(minRate);
         var logMax = Math.log10(maxRate);
+        var logStep = (logMax - logMin) / (points - 1);
         for (var i = 0; i < points; i++) {
-            var logRate = logMin + (logMax - logMin) * i / (points - 1);
+            var logRate = logMin + logStep * i;
             var rate = Math.pow(10, logRate);
             curve.push({ shearRate: rate, viscosity: crossViscosity(eta0, etaInf, lambda, m, rate) });
         }
