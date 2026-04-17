@@ -1,5 +1,5 @@
 {
-  "name": "sauravbhattacharya001-portfolio",
+  "name": "@sauravbhattacharya001/portfolio",
   "version": "1.0.0",
   "description": "Personal portfolio site for Saurav Bhattacharya - Software Engineer, AI Safety Researcher",
   "main": "docs/app.js",
@@ -17,6 +17,9 @@
   "keywords": [],
   "author": "",
   "license": "MIT",
+  "publishConfig": {
+    "registry": "https://npm.pkg.github.com"
+  },
   "bugs": {
     "url": "https://github.com/sauravbhattacharya001/sauravbhattacharya001/issues"
   },
