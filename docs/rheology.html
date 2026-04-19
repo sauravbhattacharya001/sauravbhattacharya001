@@ -4,6 +4,10 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>BioBots 1 — Rheology Analyzer</title>
+    <meta http-equiv="Content-Security-Policy"
+          content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self'; frame-src 'none'; object-src 'none'; base-uri 'self'; form-action 'self';">
+    <meta http-equiv="X-Content-Type-Options" content="nosniff">
+    <meta name="referrer" content="strict-origin-when-cross-origin">
     <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🧬</text></svg>">
     <style>
         :root {
@@ -361,9 +365,9 @@
                     </div>
                 </div>
                 <div class="btn-group">
-                    <button class="btn" onclick="plotViscosityCurve()">Generate Curve</button>
-                    <button class="btn btn-outline" onclick="addOverlayCurve()">+ Add Overlay</button>
-                    <button class="btn btn-outline" onclick="clearOverlays()">Clear All</button>
+                    <button class="btn" id="btnPlotViscosity">Generate Curve</button>
+                    <button class="btn btn-outline" id="btnAddOverlay">+ Add Overlay</button>
+                    <button class="btn btn-outline" id="btnClearOverlays">Clear All</button>
                 </div>
                 <div class="chart-container"><canvas id="viscosityChart"></canvas></div>
                 <div class="legend-row" id="viscosityLegend"></div>
@@ -376,7 +380,7 @@
                 <textarea id="fitDataInput" rows="6" placeholder="shear_rate, viscosity&#10;0.1, 850&#10;1, 120&#10;10, 25&#10;100, 6.5&#10;1000, 2.1"
                     style="width:100%;padding:0.75rem;background:var(--bg);border:1px solid var(--border);border-radius:8px;color:var(--text);font-family:monospace;font-size:0.85rem;resize:vertical;"></textarea>
                 <div class="btn-group" style="margin-top:0.75rem;">
-                    <button class="btn" onclick="fitData()">Fit Power Law</button>
+                    <button class="btn" id="btnFitData">Fit Power Law</button>
                 </div>
                 <div id="fitResults"></div>
             </div>
@@ -437,7 +441,7 @@
                     </div>
                 </div>
                 <div class="btn-group" style="margin-top:1rem">
-                    <button class="btn" onclick="plotModelComparison()">Compare Models</button>
+                    <button class="btn" id="btnCompareModels">Compare Models</button>
                 </div>
                 <div class="chart-container"><canvas id="compareChart"></canvas></div>
                 <div id="compareTable"></div>
@@ -469,14 +473,14 @@
                     </div>
                 </div>
                 <div class="btn-group">
-                    <button class="btn" onclick="runPrintability()">Analyze Printability</button>
+                    <button class="btn" id="btnPrintability">Analyze Printability</button>
                 </div>
                 <div id="printResults"></div>
             </div>
 
             <div class="card">
                 <h3>📊 Preset Comparison Matrix</h3>
-                <button class="btn" onclick="compareAllPresets()">Compare All Presets</button>
+                <button class="btn" id="btnComparePresets">Compare All Presets</button>
                 <div id="presetComparisonTable" style="margin-top:1rem;overflow-x:auto;"></div>
             </div>
         </div>
@@ -509,9 +513,9 @@
                     </div>
                 </div>
                 <div class="btn-group">
-                    <button class="btn" onclick="plotTempCurve()">Generate Curve</button>
-                    <button class="btn btn-outline" onclick="addTempOverlay()">+ Add Overlay</button>
-                    <button class="btn btn-outline" onclick="clearTempOverlays()">Clear All</button>
+                    <button class="btn" id="btnPlotTemp">Generate Curve</button>
+                    <button class="btn btn-outline" id="btnAddTempOverlay">+ Add Overlay</button>
+                    <button class="btn btn-outline" id="btnClearTempOverlays">Clear All</button>
                 </div>
                 <div class="chart-container"><canvas id="tempChart"></canvas></div>
                 <div class="legend-row" id="tempLegend"></div>
@@ -547,7 +551,7 @@
                     </div>
                 </div>
                 <div class="btn-group">
-                    <button class="btn" onclick="runNozzleSim()">Simulate</button>
+                    <button class="btn" id="btnNozzleSim">Simulate</button>
                 </div>
                 <div id="nozzleResults"></div>
             </div>
@@ -556,7 +560,7 @@
                 <h3>📐 Nozzle Diameter Sweep</h3>
                 <p class="info-text">Compare shear rates and viscosities across different nozzle sizes at fixed print speed.</p>
                 <div class="btn-group">
-                    <button class="btn" onclick="nozzleSweep()">Run Sweep</button>
+                    <button class="btn" id="btnNozzleSweep">Run Sweep</button>
                 </div>
                 <div class="chart-container"><canvas id="nozzleSweepChart"></canvas></div>
                 <div id="nozzleSweepTable" style="margin-top:1rem;overflow-x:auto;"></div>
@@ -848,7 +852,17 @@
                     '<div class="stat-card"><div class="stat-value">' + result.rSquared.toFixed(4) + '</div><div class="stat-label">R²</div></div>' +
                     '<div class="stat-card"><div class="stat-value">' + data.length + '</div><div class="stat-label">Data Points</div></div>' +
                     '</div>' +
-                    '<div class="btn-group" style="margin-top:0.75rem"><button class="btn btn-outline" onclick="useFitResult(' + result.K + ',' + result.n + ')">Use These Parameters</button></div>';
+                    '<div class="btn-group" style="margin-top:0.75rem"><button class="btn btn-outline" id="btnUseFitResult" data-k="' + result.K + '" data-n="' + result.n + '">Use These Parameters</button></div>';
+
+                // Wire the dynamic "Use These Parameters" button
+                setTimeout(function() {
+                    var useBtn = document.getElementById('btnUseFitResult');
+                    if (useBtn) {
+                        useBtn.addEventListener('click', function() {
+                            useFitResult(parseFloat(this.dataset.k), parseFloat(this.dataset.n));
+                        });
+                    }
+                }, 0);
             } catch (e) {
                 document.getElementById('fitResults').innerHTML = '<p style="color:var(--error)">' + esc(e.message) + '</p>';
             }
@@ -1091,6 +1105,20 @@
 
             document.getElementById('nozzleSweepTable').innerHTML = html;
         };
+
+        // ── Wire button events (no inline onclick) ──────────────
+        document.getElementById('btnPlotViscosity').addEventListener('click', plotViscosityCurve);
+        document.getElementById('btnAddOverlay').addEventListener('click', addOverlayCurve);
+        document.getElementById('btnClearOverlays').addEventListener('click', clearOverlays);
+        document.getElementById('btnFitData').addEventListener('click', fitData);
+        document.getElementById('btnCompareModels').addEventListener('click', plotModelComparison);
+        document.getElementById('btnPrintability').addEventListener('click', runPrintability);
+        document.getElementById('btnComparePresets').addEventListener('click', compareAllPresets);
+        document.getElementById('btnPlotTemp').addEventListener('click', plotTempCurve);
+        document.getElementById('btnAddTempOverlay').addEventListener('click', addTempOverlay);
+        document.getElementById('btnClearTempOverlays').addEventListener('click', clearTempOverlays);
+        document.getElementById('btnNozzleSim').addEventListener('click', runNozzleSim);
+        document.getElementById('btnNozzleSweep').addEventListener('click', nozzleSweep);
 
         // ── Init ────────────────────────────────────────────────
         plotViscosityCurve();
