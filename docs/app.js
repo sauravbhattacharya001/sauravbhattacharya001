@@ -23,7 +23,7 @@ var PROJECTS = [
         links: [
             { label: "Code", url: "https://github.com/sauravbhattacharya001/agentlens" },
             { label: "Docs", url: "https://sauravbhattacharya001.github.io/agentlens/" },
-            { label: "v1.24.0", url: "https://github.com/sauravbhattacharya001/agentlens/releases/tag/v1.24.0" }
+            { label: "v1.39.0", url: "https://github.com/sauravbhattacharya001/agentlens/releases/tag/v1.39.0" }
         ]
     },
     {
@@ -40,11 +40,12 @@ var PROJECTS = [
     {
         category: "AI & Agents",
         icon: "💬", repo: "agenticchat", title: "AgenticChat",
-        desc: "Agentic conversation framework — GPT-4o chat with sandboxed code execution, 30+ modular features including voice input, session management, conversation tags, search, bookmarks, annotations, focus mode.",
+        desc: "Agentic conversation framework — GPT-4o chat with sandboxed code execution, 94 modular features including voice chat, ambient soundscapes, session management, command palette, prompt A/B testing, conversation stash, and incognito mode.",
         tags: ["JavaScript", "GPT-4o", "Code Execution"],
         links: [
             { label: "Code", url: "https://github.com/sauravbhattacharya001/agenticchat" },
-            { label: "Demo", url: "https://sauravbhattacharya001.github.io/agenticchat/" }
+            { label: "Demo", url: "https://sauravbhattacharya001.github.io/agenticchat/" },
+            { label: "v2.28.2", url: "https://github.com/sauravbhattacharya001/agenticchat/releases/tag/v2.28.2" }
         ]
     },
     {
@@ -67,7 +68,7 @@ var PROJECTS = [
         links: [
             { label: "Code", url: "https://github.com/sauravbhattacharya001/WinSentinel" },
             { label: "Docs", url: "https://sauravbhattacharya001.github.io/WinSentinel/" },
-            { label: "v1.4.1", url: "https://github.com/sauravbhattacharya001/WinSentinel/releases/tag/v1.4.1" }
+            { label: "v1.4.4", url: "https://github.com/sauravbhattacharya001/WinSentinel/releases/tag/v1.4.4" }
         ]
     },
 
@@ -90,7 +91,7 @@ var PROJECTS = [
         links: [
             { label: "Code", url: "https://github.com/sauravbhattacharya001/prompt" },
             { label: "Docs", url: "https://sauravbhattacharya001.github.io/prompt/" },
-            { label: "v5.2.0", url: "https://github.com/sauravbhattacharya001/prompt/releases/tag/v5.2.0" }
+            { label: "v5.5.0", url: "https://github.com/sauravbhattacharya001/prompt/releases/tag/v5.5.0" }
         ]
     },
     {
@@ -101,7 +102,7 @@ var PROJECTS = [
         links: [
             { label: "Code", url: "https://github.com/sauravbhattacharya001/gif-captcha" },
             { label: "Demo", url: "https://sauravbhattacharya001.github.io/gif-captcha/" },
-            { label: "v1.6.1", url: "https://github.com/sauravbhattacharya001/gif-captcha/releases/tag/v1.6.1" }
+            { label: "v1.8.2", url: "https://github.com/sauravbhattacharya001/gif-captcha/releases/tag/v1.8.2" }
         ]
     },
 
