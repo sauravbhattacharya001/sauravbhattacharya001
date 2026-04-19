@@ -14,7 +14,7 @@ Detailed technical overview of all public repositories. For a quick summary, see
 |---|---|
 | **Language** | JavaScript (Node.js backend) + Python (SDK) |
 | **Architecture** | Python SDK → Node.js API → SQLite → React Dashboard |
-| **Release** | [v1.4.0](https://github.com/sauravbhattacharya001/agentlens/releases/tag/v1.4.0) |
+| **Release** | [v1.40.0](https://github.com/sauravbhattacharya001/agentlens/releases/tag/v1.40.0) |
 | **Docs** | [sauravbhattacharya001.github.io/agentlens](https://sauravbhattacharya001.github.io/agentlens/) |
 
 **What it does:**
@@ -42,7 +42,7 @@ Detailed technical overview of all public repositories. For a quick summary, see
 |---|---|
 | **Language** | Python |
 | **Architecture** | Controller → Workers (sandboxed agents) with HMAC-signed manifests |
-| **Release** | [v2.0.0](https://github.com/sauravbhattacharya001/ai/releases/tag/v2.0.0) |
+| **Release** | [v3.4.0](https://github.com/sauravbhattacharya001/ai/releases/tag/v3.4.0) |
 | **Docs** | [sauravbhattacharya001.github.io/ai](https://sauravbhattacharya001.github.io/ai/) |
 
 **What it does:**
@@ -68,7 +68,7 @@ Detailed technical overview of all public repositories. For a quick summary, see
 |---|---|
 | **Language** | JavaScript (vanilla, no frameworks) |
 | **Architecture** | Modular ES6 (ChatConfig, ConversationManager, ApiKeyManager, UIController, SandboxRunner) |
-| **Release** | [v2.0.0](https://github.com/sauravbhattacharya001/agenticchat/releases/tag/v2.0.0) |
+| **Release** | [v2.28.2](https://github.com/sauravbhattacharya001/agenticchat/releases/tag/v2.28.2) |
 | **Demo** | [sauravbhattacharya001.github.io/agenticchat](https://sauravbhattacharya001.github.io/agenticchat/) |
 
 **What it does:**
@@ -129,7 +129,7 @@ Detailed technical overview of all public repositories. For a quick summary, see
 |---|---|
 | **Language** | Python (interpreter + compiler) |
 | **Architecture** | Lexer → Parser → AST → Tree-walk Interpreter *or* C code generator → GCC → native binary |
-| **Release** | [v3.0.0](https://github.com/sauravbhattacharya001/sauravcode/releases/tag/v3.0.0) |
+| **Release** | [v6.2.0](https://github.com/sauravbhattacharya001/sauravcode/releases/tag/v6.2.0) |
 | **Docs** | [sauravbhattacharya001.github.io/sauravcode](https://sauravbhattacharya001.github.io/sauravcode/) |
 
 **What it does:**
@@ -156,7 +156,7 @@ Detailed technical overview of all public repositories. For a quick summary, see
 |---|---|
 | **Language** | C# / .NET 8 |
 | **Architecture** | `AzureLLM` client → Azure OpenAI → retry/streaming/conversation management |
-| **Release** | [v4.0.0](https://github.com/sauravbhattacharya001/prompt/releases/tag/v4.0.0) |
+| **Release** | [v5.5.1](https://github.com/sauravbhattacharya001/prompt/releases/tag/v5.5.1) |
 | **Docs** | [sauravbhattacharya001.github.io/prompt](https://sauravbhattacharya001.github.io/prompt/) |
 
 **What it does:**
@@ -213,7 +213,7 @@ Detailed technical overview of all public repositories. For a quick summary, see
 |---|---|
 | **Language** | Java (Swing GUI) |
 | **Architecture** | PostgreSQL → Java data pipeline → graph model → Swing visualization |
-| **Release** | [v2.0.0](https://github.com/sauravbhattacharya001/GraphVisual/releases/tag/v2.0.0) |
+| **Release** | [v2.47.0](https://github.com/sauravbhattacharya001/GraphVisual/releases/tag/v2.47.0) |
 
 **What it does:**
 - **Network statistics panel**: node/edge counts, density, degree distribution, hub detection
@@ -248,7 +248,7 @@ Detailed technical overview of all public repositories. For a quick summary, see
 |---|---|
 | **Language** | Dart / Flutter |
 | **Architecture** | BLoC pattern → SQLite → Material Design 3 |
-| **Release** | [v3.0.0](https://github.com/sauravbhattacharya001/everything/releases/tag/v3.0.0) |
+| **Release** | [v7.27.0](https://github.com/sauravbhattacharya001/everything/releases/tag/v7.27.0) |
 | **App** | [sauravbhattacharya001.github.io/everything](https://sauravbhattacharya001.github.io/everything/) |
 
 **What it does:**
@@ -278,7 +278,7 @@ Detailed technical overview of all public repositories. For a quick summary, see
 |---|---|
 | **Language** | Swift 5 |
 | **Architecture** | MVC with XMLParser, URLSession, NSCache, NSCoding persistence |
-| **Release** | [v1.1.0](https://github.com/sauravbhattacharya001/FeedReader/releases/tag/v1.1.0) |
+| **Release** | [v1.8.0](https://github.com/sauravbhattacharya001/FeedReader/releases/tag/v1.8.0) |
 
 **What it does:**
 - **Async image loading** with NSCache and cell-reuse guards
@@ -303,7 +303,7 @@ Detailed technical overview of all public repositories. For a quick summary, see
 |---|---|
 | **Language** | C# / .NET Framework 4.8 |
 | **Architecture** | MVC → Repository Pattern (thread-safe, in-memory) → Razor Views |
-| **Release** | [v2.0.0](https://github.com/sauravbhattacharya001/Vidly/releases/tag/v2.0.0) |
+| **Release** | [v2.8.0](https://github.com/sauravbhattacharya001/Vidly/releases/tag/v2.8.0) |
 | **Docs** | [sauravbhattacharya001.github.io/Vidly](https://sauravbhattacharya001.github.io/Vidly/) |
 
 **What it does:**
@@ -324,7 +324,7 @@ Detailed technical overview of all public repositories. For a quick summary, see
 |---|---|
 | **Language** | C# (backend) + JavaScript (frontend) |
 | **Architecture** | ASP.NET Web API → JSON file cache (Lazy\<T\>) → Chart.js dashboard |
-| **Release** | [v1.1.0](https://github.com/sauravbhattacharya001/BioBots/releases/tag/v1.1.0) |
+| **Release** | [v1.27.0](https://github.com/sauravbhattacharya001/BioBots/releases/tag/v1.27.0) |
 | **Site** | [sauravbhattacharya001.github.io/BioBots](https://sauravbhattacharya001.github.io/BioBots/) |
 
 **What it does:**
@@ -346,7 +346,7 @@ Detailed technical overview of all public repositories. For a quick summary, see
 |---|---|
 | **Language** | HTML/JavaScript |
 | **Architecture** | 13,000+ line ES5 library + research demos |
-| **Release** | [v1.3.0](https://github.com/sauravbhattacharya001/gif-captcha/releases/tag/v1.3.0) |
+| **Release** | [v1.8.2](https://github.com/sauravbhattacharya001/gif-captcha/releases/tag/v1.8.2) |
 | **Demo** | [sauravbhattacharya001.github.io/gif-captcha](https://sauravbhattacharya001.github.io/gif-captcha/) |
 
 **What it does:**
@@ -368,7 +368,7 @@ Detailed technical overview of all public repositories. For a quick summary, see
 | | |
 |---|---|
 | **Language** | OCaml 5.2 |
-| **Release** | [v1.4.0](https://github.com/sauravbhattacharya001/Ocaml-sample-code/releases/tag/v1.4.0) |
+| **Release** | [v1.6.0](https://github.com/sauravbhattacharya001/Ocaml-sample-code/releases/tag/v1.6.0) |
 | **Docs** | [sauravbhattacharya001.github.io/Ocaml-sample-code](https://sauravbhattacharya001.github.io/Ocaml-sample-code/) |
 
 **What it does:**
@@ -395,7 +395,7 @@ Detailed technical overview of all public repositories. For a quick summary, see
 |---|---|
 | **Language** | C# / .NET 8 / WPF |
 | **Architecture** | 13 audit modules → compliance profiles → remediation checklists → security scoring |
-| **Release** | [v1.1.0](https://github.com/sauravbhattacharya001/WinSentinel/releases/tag/v1.1.0) |
+| **Release** | [v1.4.5](https://github.com/sauravbhattacharya001/WinSentinel/releases/tag/v1.4.5) |
 
 **What it does:**
 - **13 audit modules**: Windows Update, Firewall, Antivirus, UAC, BitLocker, Network, Password Policy, Remote Desktop, Services, Shared Folders, USB, Browser, Privacy
@@ -431,4 +431,4 @@ All repositories follow consistent DevOps practices:
 
 ---
 
-*Last updated: March 2026*
+*Last updated: April 2026*
