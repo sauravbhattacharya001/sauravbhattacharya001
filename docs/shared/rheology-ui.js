@@ -206,21 +206,21 @@
 
         var viscOverlays = [];
 
-        window.plotViscosityCurve = function() {
+        function plotViscosityCurve() {
             viscOverlays = [];
             addViscosityCurve(true);
-        };
+        }
 
-        window.addOverlayCurve = function() {
+        function addOverlayCurve() {
             addViscosityCurve(false);
-        };
+        }
 
-        window.clearOverlays = function() {
+        function clearOverlays() {
             viscOverlays = [];
             clearCanvas(document.getElementById('viscosityChart'));
             document.getElementById('viscosityLegend').innerHTML = '';
             document.getElementById('viscosityStats').innerHTML = '';
-        };
+        }
 
         function addViscosityCurve(reset) {
             var K = parseFloat(document.getElementById('plK').value);
@@ -266,7 +266,7 @@
 
         // ── Fit Power Law ───────────────────────────────────────
 
-        window.fitData = function() {
+        function fitData() {
             var raw = document.getElementById('fitDataInput').value.trim();
             if (!raw) return;
 
@@ -307,17 +307,17 @@
             } catch (e) {
                 document.getElementById('fitResults').innerHTML = '<p class="error-msg">' + esc(e.message) + '</p>';
             }
-        };
+        }
 
-        window.useFitResult = function(K, n) {
+        function useFitResult(K, n) {
             document.getElementById('plK').value = K.toFixed(3);
             document.getElementById('plN').value = n.toFixed(4);
             plotViscosityCurve();
-        };
+        }
 
         // ── Tab 2: Model Comparison ─────────────────────────────
 
-        window.plotModelComparison = function() {
+        function plotModelComparison() {
             var plK = parseFloat(document.getElementById('cmpPL_K').value);
             var plN = parseFloat(document.getElementById('cmpPL_n').value);
             var eta0 = parseFloat(document.getElementById('cmpCross_eta0').value);
@@ -361,11 +361,11 @@
             } catch (e) {
                 alert('Error: ' + e.message);
             }
-        };
+        }
 
         // ── Tab 3: Printability ─────────────────────────────────
 
-        window.runPrintability = function() {
+        function runPrintability() {
             var K = parseFloat(document.getElementById('prK').value);
             var n = parseFloat(document.getElementById('prN').value);
             var yieldS = parseFloat(document.getElementById('prYield').value);
@@ -404,9 +404,9 @@
             } catch (e) {
                 document.getElementById('printResults').innerHTML = '<p class="error-msg">' + esc(e.message) + '</p>';
             }
-        };
+        }
 
-        window.compareAllPresets = function() {
+        function compareAllPresets() {
             var html = '<table class="data-table"><thead><tr><th>Bioink</th><th>K</th><th>n</th><th>τ_y</th><th>Score</th><th>Printable</th><th>Behavior</th></tr></thead><tbody>';
             presets.forEach(function(p) {
                 var result = rheo.analyzePrintability({ K: p.K, n: p.n, yieldStress: p.yieldStress });
@@ -418,27 +418,27 @@
             });
             html += '</tbody></table>';
             document.getElementById('presetComparisonTable').innerHTML = html;
-        };
+        }
 
         // ── Tab 4: Temperature ──────────────────────────────────
 
         var tempOverlays = [];
 
-        window.plotTempCurve = function() {
+        function plotTempCurve() {
             tempOverlays = [];
             addTempCurveInternal(true);
-        };
+        }
 
-        window.addTempOverlay = function() {
+        function addTempOverlay() {
             addTempCurveInternal(false);
-        };
+        }
 
-        window.clearTempOverlays = function() {
+        function clearTempOverlays() {
             tempOverlays = [];
             clearCanvas(document.getElementById('tempChart'));
             document.getElementById('tempLegend').innerHTML = '';
             document.getElementById('tempStats').innerHTML = '';
-        };
+        }
 
         function addTempCurveInternal(reset) {
             var refVisc = parseFloat(document.getElementById('tempRefVisc').value);
@@ -487,7 +487,7 @@
 
         // ── Tab 5: Nozzle Simulator ─────────────────────────────
 
-        window.runNozzleSim = function() {
+        function runNozzleSim() {
             var speed = parseFloat(document.getElementById('nzSpeed').value);
             var dia = parseFloat(document.getElementById('nzDiameter').value);
             var layerH = parseFloat(document.getElementById('nzLayerH').value);
@@ -516,9 +516,9 @@
             } catch (e) {
                 document.getElementById('nozzleResults').innerHTML = '<p class="error-msg">' + esc(e.message) + '</p>';
             }
-        };
+        }
 
-        window.nozzleSweep = function() {
+        function nozzleSweep() {
             var speed = parseFloat(document.getElementById('nzSpeed').value);
             var layerH = parseFloat(document.getElementById('nzLayerH').value);
             var n = parseFloat(document.getElementById('nzN').value);
@@ -547,7 +547,7 @@
             ], { logX: false, logY: true, xLabel: 'Nozzle Diameter (mm)', yLabel: 'Value' });
 
             document.getElementById('nozzleSweepTable').innerHTML = html;
-        };
+        }
 
         // ── Wire button events (no inline onclick) ──────────────
         document.getElementById('btnPlotViscosity').addEventListener('click', plotViscosityCurve);
