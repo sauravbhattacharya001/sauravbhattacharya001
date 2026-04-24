@@ -43,24 +43,35 @@ function createRheologyModeler() {
      * @returns {Array<{shearRate: number, viscosity: number}>} Array of {shearRate, viscosity} objects.
      * @throws {Error} If rate bounds are invalid or fewer than 2 points requested.
      */
-    function powerLawCurve(K, n, minRate, maxRate, points) {
-        minRate = minRate || 0.1;
-        maxRate = maxRate || 1000;
-        points = points || 50;
+    /**
+     * Generate a logarithmically spaced array of shear rates.
+     * Shared helper used by powerLawCurve and crossCurve.
+     *
+     * @param {number} minRate - Minimum rate (must be positive).
+     * @param {number} maxRate - Maximum rate (must be > minRate).
+     * @param {number} points - Number of points (must be >= 2).
+     * @returns {number[]} Log-spaced shear rates.
+     */
+    function logSpacedRates(minRate, maxRate, points) {
         if (minRate <= 0 || maxRate <= 0) throw new Error('Rate bounds must be positive');
         if (minRate >= maxRate) throw new Error('minRate must be less than maxRate');
         if (points < 2) throw new Error('Need at least 2 points');
 
-        var curve = [];
+        var rates = [];
         var logMin = Math.log10(minRate);
         var logMax = Math.log10(maxRate);
         var logStep = (logMax - logMin) / (points - 1);
         for (var i = 0; i < points; i++) {
-            var logRate = logMin + logStep * i;
-            var rate = Math.pow(10, logRate);
-            curve.push({ shearRate: rate, viscosity: powerLawViscosity(K, n, rate) });
+            rates.push(Math.pow(10, logMin + logStep * i));
         }
-        return curve;
+        return rates;
+    }
+
+    function powerLawCurve(K, n, minRate, maxRate, points) {
+        var rates = logSpacedRates(minRate || 0.1, maxRate || 1000, points || 50);
+        return rates.map(function (rate) {
+            return { shearRate: rate, viscosity: powerLawViscosity(K, n, rate) };
+        });
     }
 
     /**
@@ -142,20 +153,10 @@ function createRheologyModeler() {
      * @returns {Array<{shearRate: number, viscosity: number}>} Curve data points.
      */
     function crossCurve(eta0, etaInf, lambda, m, minRate, maxRate, points) {
-        minRate = minRate || 0.01;
-        maxRate = maxRate || 10000;
-        points = points || 50;
-
-        var curve = [];
-        var logMin = Math.log10(minRate);
-        var logMax = Math.log10(maxRate);
-        var logStep = (logMax - logMin) / (points - 1);
-        for (var i = 0; i < points; i++) {
-            var logRate = logMin + logStep * i;
-            var rate = Math.pow(10, logRate);
-            curve.push({ shearRate: rate, viscosity: crossViscosity(eta0, etaInf, lambda, m, rate) });
-        }
-        return curve;
+        var rates = logSpacedRates(minRate || 0.01, maxRate || 10000, points || 50);
+        return rates.map(function (rate) {
+            return { shearRate: rate, viscosity: crossViscosity(eta0, etaInf, lambda, m, rate) };
+        });
     }
 
     /**
@@ -304,6 +305,20 @@ function createRheologyModeler() {
      *   shearThinning: boolean, flowBehavior: string}} Printability assessment with 0-100 score.
      * @throws {Error} If required parameters are missing or invalid.
      */
+    /**
+     * Evaluate a single printability factor against threshold rules.
+     * Returns { score, status, detail } based on the first matching rule.
+     *
+     * @param {Array<{test: function, score: number, status: string, detail: string}>} rules
+     * @returns {{score: number, status: string, detail: string}}
+     */
+    function evaluateRules(rules) {
+        for (var i = 0; i < rules.length; i++) {
+            if (rules[i].test()) return { score: rules[i].score, status: rules[i].status, detail: rules[i].detail };
+        }
+        return rules[rules.length - 1];
+    }
+
     function analyzePrintability(params) {
         if (!params || typeof params !== 'object') throw new Error('Parameters required');
         if (!params.K || params.K <= 0) throw new Error('Consistency index K required and must be positive');
@@ -314,73 +329,53 @@ function createRheologyModeler() {
         var maxVisc = params.maxViscosity || 1000;
 
         var viscAtPrint = powerLawViscosity(params.K, params.n, printRate);
-        var factors = [];
-        var totalScore = 0;
-        var maxScore = 0;
-
-        maxScore += 25;
-        if (params.n < 0.5) {
-            factors.push({ name: 'Shear Thinning', score: 25, max: 25, status: 'excellent', detail: 'Strong shear-thinning (n=' + params.n.toFixed(2) + ')' });
-            totalScore += 25;
-        } else if (params.n < 0.8) {
-            factors.push({ name: 'Shear Thinning', score: 20, max: 25, status: 'good', detail: 'Moderate shear-thinning (n=' + params.n.toFixed(2) + ')' });
-            totalScore += 20;
-        } else if (params.n < 1.0) {
-            factors.push({ name: 'Shear Thinning', score: 10, max: 25, status: 'marginal', detail: 'Mild shear-thinning (n=' + params.n.toFixed(2) + ')' });
-            totalScore += 10;
-        } else {
-            factors.push({ name: 'Shear Thinning', score: 0, max: 25, status: 'poor', detail: 'Not shear-thinning (n=' + params.n.toFixed(2) + ')' });
-        }
-
-        maxScore += 30;
-        if (viscAtPrint >= minVisc && viscAtPrint <= maxVisc) {
-            var optRange = maxVisc - minVisc;
-            var optCenter = (minVisc + maxVisc) / 2;
-            var dist = Math.abs(viscAtPrint - optCenter) / (optRange / 2);
-            var viscScore = Math.round(30 * Math.max(0, 1 - dist * 0.5));
-            factors.push({ name: 'Print Viscosity', score: viscScore, max: 30, status: viscScore >= 20 ? 'excellent' : 'good', detail: 'Viscosity at print rate: ' + viscAtPrint.toFixed(1) + ' Pa·s' });
-            totalScore += viscScore;
-        } else if (viscAtPrint < minVisc) {
-            factors.push({ name: 'Print Viscosity', score: 5, max: 30, status: 'poor', detail: 'Too low (' + viscAtPrint.toFixed(1) + ' Pa·s)' });
-            totalScore += 5;
-        } else {
-            factors.push({ name: 'Print Viscosity', score: 5, max: 30, status: 'poor', detail: 'Too high (' + viscAtPrint.toFixed(1) + ' Pa·s)' });
-            totalScore += 5;
-        }
-
-        maxScore += 25;
         var viscLow = powerLawViscosity(params.K, params.n, 1);
         var viscHigh = powerLawViscosity(params.K, params.n, 1000);
         var ratio = viscLow / viscHigh;
-        if (ratio >= 100) {
-            factors.push({ name: 'Viscosity Ratio', score: 25, max: 25, status: 'excellent', detail: 'High ratio (' + ratio.toFixed(0) + 'x)' });
-            totalScore += 25;
-        } else if (ratio >= 10) {
-            var ratioScore = Math.round(15 + 10 * (Math.log10(ratio) - 1));
-            factors.push({ name: 'Viscosity Ratio', score: ratioScore, max: 25, status: 'good', detail: 'Moderate ratio (' + ratio.toFixed(0) + 'x)' });
-            totalScore += ratioScore;
-        } else {
-            factors.push({ name: 'Viscosity Ratio', score: 5, max: 25, status: 'marginal', detail: 'Low ratio (' + ratio.toFixed(1) + 'x)' });
-            totalScore += 5;
+
+        function viscWindowScore(maxPts) {
+            var optCenter = (minVisc + maxVisc) / 2;
+            var halfRange = (maxVisc - minVisc) / 2;
+            var dist = Math.abs(viscAtPrint - optCenter) / halfRange;
+            return Math.round(maxPts * Math.max(0, 1 - dist * 0.5));
         }
 
-        maxScore += 20;
-        if (typeof params.yieldStress === 'number') {
-            if (params.yieldStress >= 10 && params.yieldStress <= 500) {
-                factors.push({ name: 'Yield Stress', score: 20, max: 20, status: 'excellent', detail: 'Yield stress ' + params.yieldStress.toFixed(1) + ' Pa — good shape retention' });
-                totalScore += 20;
-            } else if (params.yieldStress > 0 && params.yieldStress < 10) {
-                factors.push({ name: 'Yield Stress', score: 10, max: 20, status: 'marginal', detail: 'Low yield stress (' + params.yieldStress.toFixed(1) + ' Pa)' });
-                totalScore += 10;
-            } else if (params.yieldStress > 500) {
-                factors.push({ name: 'Yield Stress', score: 12, max: 20, status: 'good', detail: 'High yield stress (' + params.yieldStress.toFixed(0) + ' Pa)' });
-                totalScore += 12;
-            } else {
-                factors.push({ name: 'Yield Stress', score: 5, max: 20, status: 'poor', detail: 'No yield stress' });
-                totalScore += 5;
-            }
-        } else {
-            factors.push({ name: 'Yield Stress', score: 0, max: 20, status: 'unknown', detail: 'Yield stress not provided' });
+        var factorDefs = [
+            { name: 'Shear Thinning', max: 25, rules: [
+                { test: function () { return params.n < 0.5; }, score: 25, status: 'excellent', detail: 'Strong shear-thinning (n=' + params.n.toFixed(2) + ')' },
+                { test: function () { return params.n < 0.8; }, score: 20, status: 'good', detail: 'Moderate shear-thinning (n=' + params.n.toFixed(2) + ')' },
+                { test: function () { return params.n < 1.0; }, score: 10, status: 'marginal', detail: 'Mild shear-thinning (n=' + params.n.toFixed(2) + ')' },
+                { test: function () { return true; }, score: 0, status: 'poor', detail: 'Not shear-thinning (n=' + params.n.toFixed(2) + ')' }
+            ]},
+            { name: 'Print Viscosity', max: 30, rules: [
+                { test: function () { return viscAtPrint >= minVisc && viscAtPrint <= maxVisc; }, score: viscWindowScore(30), status: viscWindowScore(30) >= 20 ? 'excellent' : 'good', detail: 'Viscosity at print rate: ' + viscAtPrint.toFixed(1) + ' Pa·s' },
+                { test: function () { return viscAtPrint < minVisc; }, score: 5, status: 'poor', detail: 'Too low (' + viscAtPrint.toFixed(1) + ' Pa·s)' },
+                { test: function () { return true; }, score: 5, status: 'poor', detail: 'Too high (' + viscAtPrint.toFixed(1) + ' Pa·s)' }
+            ]},
+            { name: 'Viscosity Ratio', max: 25, rules: [
+                { test: function () { return ratio >= 100; }, score: 25, status: 'excellent', detail: 'High ratio (' + ratio.toFixed(0) + 'x)' },
+                { test: function () { return ratio >= 10; }, score: Math.round(15 + 10 * (Math.log10(Math.max(ratio, 10)) - 1)), status: 'good', detail: 'Moderate ratio (' + ratio.toFixed(0) + 'x)' },
+                { test: function () { return true; }, score: 5, status: 'marginal', detail: 'Low ratio (' + ratio.toFixed(1) + 'x)' }
+            ]},
+            { name: 'Yield Stress', max: 20, rules: typeof params.yieldStress === 'number' ? [
+                { test: function () { return params.yieldStress >= 10 && params.yieldStress <= 500; }, score: 20, status: 'excellent', detail: 'Yield stress ' + params.yieldStress.toFixed(1) + ' Pa — good shape retention' },
+                { test: function () { return params.yieldStress > 0 && params.yieldStress < 10; }, score: 10, status: 'marginal', detail: 'Low yield stress (' + params.yieldStress.toFixed(1) + ' Pa)' },
+                { test: function () { return params.yieldStress > 500; }, score: 12, status: 'good', detail: 'High yield stress (' + params.yieldStress.toFixed(0) + ' Pa)' },
+                { test: function () { return true; }, score: 5, status: 'poor', detail: 'No yield stress' }
+            ] : [
+                { test: function () { return true; }, score: 0, status: 'unknown', detail: 'Yield stress not provided' }
+            ]}
+        ];
+
+        var factors = [];
+        var totalScore = 0;
+        var maxScore = 0;
+        for (var i = 0; i < factorDefs.length; i++) {
+            var def = factorDefs[i];
+            var result = evaluateRules(def.rules);
+            maxScore += def.max;
+            totalScore += result.score;
+            factors.push({ name: def.name, score: result.score, max: def.max, status: result.status, detail: result.detail });
         }
 
         var score = Math.round(100 * totalScore / maxScore);
