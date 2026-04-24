@@ -2523,14 +2523,23 @@ var Compare = (function () {
 
 // Legacy aliases for backward compatibility with tests
 var _compareSet = Compare._set;
+/** @deprecated Use Compare.buildRow — builds a single comparison table row. */
 function _buildCompareRow(label, selected, cellFn, cellClass) { return Compare.buildRow(label, selected, cellFn, cellClass); }
+/** @deprecated Use Compare.toggle — adds or removes a repo from the compare set. */
 function toggleCompare(repo) { Compare.toggle(repo); }
+/** @deprecated Use Compare.clear — empties the compare selection. */
 function clearCompare() { Compare.clear(); }
+/** @deprecated Use Compare.syncUI — refreshes all compare-related DOM state. */
 function syncCompareUI() { Compare.syncUI(); }
+/** @deprecated Use Compare.renderPanel — renders the side-by-side comparison overlay. */
 function renderComparePanel() { Compare.renderPanel(); }
+/** @deprecated Use Compare.close — dismisses the comparison panel and restores focus. */
 function closeCompare() { Compare.close(); }
+/** @deprecated Use Compare.buildBar — returns the floating compare action bar element. */
 function buildCompareBar() { return Compare.buildBar(); }
+/** @deprecated Use Compare.buildCheckbox — returns a checkbox element for repo selection. */
 function buildCompareCheckbox(repo) { return Compare.buildCheckbox(repo); }
+/** @deprecated Use Compare.init — initializes compare feature state and DOM bindings. */
 function initCompare() { Compare.init(); }
 
 // ── Modal Focus Management (fixes #24) ──────────────────────────────
