@@ -16,9 +16,10 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: '20'
+          cache: 'npm'
 
       - name: Install project dependencies
-        run: npm install
+        run: npm ci
 
       - name: Install global tooling
         run: npm install -g markdownlint-cli2
@@ -28,6 +29,11 @@ jobs:
 
       - name: Lint Markdown
         run: markdownlint-cli2 "**/*.md" || true
+
+      - name: Validate links (quick check)
+        run: |
+          npx --yes markdown-link-check README.md --quiet || true
+          npx --yes markdown-link-check PROJECTS.md --quiet || true
 
       - name: Verify environment
         run: |
