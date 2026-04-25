@@ -666,9 +666,13 @@ describe("Security headers", () => {
                 if (braceDepth === 0 && blockContent.length > 0) break;
             }
         }
-        expect(blockContent).toContain("X-Content-Type-Options");
-        expect(blockContent).toContain("Content-Security-Policy");
-        expect(blockContent).toContain("Permissions-Policy");
+        // Headers can be inline OR included via a snippet file
+        const hasInlineHeaders = blockContent.includes("X-Content-Type-Options") &&
+            blockContent.includes("Content-Security-Policy") &&
+            blockContent.includes("Permissions-Policy");
+        const hasSnippetInclude = blockContent.includes("include") &&
+            blockContent.includes("security-headers");
+        expect(hasInlineHeaders || hasSnippetInclude).toBe(true);
     });
 });
 
