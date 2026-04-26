@@ -5,7 +5,7 @@
  * The HTML template is generated automatically.
  */
 
-/* exported PROJECTS, _filterState, renderProjects, filterProjects, initFilters, buildCardHeader, buildCardTags, buildCardLinks, buildTagList, buildLinkList, buildCategoryHTML, projectMatchesQuery, groupByCategory, _extractUnique, extractCategories, createFilterPills, wireFilterEvents, updateTagIndicator, clearTagFilter, setTagFilter, extractTags, wireTagClicks, getPreferredTheme, applyTheme, toggleTheme, initTheme, _kbState, getVisibleCards, focusCard, blurCards, openFocusedCard, showKeyboardHelp, hideKeyboardHelp, toggleKeyboardHelp, initKeyboardNav, buildHelpOverlay, sortProjects, setSortOrder, setViewMode, initSortAndView, buildSortControls, buildViewToggle, SORT_ORDERS, _bookmarks, isBookmarked, toggleBookmark, setBookmarkFilter, initBookmarks, getBookmarkCount, serializeFilterState, deserializeFilterState, pushFilterState, initDeepLink, _deepLinkEnabled, computeCategoryDistribution, computeTagDistribution, computePortfolioSummary, buildBarChart, buildTagCloud, buildAnalyticsPanel, toggleAnalytics, initAnalytics, _spotlightState, buildSpotlightCard, renderSpotlight, nextSpotlight, prevSpotlight, goToSpotlight, toggleSpotlightPause, startSpotlightTimer, stopSpotlightTimer, wireSpotlightEvents, initSpotlight, TECH_CATEGORIES, _techRadarState, computeTechStack, groupTechByType, buildTechRadar, renderTechRadar, toggleTechRadar, setTechRadarFilter, wireTechRadarEvents, initTechRadar, _buildCompareRow, _modalState, _activateModal, _deactivateModal, _handleModalTab, initTimeline, TIMELINE_DATA, TIMELINE_COLORS, TIMELINE_COLORS_LIGHT, _timelineState, parseTimelineDate, formatTimelineDate, buildTimelineEntries, computeTimelineRange, timelinePosition, buildTimelineMarkers, getTimelineColors, renderTimeline, toggleTimeline, setTimelineZoom, setTimelineFilter, wireTimelineEvents, initApp */
+/* exported PROJECTS, _filterState, _countByKey, _QUIZ_VALUE_TO_CATEGORY, _countTagMatches, renderProjects, filterProjects, initFilters, buildCardHeader, buildCardTags, buildCardLinks, buildTagList, buildLinkList, buildCategoryHTML, projectMatchesQuery, groupByCategory, _extractUnique, extractCategories, createFilterPills, wireFilterEvents, updateTagIndicator, clearTagFilter, setTagFilter, extractTags, wireTagClicks, getPreferredTheme, applyTheme, toggleTheme, initTheme, _kbState, getVisibleCards, focusCard, blurCards, openFocusedCard, showKeyboardHelp, hideKeyboardHelp, toggleKeyboardHelp, initKeyboardNav, buildHelpOverlay, sortProjects, setSortOrder, setViewMode, initSortAndView, buildSortControls, buildViewToggle, SORT_ORDERS, _bookmarks, isBookmarked, toggleBookmark, setBookmarkFilter, initBookmarks, getBookmarkCount, serializeFilterState, deserializeFilterState, pushFilterState, initDeepLink, _deepLinkEnabled, computeCategoryDistribution, computeTagDistribution, computePortfolioSummary, buildBarChart, buildTagCloud, buildAnalyticsPanel, toggleAnalytics, initAnalytics, _spotlightState, buildSpotlightCard, renderSpotlight, nextSpotlight, prevSpotlight, goToSpotlight, toggleSpotlightPause, startSpotlightTimer, stopSpotlightTimer, wireSpotlightEvents, initSpotlight, TECH_CATEGORIES, _techRadarState, computeTechStack, groupTechByType, buildTechRadar, renderTechRadar, toggleTechRadar, setTechRadarFilter, wireTechRadarEvents, initTechRadar, _buildCompareRow, _modalState, _activateModal, _deactivateModal, _handleModalTab, initTimeline, TIMELINE_DATA, TIMELINE_COLORS, TIMELINE_COLORS_LIGHT, _timelineState, parseTimelineDate, formatTimelineDate, buildTimelineEntries, computeTimelineRange, timelinePosition, buildTimelineMarkers, getTimelineColors, renderTimeline, toggleTimeline, setTimelineZoom, setTimelineFilter, wireTimelineEvents, initApp */
 
 /**
  * Active filter state.
@@ -1640,15 +1640,25 @@ function initKeyboardNav() {
 // ── Portfolio Analytics ──────────────────────────────────────────────
 
 /**
- * Compute category distribution from projects.
- * Returns sorted array of { name, count } objects (descending by count).
+ * Count occurrences produced by a key-extraction function across an array
+ * of projects.  keyFn receives a project and returns either a single string
+ * key or an array of string keys (for multi-valued fields like tags).
+ *
+ * Returns a descending-sorted array of { name, count } objects.
+ *
+ * @param {Object[]} items - Projects to scan.
+ * @param {function(Object): (string|string[])} keyFn - Key extractor.
+ * @returns {{name: string, count: number}[]}
  */
-function computeCategoryDistribution(projects) {
-    var items = projects || PROJECTS;
+function _countByKey(items, keyFn) {
     var map = Object.create(null);
     for (var i = 0; i < items.length; i++) {
-        var cat = items[i].category;
-        map[cat] = (map[cat] || 0) + 1;
+        var keys = keyFn(items[i]);
+        if (!Array.isArray(keys)) keys = [keys];
+        for (var j = 0; j < keys.length; j++) {
+            var k = keys[j];
+            if (k != null) map[k] = (map[k] || 0) + 1;
+        }
     }
     var result = [];
     for (var key in map) {
@@ -1659,24 +1669,19 @@ function computeCategoryDistribution(projects) {
 }
 
 /**
+ * Compute category distribution from projects.
+ * Returns sorted array of { name, count } objects (descending by count).
+ */
+function computeCategoryDistribution(projects) {
+    return _countByKey(projects || PROJECTS, function(p) { return p.category; });
+}
+
+/**
  * Compute language/tag frequency from projects.
  * Returns sorted array of { name, count } objects (descending by count).
  */
 function computeTagDistribution(projects) {
-    var items = projects || PROJECTS;
-    var map = Object.create(null);
-    for (var i = 0; i < items.length; i++) {
-        var tags = items[i].tags || [];
-        for (var j = 0; j < tags.length; j++) {
-            map[tags[j]] = (map[tags[j]] || 0) + 1;
-        }
-    }
-    var result = [];
-    for (var key in map) {
-        result.push({ name: key, count: map[key] });
-    }
-    result.sort(function(a, b) { return b.count - a.count; });
-    return result;
+    return _countByKey(projects || PROJECTS, function(p) { return p.tags || []; });
 }
 
 /**
@@ -2724,6 +2729,32 @@ function answerQuiz(questionIdx, optionIdx) {
  * @param {Array} answers - Array of {question, tags} answer objects.
  * @returns {number} Match score (higher = better fit).
  */
+/** Map quiz option values to portfolio category names for O(1) lookup. */
+var _QUIZ_VALUE_TO_CATEGORY = {
+    "ai":       "AI & Agents",
+    "security": "Security",
+    "lang":     "Languages & Tools",
+    "data":     "Visualization & Data",
+    "apps":     "Apps & More"
+};
+
+/**
+ * Count how many entries from a candidate list (lowercased) appear in
+ * a pre-lowered tag set.  Avoids duplicating the same indexOf loop for
+ * both tags and langs scoring in _scoreProject.
+ *
+ * @param {string[]} candidates - Strings to look up (original case).
+ * @param {string[]} projTagsLower - Pre-lowercased project tags.
+ * @returns {number} Number of matches.
+ */
+function _countTagMatches(candidates, projTagsLower) {
+    var hits = 0;
+    for (var i = 0; i < candidates.length; i++) {
+        if (projTagsLower.indexOf(candidates[i].toLowerCase()) !== -1) hits++;
+    }
+    return hits;
+}
+
 function _scoreProject(project, answers) {
     var score = 0;
     var projTags = project.tags || [];
@@ -2731,36 +2762,14 @@ function _scoreProject(project, answers) {
 
     for (var i = 0; i < answers.length; i++) {
         var ans = answers[i];
-        // Tag matching
-        if (ans.option.tags) {
-            for (var j = 0; j < ans.option.tags.length; j++) {
-                var tag = ans.option.tags[j].toLowerCase();
-                if (projTagsLower.indexOf(tag) !== -1) {
-                    score += 3;
-                }
-            }
-        }
-        // Language matching
-        if (ans.option.langs) {
-            for (var k = 0; k < ans.option.langs.length; k++) {
-                var lang = ans.option.langs[k].toLowerCase();
-                if (projTagsLower.indexOf(lang) !== -1) {
-                    score += 2;
-                }
-            }
-        }
+        // Tag matching (weight 3) and language matching (weight 2)
+        if (ans.option.tags)  score += _countTagMatches(ans.option.tags, projTagsLower) * 3;
+        if (ans.option.langs) score += _countTagMatches(ans.option.langs, projTagsLower) * 2;
         // Direct boost
-        if (ans.option.boost) {
-            if (ans.option.boost.indexOf(project.repo) !== -1) {
-                score += 4;
-            }
-        }
-        // Category matching
-        if (ans.option.value === "ai" && project.category === "AI & Agents") score += 2;
-        if (ans.option.value === "security" && project.category === "Security") score += 2;
-        if (ans.option.value === "lang" && project.category === "Languages & Tools") score += 2;
-        if (ans.option.value === "data" && project.category === "Visualization & Data") score += 2;
-        if (ans.option.value === "apps" && project.category === "Apps & More") score += 2;
+        if (ans.option.boost && ans.option.boost.indexOf(project.repo) !== -1) score += 4;
+        // Category matching via lookup table
+        var expectedCat = _QUIZ_VALUE_TO_CATEGORY[ans.option.value];
+        if (expectedCat && project.category === expectedCat) score += 2;
     }
     return score;
 }
@@ -3532,6 +3541,7 @@ if (typeof module !== "undefined" && module.exports) {
         // Search index (perf)
         _searchIndex: _searchIndex,
         // Analytics
+        _countByKey: _countByKey,
         computeCategoryDistribution: computeCategoryDistribution,
         computeTagDistribution: computeTagDistribution,
         computePortfolioSummary: computePortfolioSummary,
@@ -3582,6 +3592,8 @@ if (typeof module !== "undefined" && module.exports) {
         _handleModalTab: _handleModalTab,
         // Project Finder Quiz
         _quizState: _quizState,
+        _QUIZ_VALUE_TO_CATEGORY: _QUIZ_VALUE_TO_CATEGORY,
+        _countTagMatches: _countTagMatches,
         QUIZ_QUESTIONS: QUIZ_QUESTIONS,
         startQuiz: startQuiz,
         answerQuiz: answerQuiz,
