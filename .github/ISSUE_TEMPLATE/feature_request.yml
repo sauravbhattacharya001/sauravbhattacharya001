@@ -1,0 +1,72 @@
+name: "✨ Feature Request"
+description: Suggest a new section, project highlight, or profile improvement
+title: "[Feature] "
+labels: ["enhancement"]
+assignees:
+  - sauravbhattacharya001
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Got an idea for improving the profile? We'd love to hear it!
+
+  - type: textarea
+    id: description
+    attributes:
+      label: Description
+      description: A clear description of the feature or improvement you'd like.
+      placeholder: "It would be great to have a section that..."
+    validations:
+      required: true
+
+  - type: dropdown
+    id: category
+    attributes:
+      label: Category
+      description: What kind of improvement is this?
+      options:
+        - New profile section
+        - Project showcase improvement
+        - Badge or visual update
+        - Workflow / automation
+        - Documentation
+        - Accessibility improvement
+        - Performance optimization
+        - Other
+    validations:
+      required: true
+
+  - type: textarea
+    id: motivation
+    attributes:
+      label: Motivation
+      description: Why would this be useful? What problem does it solve?
+      placeholder: "Currently there's no way to see... This would help visitors..."
+    validations:
+      required: true
+
+  - type: textarea
+    id: solution
+    attributes:
+      label: Proposed Solution
+      description: How do you envision this working?
+      placeholder: "Add a new card-style section below the projects grid that..."
+    validations:
+      required: false
+
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives Considered
+      description: Any alternative approaches you've thought about?
+    validations:
+      required: false
+
+  - type: textarea
+    id: references
+    attributes:
+      label: References & Examples
+      description: Links to other profiles, mockups, or examples that demonstrate the idea.
+      placeholder: "Similar to how https://github.com/user does their..."
+    validations:
+      required: false

@@ -1,0 +1,71 @@
+name: "📝 Content Update"
+description: Suggest updating or correcting profile content
+title: "[Content] "
+labels: ["documentation"]
+assignees:
+  - sauravbhattacharya001
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Found outdated info, a typo, or something that should be updated? Let us know!
+
+  - type: dropdown
+    id: section
+    attributes:
+      label: Section
+      description: Which section needs updating?
+      options:
+        - About / Bio
+        - Projects showcase
+        - Tech stack / skills
+        - Badges / shields
+        - Links / social
+        - Release versions
+        - Statistics / metrics
+        - Other
+    validations:
+      required: true
+
+  - type: dropdown
+    id: update-type
+    attributes:
+      label: Type of Update
+      description: What kind of change is needed?
+      options:
+        - Outdated information
+        - Typo or grammar fix
+        - Missing content
+        - Incorrect link
+        - Version bump needed
+        - Factual correction
+        - Other
+    validations:
+      required: true
+
+  - type: textarea
+    id: current
+    attributes:
+      label: Current Content
+      description: What it currently says (copy the text or link to the section).
+      placeholder: "The Projects section currently lists version v1.2.0 for..."
+    validations:
+      required: true
+
+  - type: textarea
+    id: suggested
+    attributes:
+      label: Suggested Update
+      description: What it should say or include.
+      placeholder: "It should be updated to v1.5.0, which was released on..."
+    validations:
+      required: true
+
+  - type: textarea
+    id: reason
+    attributes:
+      label: Reason
+      description: Why this update is needed.
+      placeholder: "The current version listed is 3 releases behind..."
+    validations:
+      required: false
