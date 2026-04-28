@@ -16,3 +16,6 @@ package-lock.json
 
 # Diagram drafts (keep only referenced files)
 *.drawio
+
+# Coverage
+coverage/
