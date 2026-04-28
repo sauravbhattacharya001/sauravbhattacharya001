@@ -224,7 +224,7 @@ describe("buildCard", () => {
     test("links have target=_blank and rel=noopener", () => {
         const card = win.buildCard(win.PROJECTS[0]);
         expect(card).toContain('target="_blank"');
-        expect(card).toContain('rel="noopener"');
+        expect(card).toContain('rel="noopener noreferrer"');
     });
 
     test("card links point to correct GitHub repo", () => {
@@ -632,7 +632,7 @@ describe("Security headers", () => {
         );
         const extLinks = html.match(/<a\s[^>]*target="_blank"[^>]*>/gi) || [];
         for (const link of extLinks) {
-            expect(link).toContain('rel="noopener"');
+            expect(link).toContain('rel="noopener noreferrer"');
         }
     });
 
@@ -2467,7 +2467,7 @@ describe("Spotlight Carousel", () => {
             const html = win.buildSpotlightCard(win.PROJECTS[0], 0, win.PROJECTS.length);
             expect(html).toContain("spotlight-links");
             expect(html).toContain('target="_blank"');
-            expect(html).toContain('rel="noopener"');
+            expect(html).toContain('rel="noopener noreferrer"');
         });
 
         test("renders navigation dots for all projects", () => {

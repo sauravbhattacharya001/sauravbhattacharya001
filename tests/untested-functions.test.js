@@ -202,7 +202,7 @@ describe("buildLinkList", () => {
         const html = win.buildLinkList(links);
         expect(html).toContain('href="https://github.com/test"');
         expect(html).toContain('target="_blank"');
-        expect(html).toContain('rel="noopener"');
+        expect(html).toContain('rel="noopener noreferrer"');
         expect(html).toContain("Code");
         expect(html).toContain("Docs");
     });
