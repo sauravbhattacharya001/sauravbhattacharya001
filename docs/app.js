@@ -302,7 +302,7 @@ function buildCardHeader(p) {
     return '<div class="card-header">' +
         '<span class="card-icon">' + escapeHTML(p.icon) + '</span>' +
         '<h3><a href="https://github.com/sauravbhattacharya001/' +
-            escapeHTML(p.repo) + '" target="_blank" rel="noopener">' +
+            escapeHTML(p.repo) + '" target="_blank" rel="noopener noreferrer">' +
             escapeHTML(p.title) + '</a></h3>' +
         '<button type="button" class="bookmark-btn' + (bookmarked ? ' bookmarked' : '') +
             '" data-repo="' + escapeHTML(p.repo) +
@@ -360,7 +360,7 @@ function buildLinkList(links, opts) {
     return '<div class="' + cls + '">' +
         links.map(function(l) {
             return '<a href="' + sanitizeURL(l.url) +
-                '" target="_blank" rel="noopener">' +
+                '" target="_blank" rel="noopener noreferrer">' +
                 escapeHTML(l.label) + '</a>';
         }).join("") +
         '</div>';
@@ -1045,6 +1045,13 @@ function _persistBookmarks() {
 /**
  * Load bookmarks from localStorage.
  */
+/**
+ * Maximum bookmarks to load from localStorage.
+ * Prevents resource exhaustion from poisoned storage (CWE-400).
+ * @const {number}
+ */
+var _MAX_BOOKMARKS = 100;
+
 function _loadBookmarks() {
     if (typeof localStorage === "undefined") return;
     try {
@@ -1052,8 +1059,21 @@ function _loadBookmarks() {
         if (stored) {
             var arr = JSON.parse(stored);
             if (Array.isArray(arr)) {
-                for (var i = 0; i < arr.length; i++) {
-                    _bookmarks.add(arr[i]);
+                // Build a Set of known repo names for O(1) validation
+                var knownRepos = Object.create(null);
+                for (var k = 0; k < PROJECTS.length; k++) {
+                    knownRepos[PROJECTS[k].repo] = true;
+                }
+                var loaded = 0;
+                for (var i = 0; i < arr.length && loaded < _MAX_BOOKMARKS; i++) {
+                    // Only accept strings that match a known project repo
+                    // name.  Rejects non-string types, prototype keys, and
+                    // injected entries from same-origin localStorage
+                    // poisoning (CWE-400, CWE-20).
+                    if (typeof arr[i] === "string" && knownRepos[arr[i]]) {
+                        _bookmarks.add(arr[i]);
+                        loaded++;
+                    }
                 }
             }
         }
@@ -1179,7 +1199,14 @@ function deserializeFilterState(hash) {
         var eqIdx = pairs[i].indexOf("=");
         if (eqIdx < 0) continue;
         var key = pairs[i].substring(0, eqIdx);
-        var val = decodeURIComponent(pairs[i].substring(eqIdx + 1));
+        var val;
+        try {
+            val = decodeURIComponent(pairs[i].substring(eqIdx + 1));
+        } catch (e) {
+            // Malformed percent-encoding (e.g. %zz) — skip this parameter
+            // rather than crashing the entire page (CWE-20).
+            continue;
+        }
         if (key === "q") result.q = val;
         else if (key === "cat") result.cat = val;
         else if (key === "tag") result.tag = val;
@@ -2437,7 +2464,7 @@ var Compare = (function () {
 
         html += buildRow("Links", selected, function(p) {
             return p.links.map(function(lnk) {
-                return '<a href="' + sanitizeURL(lnk.url) + '" target="_blank" rel="noopener">' +
+                return '<a href="' + sanitizeURL(lnk.url) + '" target="_blank" rel="noopener noreferrer">' +
                     escapeHTML(lnk.label) + '</a>';
             }).join(' ');
         });
@@ -2841,7 +2868,7 @@ function renderQuizResults() {
         if (p.links && p.links.length > 0) {
             html += '<div class="quiz-result-links">';
             for (var l = 0; l < p.links.length; l++) {
-                html += '<a href="' + sanitizeURL(p.links[l].url) + '" target="_blank" rel="noopener" class="quiz-link">' + escapeHTML(p.links[l].label) + '</a>';
+                html += '<a href="' + sanitizeURL(p.links[l].url) + '" target="_blank" rel="noopener noreferrer" class="quiz-link">' + escapeHTML(p.links[l].label) + '</a>';
             }
             html += '</div>';
         }
