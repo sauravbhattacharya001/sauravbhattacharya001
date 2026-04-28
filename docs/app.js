@@ -1670,12 +1670,25 @@ function initKeyboardNav() {
  * Compute category distribution from projects.
  * Returns sorted array of { name, count } objects (descending by count).
  */
-function computeCategoryDistribution(projects) {
-    var items = projects || PROJECTS;
+/**
+ * Count frequency of keys extracted from items.
+ * General-purpose helper that eliminates the repeated pattern of:
+ * build-frequency-map → convert-to-array → sort-descending.
+ *
+ * @param {Object[]} items - Source objects.
+ * @param {function(Object): string|string[]} keyFn - Returns one key (string)
+ *   or multiple keys (string[]) per item.
+ * @returns {{ name: string, count: number }[]} Sorted descending by count.
+ */
+function _countFrequency(items, keyFn) {
     var map = Object.create(null);
     for (var i = 0; i < items.length; i++) {
-        var cat = items[i].category;
-        map[cat] = (map[cat] || 0) + 1;
+        var keys = keyFn(items[i]);
+        if (!Array.isArray(keys)) keys = [keys];
+        for (var j = 0; j < keys.length; j++) {
+            var k = keys[j];
+            map[k] = (map[k] || 0) + 1;
+        }
     }
     var result = [];
     for (var key in map) {
@@ -1683,6 +1696,10 @@ function computeCategoryDistribution(projects) {
     }
     result.sort(function(a, b) { return b.count - a.count; });
     return result;
+}
+
+function computeCategoryDistribution(projects) {
+    return _countFrequency(projects || PROJECTS, function(p) { return p.category; });
 }
 
 /**
@@ -1690,20 +1707,7 @@ function computeCategoryDistribution(projects) {
  * Returns sorted array of { name, count } objects (descending by count).
  */
 function computeTagDistribution(projects) {
-    var items = projects || PROJECTS;
-    var map = Object.create(null);
-    for (var i = 0; i < items.length; i++) {
-        var tags = items[i].tags || [];
-        for (var j = 0; j < tags.length; j++) {
-            map[tags[j]] = (map[tags[j]] || 0) + 1;
-        }
-    }
-    var result = [];
-    for (var key in map) {
-        result.push({ name: key, count: map[key] });
-    }
-    result.sort(function(a, b) { return b.count - a.count; });
-    return result;
+    return _countFrequency(projects || PROJECTS, function(p) { return p.tags || []; });
 }
 
 /**
@@ -1711,31 +1715,20 @@ function computeTagDistribution(projects) {
  */
 function computePortfolioSummary(projects) {
     var items = projects || PROJECTS;
-    var categories = Object.create(null);
-    var uniqueTags = Object.create(null);
+    var catDist = computeCategoryDistribution(items);
+    var tagDist = computeTagDistribution(items);
+
     var totalLinks = 0;
     var totalTags = 0;
-
     for (var i = 0; i < items.length; i++) {
-        var p = items[i];
-        categories[p.category] = true;
-        totalLinks += (p.links || []).length;
-        var tags = p.tags || [];
-        totalTags += tags.length;
-        for (var j = 0; j < tags.length; j++) {
-            uniqueTags[tags[j]] = true;
-        }
+        totalLinks += (items[i].links || []).length;
+        totalTags += (items[i].tags || []).length;
     }
-
-    var catCount = 0;
-    for (var c in categories) { if (categories[c]) catCount++; }
-    var tagCount = 0;
-    for (var t in uniqueTags) { if (uniqueTags[t]) tagCount++; }
 
     return {
         totalProjects: items.length,
-        totalCategories: catCount,
-        totalTags: tagCount,
+        totalCategories: catDist.length,
+        totalTags: tagDist.length,
         totalLinks: totalLinks,
         avgTagsPerProject: items.length > 0 ? Math.round((totalTags / items.length) * 10) / 10 : 0
     };
