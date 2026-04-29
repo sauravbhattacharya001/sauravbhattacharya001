@@ -2737,25 +2737,36 @@ function answerQuiz(questionIdx, optionIdx) {
  */
 function _scoreProject(project, answers) {
     var score = 0;
-    var projTags = project.tags || [];
-    var projTagsLower = projTags.map(function(t) { return t.toLowerCase(); });
+
+    // Use pre-computed _searchIndex tagSet for O(1) tag lookups
+    // instead of building a fresh lowercase array per call.
+    var projIdx = PROJECTS.indexOf(project);
+    var tagSet = (projIdx >= 0 && projIdx < _searchIndex.length)
+        ? _searchIndex[projIdx].tagSet : null;
+
+    // Fallback: build a tag set if the project isn't in the index
+    if (!tagSet) {
+        tagSet = Object.create(null);
+        var projTags = project.tags || [];
+        for (var ft = 0; ft < projTags.length; ft++) {
+            tagSet[projTags[ft].toLowerCase()] = true;
+        }
+    }
 
     for (var i = 0; i < answers.length; i++) {
         var ans = answers[i];
-        // Tag matching
+        // Tag matching — O(1) per tag via tagSet
         if (ans.option.tags) {
             for (var j = 0; j < ans.option.tags.length; j++) {
-                var tag = ans.option.tags[j].toLowerCase();
-                if (projTagsLower.indexOf(tag) !== -1) {
+                if (tagSet[ans.option.tags[j].toLowerCase()]) {
                     score += 3;
                 }
             }
         }
-        // Language matching
+        // Language matching — O(1) per lang via tagSet
         if (ans.option.langs) {
             for (var k = 0; k < ans.option.langs.length; k++) {
-                var lang = ans.option.langs[k].toLowerCase();
-                if (projTagsLower.indexOf(lang) !== -1) {
+                if (tagSet[ans.option.langs[k].toLowerCase()]) {
                     score += 2;
                 }
             }

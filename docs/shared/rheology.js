@@ -33,6 +33,33 @@ function createRheologyModeler() {
     }
 
     /**
+     * Generate a logarithmically spaced shear rate array and map each rate
+     * through a viscosity function.  Shared by powerLawCurve and crossCurve
+     * to eliminate duplicated log-space iteration logic.
+     *
+     * @param {function(number): number} viscosityFn - Maps shear rate → viscosity.
+     * @param {number} minRate - Minimum shear rate (1/s). Must be positive.
+     * @param {number} maxRate - Maximum shear rate (1/s). Must be > minRate.
+     * @param {number} points - Number of data points (≥ 2).
+     * @returns {Array<{shearRate: number, viscosity: number}>}
+     */
+    function _logSpacedCurve(viscosityFn, minRate, maxRate, points) {
+        if (minRate <= 0 || maxRate <= 0) throw new Error('Rate bounds must be positive');
+        if (minRate >= maxRate) throw new Error('minRate must be less than maxRate');
+        if (points < 2) throw new Error('Need at least 2 points');
+
+        var curve = [];
+        var logMin = Math.log10(minRate);
+        var logMax = Math.log10(maxRate);
+        var logStep = (logMax - logMin) / (points - 1);
+        for (var i = 0; i < points; i++) {
+            var rate = Math.pow(10, logMin + logStep * i);
+            curve.push({ shearRate: rate, viscosity: viscosityFn(rate) });
+        }
+        return curve;
+    }
+
+    /**
      * Generate a Power Law viscosity curve over a logarithmically spaced shear rate range.
      *
      * @param {number} K - Consistency index (Pa·s^n).
@@ -44,23 +71,10 @@ function createRheologyModeler() {
      * @throws {Error} If rate bounds are invalid or fewer than 2 points requested.
      */
     function powerLawCurve(K, n, minRate, maxRate, points) {
-        minRate = minRate || 0.1;
-        maxRate = maxRate || 1000;
-        points = points || 50;
-        if (minRate <= 0 || maxRate <= 0) throw new Error('Rate bounds must be positive');
-        if (minRate >= maxRate) throw new Error('minRate must be less than maxRate');
-        if (points < 2) throw new Error('Need at least 2 points');
-
-        var curve = [];
-        var logMin = Math.log10(minRate);
-        var logMax = Math.log10(maxRate);
-        var logStep = (logMax - logMin) / (points - 1);
-        for (var i = 0; i < points; i++) {
-            var logRate = logMin + logStep * i;
-            var rate = Math.pow(10, logRate);
-            curve.push({ shearRate: rate, viscosity: powerLawViscosity(K, n, rate) });
-        }
-        return curve;
+        return _logSpacedCurve(
+            function(rate) { return powerLawViscosity(K, n, rate); },
+            minRate || 0.1, maxRate || 1000, points || 50
+        );
     }
 
     /**
@@ -142,20 +156,10 @@ function createRheologyModeler() {
      * @returns {Array<{shearRate: number, viscosity: number}>} Curve data points.
      */
     function crossCurve(eta0, etaInf, lambda, m, minRate, maxRate, points) {
-        minRate = minRate || 0.01;
-        maxRate = maxRate || 10000;
-        points = points || 50;
-
-        var curve = [];
-        var logMin = Math.log10(minRate);
-        var logMax = Math.log10(maxRate);
-        var logStep = (logMax - logMin) / (points - 1);
-        for (var i = 0; i < points; i++) {
-            var logRate = logMin + logStep * i;
-            var rate = Math.pow(10, logRate);
-            curve.push({ shearRate: rate, viscosity: crossViscosity(eta0, etaInf, lambda, m, rate) });
-        }
-        return curve;
+        return _logSpacedCurve(
+            function(rate) { return crossViscosity(eta0, etaInf, lambda, m, rate); },
+            minRate || 0.01, maxRate || 10000, points || 50
+        );
     }
 
     /**
