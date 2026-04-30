@@ -1052,6 +1052,12 @@ function _persistBookmarks() {
  */
 var _MAX_BOOKMARKS = 100;
 
+/**
+ * Load bookmarked repos from localStorage into the in-memory Set.
+ * Validates each entry against known PROJECTS repo names to reject
+ * injected or stale entries. Caps at _MAX_BOOKMARKS to prevent
+ * resource exhaustion from poisoned storage.
+ */
 function _loadBookmarks() {
     if (typeof localStorage === "undefined") return;
     try {
@@ -1698,6 +1704,11 @@ function _countFrequency(items, keyFn) {
     return result;
 }
 
+/**
+ * Compute category frequency distribution across projects.
+ * @param {Array} [projects=PROJECTS] - Projects to analyze.
+ * @returns {Array<{name: string, count: number}>} Categories sorted by count descending.
+ */
 function computeCategoryDistribution(projects) {
     return _countFrequency(projects || PROJECTS, function(p) { return p.category; });
 }
@@ -2543,14 +2554,23 @@ var Compare = (function () {
 
 // Legacy aliases for backward compatibility with tests
 var _compareSet = Compare._set;
+/** @see Compare.buildRow — thin wrapper for backward compatibility. */
 function _buildCompareRow(label, selected, cellFn, cellClass) { return Compare.buildRow(label, selected, cellFn, cellClass); }
+/** Toggle a repo in/out of the comparison set. @param {string} repo */
 function toggleCompare(repo) { Compare.toggle(repo); }
+/** Clear all repos from the comparison set. */
 function clearCompare() { Compare.clear(); }
+/** Synchronize compare checkbox UI state with the internal set. */
 function syncCompareUI() { Compare.syncUI(); }
+/** Render the side-by-side comparison panel for selected repos. */
 function renderComparePanel() { Compare.renderPanel(); }
+/** Close the comparison panel overlay. */
 function closeCompare() { Compare.close(); }
+/** Build the floating compare action bar element. @returns {HTMLElement} */
 function buildCompareBar() { return Compare.buildBar(); }
+/** Build a compare checkbox element for a project card. @param {string} repo @returns {HTMLElement} */
 function buildCompareCheckbox(repo) { return Compare.buildCheckbox(repo); }
+/** Initialize the comparison feature: bar, event listeners, and initial state. */
 function initCompare() { Compare.init(); }
 
 // ── Modal Focus Management (fixes #24) ──────────────────────────────

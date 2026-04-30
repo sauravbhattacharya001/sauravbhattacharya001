@@ -3,9 +3,20 @@
 
         var _escMap = {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'};
         var _escRe = /[&<>"']/g;
+
+        /**
+         * Escape HTML special characters to prevent XSS in dynamic content.
+         * @param {*} s - Value to escape (coerced to string).
+         * @returns {string} HTML-safe string with &, <, >, ", ' replaced by entities.
+         */
         function esc(s) { return String(s).replace(_escRe, function(c) { return _escMap[c]; }); }
 
-        // Apply dynamic styles from data- attributes (CSP-safe: avoids inline style=)
+        /**
+         * Apply dynamic styles from data- attributes (CSP-safe alternative to inline style=).
+         * Reads `data-bg` for background color and `data-width` for width from elements
+         * within the given root, applying them as inline styles.
+         * @param {Element} [root=document] - Root element to search within.
+         */
         function applyDynStyles(root) {
             var els = (root || document).querySelectorAll('[data-bg]');
             for (var i = 0; i < els.length; i++) {
@@ -24,11 +35,28 @@
 
         var COLORS = ['#38bdf8', '#4ade80', '#f472b6', '#fbbf24', '#a78bfa', '#fb923c', '#2dd4bf', '#f87171'];
 
+        /**
+         * Clear a canvas element by erasing all drawn content.
+         * @param {HTMLCanvasElement} canvas - Canvas to clear.
+         */
         function clearCanvas(canvas) {
             var ctx = canvas.getContext('2d');
             ctx.clearRect(0, 0, canvas.width, canvas.height);
         }
 
+        /**
+         * Draw a log-log (or linear) chart on a Canvas element with grid lines,
+         * axis labels, data lines, and optional point markers.
+         *
+         * @param {HTMLCanvasElement} canvas - Target canvas element.
+         * @param {Array<{data: Array<{x: number, y: number}>, color?: string, label?: string}>} datasets
+         *   Array of datasets, each with an array of {x, y} points and optional color/label.
+         * @param {Object} [opts] - Chart options.
+         * @param {boolean} [opts.logX=true] - Use logarithmic X axis.
+         * @param {boolean} [opts.logY=true] - Use logarithmic Y axis.
+         * @param {string} [opts.xLabel='Shear Rate (1/s)'] - X axis label.
+         * @param {string} [opts.yLabel='Viscosity (Pa·s)'] - Y axis label.
+         */
         function drawLogLogChart(canvas, datasets, opts) {
             var rect = canvas.parentElement.getBoundingClientRect();
             canvas.width = rect.width * (window.devicePixelRatio || 1);
@@ -172,6 +200,14 @@
 
         // ── Presets ─────────────────────────────────────────────
 
+        /**
+         * Render bioink preset cards into a container element. Each card displays
+         * the preset name, parameters, and description. Clicking a card highlights
+         * it and invokes the callback with the preset data.
+         *
+         * @param {string} containerId - DOM id of the container element.
+         * @param {function(Object): void} onClick - Callback receiving the selected preset object.
+         */
         function renderPresets(containerId, onClick) {
             var container = document.getElementById(containerId);
             container.innerHTML = '';
@@ -222,6 +258,13 @@
             document.getElementById('viscosityStats').innerHTML = '';
         }
 
+        /**
+         * Compute and plot a Power Law viscosity curve from the form inputs.
+         * When reset is true, clears existing overlays; otherwise appends a
+         * new curve to the overlay stack with a distinct color.
+         *
+         * @param {boolean} reset - If true, clear all previous overlays before plotting.
+         */
         function addViscosityCurve(reset) {
             var K = parseFloat(document.getElementById('plK').value);
             var n = parseFloat(document.getElementById('plN').value);
@@ -266,6 +309,11 @@
 
         // ── Fit Power Law ───────────────────────────────────────
 
+        /**
+         * Parse shear-rate/viscosity data from the fit textarea, perform
+         * Power Law regression, and display fitted K, n, R² results.
+         * Accepts CSV, TSV, or space-delimited lines (# comments ignored).
+         */
         function fitData() {
             var raw = document.getElementById('fitDataInput').value.trim();
             if (!raw) return;
@@ -309,6 +357,13 @@
             }
         }
 
+        /**
+         * Apply fitted Power Law parameters back to the viscosity curve inputs
+         * and immediately re-plot the curve.
+         *
+         * @param {number} K - Fitted consistency index (Pa·s^n).
+         * @param {number} n - Fitted flow behavior index.
+         */
         function useFitResult(K, n) {
             document.getElementById('plK').value = K.toFixed(3);
             document.getElementById('plN').value = n.toFixed(4);
@@ -317,6 +372,11 @@
 
         // ── Tab 2: Model Comparison ─────────────────────────────
 
+        /**
+         * Plot a three-model viscosity comparison (Power Law, Cross, Herschel-Bulkley)
+         * using parameters from the comparison tab inputs. Renders overlaid curves on
+         * the comparison chart and a data table at key shear rates.
+         */
         function plotModelComparison() {
             var plK = parseFloat(document.getElementById('cmpPL_K').value);
             var plN = parseFloat(document.getElementById('cmpPL_n').value);
@@ -365,6 +425,11 @@
 
         // ── Tab 3: Printability ─────────────────────────────────
 
+        /**
+         * Run printability analysis using form inputs (K, n, yield stress, shear rate).
+         * Displays an overall score badge, per-factor breakdown bars, and the
+         * computed viscosity at the specified print shear rate.
+         */
         function runPrintability() {
             var K = parseFloat(document.getElementById('prK').value);
             var n = parseFloat(document.getElementById('prN').value);
@@ -440,6 +505,13 @@
             document.getElementById('tempStats').innerHTML = '';
         }
 
+        /**
+         * Compute and plot an Arrhenius temperature-viscosity curve from form inputs.
+         * When reset is true, clears existing overlays; otherwise appends with a
+         * distinct color. Updates legend and key-temperature statistics.
+         *
+         * @param {boolean} reset - If true, clear previous temperature overlays.
+         */
         function addTempCurveInternal(reset) {
             var refVisc = parseFloat(document.getElementById('tempRefVisc').value);
             var refTemp = parseFloat(document.getElementById('tempRefTemp').value);
@@ -487,6 +559,11 @@
 
         // ── Tab 5: Nozzle Simulator ─────────────────────────────
 
+        /**
+         * Run the nozzle simulator for a single configuration: estimates flow rate,
+         * wall shear rate (with Weissenberg-Rabinowitsch correction), apparent
+         * viscosity at the wall, and wall shear stress from the form inputs.
+         */
         function runNozzleSim() {
             var speed = parseFloat(document.getElementById('nzSpeed').value);
             var dia = parseFloat(document.getElementById('nzDiameter').value);
@@ -518,6 +595,11 @@
             }
         }
 
+        /**
+         * Sweep across standard nozzle diameters (0.1–1.0 mm) at the current
+         * print speed and layer height, plotting shear rate and viscosity vs.
+         * diameter and rendering a comparison data table.
+         */
         function nozzleSweep() {
             var speed = parseFloat(document.getElementById('nzSpeed').value);
             var layerH = parseFloat(document.getElementById('nzLayerH').value);
