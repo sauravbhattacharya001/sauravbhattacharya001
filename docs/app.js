@@ -659,6 +659,36 @@ function _applyFilters() {
     _applyViewMode();
     _updateBookmarkFilterPill();
     pushFilterState();
+    _announceFilterResult(filtered.length);
+}
+
+/**
+ * Announce the filter result to screen readers via an aria-live region.
+ * Satisfies WCAG 2.1 SC 4.1.3 (Status Messages) by programmatically
+ * communicating filter result counts without moving focus.
+ * @param {number} visibleCount - Number of projects currently shown.
+ */
+function _announceFilterResult(visibleCount) {
+    var el = document.getElementById("filter-announcement");
+    if (!el) return;
+    var total = PROJECTS.length;
+    var msg;
+    if (visibleCount === 0) {
+        msg = "No projects match your current filters.";
+    } else if (visibleCount === total) {
+        msg = total + " projects shown.";
+    } else {
+        msg = "Showing " + visibleCount + " of " + total + " projects.";
+    }
+    // Toggle textContent to ensure the live region fires even if the
+    // message text hasn't changed (e.g. re-applying the same filter).
+    // Setting to empty first forces the AT to treat the next update as new.
+    el.textContent = "";
+    // Use requestAnimationFrame to ensure the empty string is flushed
+    // to the accessibility tree before the new message arrives.
+    requestAnimationFrame(function() {
+        el.textContent = msg;
+    });
 }
 
 /**
