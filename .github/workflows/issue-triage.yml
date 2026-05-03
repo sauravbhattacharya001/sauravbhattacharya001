@@ -1,0 +1,142 @@
+name: Issue Triage
+
+on:
+  issues:
+    types: [opened, edited]
+
+permissions:
+  issues: write
+
+jobs:
+  triage:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/github-script@v7
+        with:
+          script: |
+            const issue = context.payload.issue;
+            const title = (issue.title || '').toLowerCase();
+            const body  = (issue.body  || '').toLowerCase();
+            const text  = title + ' ' + body;
+
+            const labels = new Set();
+
+            // ── Category detection ────────────────────────────────
+            // Bug indicators (skip if template already applied "bug")
+            if (/\b(crash|broken|error|fail|exception|not working|regression|404)\b/.test(text)) {
+              labels.add('bug');
+            }
+
+            // Feature / enhancement
+            if (/\b(feature|request|add support|would be nice|enhancement|proposal)\b/.test(text)) {
+              labels.add('enhancement');
+            }
+
+            // Documentation
+            if (/\b(doc|readme|typo|spelling|grammar|instruction|guide)\b/.test(text)) {
+              labels.add('documentation');
+            }
+
+            // Question / help
+            if (/\b(how to|how do|question|confused|help|clarif)\b/.test(text)) {
+              labels.add('question');
+            }
+
+            // ── Area detection ────────────────────────────────────
+            // CI / GitHub Actions
+            if (/\b(ci|workflow|action|pipeline|build|deploy|docker)\b/.test(text) ||
+                /\.github\//.test(text)) {
+              labels.add('ci');
+            }
+
+            // Profile README content
+            if (/\b(profile|readme|badge|stat|banner|bio)\b/.test(text)) {
+              labels.add('profile');
+            }
+
+            // Modules / JavaScript
+            if (/\b(module|app\.js|search|quiz|timeline|spotlight|analytics|render|keyboard|modal)\b/.test(text)) {
+              labels.add('modules');
+            }
+
+            // Accessibility
+            if (/\b(a11y|accessib|aria|screen.?reader|wcag|contrast|alt.?text)\b/.test(text)) {
+              labels.add('accessibility');
+            }
+
+            // Performance
+            if (/\b(perf|slow|speed|lighthouse|load.?time|optimiz|lazy|bundle)\b/.test(text)) {
+              labels.add('performance');
+            }
+
+            // Security
+            if (/\b(secur|cve|vulnerab|xss|inject|csp|depend.?bot|supply.?chain)\b/.test(text)) {
+              labels.add('security');
+            }
+
+            // Styling / design
+            if (/\b(css|style|theme|dark.?mode|light.?mode|responsive|layout|design|ui|ux)\b/.test(text)) {
+              labels.add('design');
+            }
+
+            // ── Priority detection ────────────────────────────────
+            if (/\b(urgent|critical|blocker|production|p0|sev.?0|sev.?1)\b/.test(text)) {
+              labels.add('priority: critical');
+            } else if (/\b(important|high.?priority|p1)\b/.test(text)) {
+              labels.add('priority: high');
+            }
+
+            // ── Complexity hint ───────────────────────────────────
+            if (/\b(small|quick|one.?liner|trivial|typo|minor)\b/.test(text)) {
+              labels.add('good first issue');
+            }
+
+            // ── Apply labels ──────────────────────────────────────
+            // Merge with any labels already on the issue
+            const existing = issue.labels.map(l => l.name);
+            const toAdd = [...labels].filter(l => !existing.includes(l));
+
+            if (toAdd.length === 0) {
+              console.log('No new labels to add');
+              return;
+            }
+
+            // Ensure labels exist (create missing ones)
+            const labelMeta = {
+              'modules':            { color: '1d76db', description: 'Related to JS modules' },
+              'accessibility':      { color: '0e8a16', description: 'Accessibility improvements' },
+              'performance':        { color: 'fbca04', description: 'Performance related' },
+              'security':           { color: 'b60205', description: 'Security related' },
+              'design':             { color: 'd4c5f9', description: 'UI/UX and styling' },
+              'priority: critical': { color: 'b60205', description: 'Needs immediate attention' },
+              'priority: high':     { color: 'ff9500', description: 'High priority' },
+            };
+
+            for (const name of toAdd) {
+              if (labelMeta[name]) {
+                try {
+                  await github.rest.issues.getLabel({
+                    owner: context.repo.owner,
+                    repo: context.repo.repo,
+                    name,
+                  });
+                } catch {
+                  await github.rest.issues.createLabel({
+                    owner: context.repo.owner,
+                    repo: context.repo.repo,
+                    name,
+                    color: labelMeta[name].color,
+                    description: labelMeta[name].description,
+                  });
+                }
+              }
+            }
+
+            await github.rest.issues.addLabels({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: issue.number,
+              labels: toAdd,
+            });
+
+            console.log(`Added labels: ${toAdd.join(', ')}`);

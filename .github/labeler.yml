@@ -6,6 +6,9 @@ documentation:
       - any-glob-to-any-file:
           - '*.md'
           - 'PROJECTS.md'
+          - 'CONTRIBUTING.md'
+          - 'SECURITY.md'
+          - 'LICENSE'
 
 profile:
   - changed-files:
@@ -22,3 +25,47 @@ config:
       - any-glob-to-any-file:
           - '.gitignore'
           - '.markdownlint.json'
+          - 'jest.config.js'
+          - 'package.json'
+          - 'Dockerfile'
+          - '.dockerignore'
+
+modules:
+  - changed-files:
+      - any-glob-to-any-file:
+          - 'docs/modules/**'
+          - 'docs/app.js'
+
+design:
+  - changed-files:
+      - any-glob-to-any-file:
+          - 'docs/style.css'
+          - 'docs/shared/*.css'
+          - 'docs/**/*.html'
+
+tests:
+  - changed-files:
+      - any-glob-to-any-file:
+          - '__tests__/**'
+          - 'tests/**'
+          - 'jest.config.js'
+
+docker:
+  - changed-files:
+      - any-glob-to-any-file:
+          - 'Dockerfile'
+          - '.dockerignore'
+          - '.github/workflows/docker.yml'
+
+security:
+  - changed-files:
+      - any-glob-to-any-file:
+          - 'SECURITY.md'
+          - '.github/workflows/codeql.yml'
+          - '.github/dependabot.yml'
+
+rheology:
+  - changed-files:
+      - any-glob-to-any-file:
+          - 'docs/rheology.html'
+          - 'docs/shared/rheology*'
