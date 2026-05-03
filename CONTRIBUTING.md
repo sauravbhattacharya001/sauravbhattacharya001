@@ -19,28 +19,58 @@ Thanks for your interest in improving this GitHub profile and portfolio site! Th
 ## Repository Architecture
 
 ```
-├── README.md              # GitHub profile page (renders on profile)
-├── PROJECTS.md            # Full project portfolio with detailed descriptions
-├── SECURITY.md            # Security policy and vulnerability reporting
-├── docs/                  # Portfolio website (deployed to GitHub Pages)
-│   └── app.js             # Main application logic
-├── tests/                 # Jest test suites for docs/ site
-│   ├── app.test.js        # Core app tests
-│   ├── compare.test.js    # Project comparison feature tests
-│   ├── modal.test.js      # Modal/UI tests
-│   ├── quiz.test.js       # Interactive quiz tests
-│   └── untested-functions.test.js
-├── __tests__/             # Additional test suites
-│   ├── rheology.test.js
-│   └── rheologyDashboard.test.js
+├── README.md                       # GitHub profile page (renders on profile)
+├── PROJECTS.md                     # Full project portfolio with detailed descriptions
+├── SECURITY.md                     # Security policy and vulnerability reporting
+├── docs/                           # Portfolio website (deployed via GitHub Pages)
+│   ├── index.html                  # Main portfolio page
+│   ├── rheology.html               # Rheology/printability analysis page
+│   ├── app.js                      # Entry point — imports and wires up modules
+│   ├── style.css                   # Site styles
+│   ├── modules/                    # Feature modules (extracted from app.js)
+│   │   ├── init.js                 # Initialization and data loading
+│   │   ├── render.js               # Project card rendering
+│   │   ├── search-index.js         # Full-text search indexing
+│   │   ├── sort-view.js            # Sort and view-mode controls
+│   │   ├── modal.js                # Project detail modals
+│   │   ├── compare.js              # Side-by-side project comparison
+│   │   ├── quiz.js                 # Interactive tech quiz
+│   │   ├── spotlight.js            # Featured project spotlight
+│   │   ├── timeline.js             # Project timeline visualization
+│   │   ├── tech-radar.js           # Technology radar chart
+│   │   ├── analytics.js            # Usage analytics
+│   │   ├── bookmarks.js            # Project bookmarking
+│   │   ├── keyboard.js             # Keyboard shortcuts
+│   │   ├── deep-link.js            # URL deep-linking
+│   │   ├── tag-clicks.js           # Tag filtering via clicks
+│   │   ├── theme.js                # Dark/light theme toggle
+│   │   ├── html-helpers.js         # Shared HTML generation utilities
+│   │   └── projects.js             # Project data definitions
+│   └── shared/                     # Shared/standalone tools
+│       ├── rheology.js             # Rheology computation engine
+│       ├── rheology-ui.js          # Rheology UI bindings
+│       └── rheology.css            # Rheology page styles
+├── tests/                          # Jest test suites for portfolio site
+│   ├── app.test.js                 # Core app integration tests
+│   ├── compare.test.js             # Comparison feature tests
+│   ├── modal.test.js               # Modal/UI tests
+│   ├── quiz.test.js                # Interactive quiz tests
+│   ├── score-and-search.test.js    # Scoring and search index tests
+│   ├── rheology-printability.test.js # Rheology/printability tests
+│   └── untested-functions.test.js  # Coverage gap tests
+├── __tests__/                      # Additional test suites
+│   ├── rheology.test.js            # Rheology engine unit tests
+│   └── rheologyDashboard.test.js   # Rheology dashboard tests
 ├── .github/
-│   ├── workflows/         # CI/CD (ci, test, codeql, pages, docker, lighthouse)
-│   └── ISSUE_TEMPLATE/    # Bug reports, feature requests, content updates
-├── Dockerfile             # Multi-stage container build
-└── package.json           # Dependencies (jest, jsdom for testing)
+│   ├── workflows/                  # CI/CD (ci, test, codeql, pages, docker, lighthouse, stale)
+│   └── ISSUE_TEMPLATE/             # Bug reports, feature requests, content updates
+├── Dockerfile                      # Multi-stage container build
+└── package.json                    # Dependencies (jest, jsdom for testing)
 ```
 
 This is both a **GitHub profile README** (README.md renders on the profile page) and a **portfolio web application** (the `docs/` directory, deployed via GitHub Pages).
+
+The portfolio site follows a **modular architecture** — the monolithic `app.js` was split into 18 focused modules under `docs/modules/` and `docs/shared/`. Each module owns a single feature (rendering, search, modals, quiz, etc.), making it easier to understand, test, and extend.
 
 ## What You Can Help With
 
@@ -105,6 +135,8 @@ This is both a **GitHub profile README** (README.md renders on the profile page)
    - Check rendering on GitHub — some Markdown features behave differently
 
 4. **For `docs/` changes:**
+   - Each feature lives in its own module under `docs/modules/` — add new features as new modules rather than extending existing ones
+   - Import/export modules via the entry point in `app.js`
    - Test in multiple browsers (Chrome, Firefox, Safari)
    - Ensure mobile responsiveness
    - Add or update tests in `tests/` for any new logic
@@ -125,14 +157,19 @@ npm test
 npx jest tests/app.test.js
 
 # Run with coverage
-npx jest --coverage
+npm run test:coverage
 ```
 
+**Test organization:**
+- `tests/` — Feature-level tests for the portfolio site (app, compare, modal, quiz, search, rheology)
+- `__tests__/` — Unit tests for standalone engines (rheology computation, dashboard)
+
 **Testing guidelines:**
-- Every new feature in `docs/` should have corresponding tests
+- Every new module in `docs/modules/` should have a corresponding test file in `tests/`
 - Aim for meaningful assertions, not just "it doesn't throw"
 - Test edge cases: empty data, missing elements, malformed input
 - UI tests should use jsdom to verify DOM manipulation
+- Run `npm run test:coverage` before submitting and ensure no regression in covered lines
 
 ## CI Pipeline
 
@@ -147,6 +184,7 @@ All PRs are validated by multiple GitHub Actions workflows:
 | **pages.yml** | GitHub Pages deployment (on merge to `master`) |
 | **docker.yml** | Container build verification |
 | **stale.yml** | Auto-close inactive issues/PRs |
+| **labeler.yml** | Auto-label PRs by file paths |
 
 All CI checks must pass before a PR can be merged.
 
