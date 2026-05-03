@@ -9,6 +9,7 @@
  */
 
 const { JSDOM } = require("jsdom");
+const { loadAllModules } = require("./helpers/load-app");
 const path = require("path");
 const fs = require("fs");
 
@@ -29,7 +30,7 @@ function loadApp() {
         '</body></html>',
         { runScripts: "dangerously", resources: "usable", url: "https://example.com/portfolio" }
     );
-    const code = fs.readFileSync(path.join(__dirname, "..", "docs", "app.js"), "utf-8");
+    const code = loadAllModules();
     dom.window.eval(code);
     return dom;
 }

@@ -5,25 +5,10 @@
  * Uses JSDOM for DOM simulation — no browser required.
  */
 
+const { loadApp, loadAllModules } = require("./helpers/load-app");
 const { JSDOM } = require("jsdom");
 const path = require("path");
 const fs = require("fs");
-
-/**
- * Bootstrap a JSDOM environment with the full portfolio DOM structure
- * and evaluate docs/app.js within it.
- *
- * @returns {JSDOM} Configured JSDOM instance with app.js globals available on `dom.window`.
- */
-function loadApp() {
-    const dom = new JSDOM(
-        '<!DOCTYPE html><html><body><div id="projects-container"></div><input id="project-search"><div id="category-filters"></div><div id="active-tag-indicator" class="active-tag-indicator hidden"></div><div id="no-results" class="hidden"></div><button id="analytics-toggle" aria-expanded="false" aria-controls="analytics-panel">📊 Portfolio Analytics <span class="toggle-arrow">▾</span></button><div id="analytics-panel" role="region" aria-label="Portfolio analytics"></div><div id="spotlight-container"></div><button id="techradar-toggle" aria-expanded="false" aria-controls="techradar-panel">🛠️ Tech Stack <span class="toggle-arrow">▾</span></button><div id="techradar-panel" role="region" aria-label="Tech stack radar"></div><section id="projects"><div class="analytics-bar"></div><div id="timeline-panel" class="timeline-panel hidden"></div></section></body></html>',
-        { runScripts: "dangerously", resources: "usable" }
-    );
-    const code = fs.readFileSync(path.join(__dirname, "..", "docs", "app.js"), "utf-8");
-    dom.window.eval(code);
-    return dom;
-}
 
 let dom;
 let win;
@@ -859,7 +844,7 @@ describe("theme toggle", () => {
             '</body></html>',
             { runScripts: "dangerously", resources: "usable", url: "http://localhost" }
         );
-        const code = fs.readFileSync(path.join(__dirname, "..", "docs", "app.js"), "utf-8");
+        const code = loadAllModules();
         dom.window.eval(code);
         return dom;
     }
@@ -1635,7 +1620,7 @@ describe("sort & view integration", () => {
             '</body></html>',
             { runScripts: "dangerously", resources: "usable" }
         );
-        const code = fs.readFileSync(path.join(__dirname, "..", "docs", "app.js"), "utf-8");
+        const code = loadAllModules();
         sortDom.window.eval(code);
         sortWin = sortDom.window;
     });
@@ -1882,7 +1867,7 @@ describe("bookmark integration", () => {
             '</body></html>',
             { runScripts: "dangerously", resources: "usable" }
         );
-        const code = fs.readFileSync(path.join(__dirname, "..", "docs", "app.js"), "utf-8");
+        const code = loadAllModules();
         bmDom.window.eval(code);
         bmWin = bmDom.window;
     });

@@ -1,33 +1,3 @@
-/**
- * app.js — Portfolio application entry point.
- *
- * This file is intentionally small. All logic lives in the modules/ directory
- * for better cacheability, maintainability, and testability.
- *
- * Module load order (via <script> tags in index.html):
- *   1. modules/projects.js      — PROJECTS data array (changes most often)
- *   2. modules/search-index.js  — Pre-computed search index
- *   3. modules/html-helpers.js  — escapeHTML, sanitizeURL
- *   4. modules/render.js        — Card rendering, filtering, tags
- *   5. modules/sort-view.js     — Sort & view mode
- *   6. modules/bookmarks.js     — Bookmark persistence
- *   7. modules/deep-link.js     — URL hash state serialization
- *   8. modules/theme.js         — Dark/light theme
- *   9. modules/tag-clicks.js    — Tag click delegation
- *  10. modules/keyboard.js      — Keyboard navigation
- *  11. modules/analytics.js     — Portfolio analytics panel
- *  12. modules/spotlight.js     — Spotlight carousel
- *  13. modules/tech-radar.js    — Tech stack radar
- *  14. modules/compare.js       — Project comparison
- *  15. modules/modal.js         — Modal focus management
- *  16. modules/quiz.js          — Project finder quiz
- *  17. modules/timeline.js      — Project timeline
- *  18. app.js                   — This file (initApp + auto-init)
- *
- * To add/update a project, edit modules/projects.js.
- */
-
-/* exported PROJECTS, _filterState, renderProjects, filterProjects, initFilters, buildCardHeader, buildCardTags, buildCardLinks, buildTagList, buildLinkList, buildCategoryHTML, projectMatchesQuery, groupByCategory, _extractUnique, extractCategories, createFilterPills, wireFilterEvents, updateTagIndicator, clearTagFilter, setTagFilter, extractTags, wireTagClicks, getPreferredTheme, applyTheme, toggleTheme, initTheme, _kbState, getVisibleCards, focusCard, blurCards, openFocusedCard, showKeyboardHelp, hideKeyboardHelp, toggleKeyboardHelp, initKeyboardNav, buildHelpOverlay, sortProjects, setSortOrder, setViewMode, initSortAndView, buildSortControls, buildViewToggle, SORT_ORDERS, _bookmarks, isBookmarked, toggleBookmark, setBookmarkFilter, initBookmarks, getBookmarkCount, serializeFilterState, deserializeFilterState, pushFilterState, initDeepLink, _deepLinkEnabled, computeCategoryDistribution, computeTagDistribution, computePortfolioSummary, buildBarChart, buildTagCloud, buildAnalyticsPanel, toggleAnalytics, initAnalytics, _spotlightState, buildSpotlightCard, renderSpotlight, nextSpotlight, prevSpotlight, goToSpotlight, toggleSpotlightPause, startSpotlightTimer, stopSpotlightTimer, wireSpotlightEvents, initSpotlight, TECH_CATEGORIES, _techRadarState, computeTechStack, groupTechByType, buildTechRadar, renderTechRadar, toggleTechRadar, setTechRadarFilter, wireTechRadarEvents, initTechRadar, _buildCompareRow, _modalState, _activateModal, _deactivateModal, _handleModalTab, initTimeline, TIMELINE_DATA, TIMELINE_COLORS, TIMELINE_COLORS_LIGHT, _timelineState, parseTimelineDate, formatTimelineDate, buildTimelineEntries, computeTimelineRange, timelinePosition, buildTimelineMarkers, getTimelineColors, renderTimeline, toggleTimeline, setTimelineZoom, setTimelineFilter, wireTimelineEvents, initApp */
 
 /**
  * Initialize the portfolio app — render projects, wire up filters,
@@ -58,7 +28,7 @@ if (typeof document !== "undefined") {
     }
 }
 
-// Exports for testing (Node.js / CommonJS)
+// Exports for testing
 if (typeof module !== "undefined" && module.exports) {
     module.exports = {
         PROJECTS: PROJECTS,

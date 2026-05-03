@@ -3,6 +3,7 @@
  */
 
 const { JSDOM } = require("jsdom");
+const { loadAllModules } = require("./helpers/load-app");
 const fs = require("fs");
 const path = require("path");
 
@@ -30,7 +31,7 @@ function loadApp() {
         '</body></html>',
         { runScripts: "dangerously", resources: "usable" }
     );
-    var code = fs.readFileSync(path.join(__dirname, "..", "docs", "app.js"), "utf-8");
+    var code = loadAllModules();
     dom.window.eval(code);
     return dom;
 }

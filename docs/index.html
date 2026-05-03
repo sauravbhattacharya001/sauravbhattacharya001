@@ -196,6 +196,26 @@
     <p class="footer-copy">© 2026 Saurav Bhattacharya</p>
 </footer>
 
+<!-- Module scripts loaded in dependency order for cacheability.
+     Project data (modules/projects.js) changes most often and is
+     cached independently from application logic. -->
+<script src="modules/projects.js"></script>
+<script src="modules/search-index.js"></script>
+<script src="modules/html-helpers.js"></script>
+<script src="modules/render.js"></script>
+<script src="modules/sort-view.js"></script>
+<script src="modules/bookmarks.js"></script>
+<script src="modules/deep-link.js"></script>
+<script src="modules/theme.js"></script>
+<script src="modules/tag-clicks.js"></script>
+<script src="modules/keyboard.js"></script>
+<script src="modules/analytics.js"></script>
+<script src="modules/spotlight.js"></script>
+<script src="modules/tech-radar.js"></script>
+<script src="modules/compare.js"></script>
+<script src="modules/modal.js"></script>
+<script src="modules/quiz.js"></script>
+<script src="modules/timeline.js"></script>
 <script src="app.js"></script>
 </body>
 </html>
