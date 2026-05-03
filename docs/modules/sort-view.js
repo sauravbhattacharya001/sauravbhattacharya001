@@ -43,6 +43,11 @@ var SORT_ORDERS = {
  * "default" returns the array in its original insertion order.
  * Other keys use stable sort via the comparator in SORT_ORDERS.
  *
+ * For alphabetic sorts (a-z, z-a) we use a Schwartzian transform:
+ * pre-compute the lowercase title once per item (O(N)), then compare
+ * using the cached key.  This avoids calling .toLowerCase() on every
+ * comparison — O(N log N) repeated calls → O(N) pre-computation.
+ *
  * @param {Object[]} projects - Array of projects to sort.
  * @param {string} sortKey - Key from SORT_ORDERS.
  * @returns {Object[]}
@@ -50,6 +55,17 @@ var SORT_ORDERS = {
 function sortProjects(projects, sortKey) {
     if (!sortKey || sortKey === "default" || !SORT_ORDERS[sortKey]) {
         return projects.slice();
+    }
+    // Schwartzian transform for string sorts: decorate → sort → undecorate
+    if (sortKey === "a-z" || sortKey === "z-a") {
+        var dir = sortKey === "a-z" ? 1 : -1;
+        var decorated = projects.map(function(p) {
+            return { p: p, key: p.title.toLowerCase() };
+        });
+        decorated.sort(function(a, b) {
+            return dir * a.key.localeCompare(b.key);
+        });
+        return decorated.map(function(d) { return d.p; });
     }
     return projects.slice().sort(SORT_ORDERS[sortKey].compare);
 }
@@ -226,4 +242,4 @@ function initSortAndView() {
     }
 
     _applyViewMode();
-}
+}

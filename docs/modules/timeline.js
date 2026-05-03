@@ -130,7 +130,13 @@ var Timeline = (function () {
         return MONTHS[m] + " " + parts[0];
     }
 
-    /** Build sorted timeline entries from PROJECTS + DATA. */
+    /**
+     * Build sorted timeline entries from PROJECTS + DATA.
+     * Pre-computes all release timestamps so computeRange() and
+     * render() never call parseDate() again — eliminates O(R)
+     * redundant Date constructions on every zoom/filter interaction
+     * where R = total release count.
+     */
     function buildEntries(categoryFilter) {
         var entries = [];
         for (var i = 0; i < PROJECTS.length; i++) {
@@ -138,10 +144,15 @@ var Timeline = (function () {
             if (categoryFilter && p.category !== categoryFilter) continue;
             var td = DATA[p.repo];
             if (!td) continue;
+            var rels = td.releases;
+            var relsWithTs = new Array(rels.length);
+            for (var j = 0; j < rels.length; j++) {
+                relsWithTs[j] = { tag: rels[j].tag, date: rels[j].date, ts: parseDate(rels[j].date) };
+            }
             entries.push({
                 project: p,
                 created: td.created,
-                releases: td.releases,
+                releases: relsWithTs,
                 createdTs: parseDate(td.created)
             });
         }
@@ -149,7 +160,10 @@ var Timeline = (function () {
         return entries;
     }
 
-    /** Compute the global date range across all entries. */
+    /**
+     * Compute the global date range across all entries.
+     * Uses pre-computed .ts on releases instead of calling parseDate().
+     */
     function computeRange(entries) {
         var min = Infinity, max = -Infinity;
         for (var i = 0; i < entries.length; i++) {
@@ -158,7 +172,7 @@ var Timeline = (function () {
             if (ts > max) max = ts;
             var rels = entries[i].releases;
             for (var j = 0; j < rels.length; j++) {
-                var rts = parseDate(rels[j].date);
+                var rts = rels[j].ts;
                 if (rts > max) max = rts;
             }
         }
@@ -294,7 +308,7 @@ var Timeline = (function () {
 
             var latestPct = createdPct;
             for (var lr = 0; lr < entry.releases.length; lr++) {
-                var lrPct = position(parseDate(entry.releases[lr].date), range.min, range.max);
+                var lrPct = position(entry.releases[lr].ts, range.min, range.max);
                 if (lrPct > latestPct) latestPct = lrPct;
             }
             latestPct = Math.max(0, Math.min(100, latestPct));
@@ -319,7 +333,7 @@ var Timeline = (function () {
             for (var rd = 0; rd < entry.releases.length; rd++) {
                 var rel = entry.releases[rd];
                 var relPct = Math.max(0, Math.min(100,
-                    position(parseDate(rel.date), range.min, range.max)));
+                    position(rel.ts, range.min, range.max)));
                 html += '<div class="timeline-dot timeline-dot-release" style="left: ' +
                     relPct.toFixed(2) + '%; border-color: ' + catColors.accent +
                     '" title="' + escapeHTML(rel.tag) + ' — ' +
@@ -504,4 +518,4 @@ function setTimelineFilter(category) { Timeline.setFilter(category); }
 /** @see Timeline.wireEvents */
 function wireTimelineEvents() { Timeline.wireEvents(); }
 /** @see Timeline.init */
-function initTimeline() { Timeline.init(); }
+function initTimeline() { Timeline.init(); }

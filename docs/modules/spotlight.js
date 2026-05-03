@@ -66,7 +66,8 @@ var Spotlight = (function () {
 
         var idx = _state.index % PROJECTS.length;
         container.innerHTML = buildCard(PROJECTS[idx], idx, PROJECTS.length);
-        wireEvents();
+        // Event listeners are handled by delegation in init() —
+        // no need to re-wire after each render.
     }
 
     /** Advance to the next spotlight project. @returns {number} New index. */
@@ -124,50 +125,53 @@ var Spotlight = (function () {
         }
     }
 
-    /** Wire click events for spotlight navigation buttons. */
+    /**
+     * Wire click events for spotlight navigation buttons.
+     * Uses event delegation on the container so listeners survive
+     * innerHTML rebuilds without re-attachment — eliminates the cost
+     * of querySelectorAll + addEventListener on every 6-second tick.
+     */
     function wireEvents() {
         if (typeof document === "undefined") return;
         var container = document.getElementById("spotlight-container");
-        if (!container) return;
+        if (!container || container._spotlightDelegated) return;
+        container._spotlightDelegated = true;
 
-        var prevBtn = container.querySelector(".spotlight-prev");
-        var nextBtn = container.querySelector(".spotlight-next");
-        var pauseBtn = container.querySelector(".spotlight-pause");
-        var dots = container.querySelectorAll(".spotlight-dot");
-
-        if (prevBtn) {
-            prevBtn.addEventListener("click", function() {
+        container.addEventListener("click", function(e) {
+            var target = e.target;
+            // Navigate prev/next
+            if (target.classList.contains("spotlight-prev")) {
                 prev();
                 if (!_state.paused) startTimer();
-            });
-        }
-        if (nextBtn) {
-            nextBtn.addEventListener("click", function() {
+                return;
+            }
+            if (target.classList.contains("spotlight-next")) {
                 next();
                 if (!_state.paused) startTimer();
-            });
-        }
-        if (pauseBtn) {
-            pauseBtn.addEventListener("click", function() {
+                return;
+            }
+            // Pause/resume
+            if (target.classList.contains("spotlight-pause")) {
                 togglePause();
-            });
-        }
-        for (var i = 0; i < dots.length; i++) {
-            (function(dot) {
-                dot.addEventListener("click", function() {
-                    var idx = parseInt(dot.getAttribute("data-spotlight-index"), 10);
+                return;
+            }
+            // Dot navigation
+            if (target.classList.contains("spotlight-dot")) {
+                var idx = parseInt(target.getAttribute("data-spotlight-index"), 10);
+                if (!isNaN(idx)) {
                     goTo(idx);
                     if (!_state.paused) startTimer();
-                });
-            })(dots[i]);
-        }
+                }
+            }
+        });
     }
 
-    /** Initialize the spotlight carousel: render first card and start timer. */
+    /** Initialize the spotlight carousel: render first card, wire events, and start timer. */
     function init() {
         if (typeof document === "undefined") return;
         _state.index = 0;
         _state.paused = false;
+        wireEvents(); // delegation — once is enough
         render();
         startTimer();
     }
@@ -208,4 +212,4 @@ function stopSpotlightTimer() { Spotlight.stopTimer(); }
 /** @see Spotlight.wireEvents */
 function wireSpotlightEvents() { Spotlight.wireEvents(); }
 /** @see Spotlight.init */
-function initSpotlight() { Spotlight.init(); }
+function initSpotlight() { Spotlight.init(); }
