@@ -28,7 +28,6 @@ Thanks for your interest in improving this GitHub profile and portfolio site! Th
 │   ├── app.js                      # Entry point — imports and wires up modules
 │   ├── style.css                   # Site styles
 │   ├── modules/                    # Feature modules (extracted from app.js)
-│   │   ├── init.js                 # Initialization and data loading
 │   │   ├── render.js               # Project card rendering
 │   │   ├── search-index.js         # Full-text search indexing
 │   │   ├── sort-view.js            # Sort and view-mode controls
