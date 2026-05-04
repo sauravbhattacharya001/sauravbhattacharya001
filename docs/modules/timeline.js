@@ -383,9 +383,13 @@ var Timeline = (function () {
         panel.querySelectorAll(".timeline-row").forEach(function(row) {
             row.addEventListener("click", function() {
                 var repo = this.dataset.repo;
-                var cards = document.querySelectorAll(".project-card");
+                // Find the project card by matching the GitHub link in the card header.
+                // Cards use class ".card" (not ".project-card") and don't have data-repo;
+                // the repo is embedded in the header link's href.
+                var cards = document.querySelectorAll("#projects-container .card");
                 for (var ci = 0; ci < cards.length; ci++) {
-                    if (cards[ci].dataset.repo === repo) {
+                    var link = cards[ci].querySelector(".card-header a");
+                    if (link && link.href && link.href.indexOf("/" + repo) !== -1) {
                         cards[ci].scrollIntoView({ behavior: "smooth", block: "center" });
                         cards[ci].classList.add("timeline-highlight");
                         setTimeout(function(card) {
