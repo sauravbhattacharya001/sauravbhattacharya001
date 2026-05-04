@@ -10,7 +10,7 @@ on:
 
 jobs:
   analyze:
-    name: Analyze
+    name: Analyze (${{ matrix.language }})
     runs-on: ubuntu-latest
     permissions:
       security-events: write
@@ -25,12 +25,28 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v6
+        uses: actions/checkout@v4
 
       - name: Initialize CodeQL
         uses: github/codeql-action/init@v4
         with:
           languages: ${{ matrix.language }}
+          config: |
+            queries:
+              - uses: security-and-quality
+            threat-models:
+              - remote
+              - local
+            paths:
+              - 'src'
+              - 'js'
+              - 'css'
+              - '.github'
+            paths-ignore:
+              - 'node_modules'
+              - '**/*.min.js'
+              - '**/*.min.css'
+              - 'dist'
 
       - name: Perform CodeQL Analysis
         uses: github/codeql-action/analyze@v4
