@@ -1,5 +1,5 @@
 # Stage 1: Validate HTML structure
-FROM node:22-alpine AS validate
+FROM node:26-alpine AS validate
 WORKDIR /app
 COPY docs/ ./docs/
 RUN echo "Validating HTML files..." && \
