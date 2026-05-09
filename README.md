@@ -14,7 +14,7 @@
 
 ![Repos](https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Fapi.github.com%2Fusers%2Fsauravbhattacharya001&query=%24.public_repos&label=Repos&color=blue&style=flat-square)
 ![Releases](https://img.shields.io/badge/Releases-543-green?style=flat-square)
-![Commits](https://img.shields.io/badge/Commits-7900+-purple?style=flat-square)
+![Commits](https://img.shields.io/badge/Commits-8200+-purple?style=flat-square)
 ![Live Sites](https://img.shields.io/badge/Live_Sites-16-orange?style=flat-square)
 [![GitHub Stars](https://img.shields.io/github/stars/sauravbhattacharya001?style=flat-square&label=Stars&color=yellow)](https://github.com/sauravbhattacharya001)
 [![License: MIT](https://img.shields.io/badge/License-MIT-brightgreen?style=flat-square)](LICENSE)
