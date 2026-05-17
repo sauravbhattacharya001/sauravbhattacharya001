@@ -99,13 +99,25 @@ function pushFilterState() {
  */
 function _applyDeepLinkState(state) {
     var changed = false;
-    if (typeof state.q === "string" && state.q !== _filterState.query) {
-        _filterState.query = state.q;
-        var searchInput = document.getElementById("project-search");
-        if (searchInput) searchInput.value = state.q;
-        changed = true;
+    // Cap untrusted hash-derived strings to a sane length to prevent
+    // attacker-controlled URLs from forcing megabytes of DOM work or
+    // freezing the renderer (CWE-400 / CWE-1284).  Real values are
+    // tiny — the longest legitimate tag is well under 64 chars.
+    var _MAX_DEEPLINK_LEN = 200;
+    function _capDeepLink(v) {
+        return v.length > _MAX_DEEPLINK_LEN ? v.substring(0, _MAX_DEEPLINK_LEN) : v;
+    }
+    if (typeof state.q === "string") {
+        var cappedQ = _capDeepLink(state.q);
+        if (cappedQ !== _filterState.query) {
+            _filterState.query = cappedQ;
+            var searchInput = document.getElementById("project-search");
+            if (searchInput) searchInput.value = cappedQ;
+            changed = true;
+        }
     }
     if (typeof state.cat === "string") {
+        state.cat = _capDeepLink(state.cat);
         _filterState.category = state.cat || null;
         var pills = document.querySelectorAll("#category-filters .filter-pill");
         for (var i = 0; i < pills.length; i++) {
@@ -119,10 +131,13 @@ function _applyDeepLinkState(state) {
         changed = true;
     }
     if (typeof state.tag === "string") {
-        _filterState.tag = state.tag || null;
+        _filterState.tag = _capDeepLink(state.tag) || null;
         changed = true;
     }
-    if (typeof state.sort === "string" && SORT_ORDERS[state.sort]) {
+    // Use the same prototype-aware whitelist as setSortOrder so a hash
+    // like #sort=__proto__ cannot poison _filterState.sort (CWE-1321).
+    if (typeof state.sort === "string" &&
+        typeof _isKnownSortKey === "function" && _isKnownSortKey(state.sort)) {
         _filterState.sort = state.sort;
         _updateSortPillActive();
         changed = true;
@@ -173,4 +188,4 @@ function initDeepLink() {
             _deepLinkEnabled = true;
         });
     }
-}
+}

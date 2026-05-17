@@ -1580,6 +1580,18 @@ describe("setSortOrder", () => {
         win.setSortOrder("bogus");
         expect(win._filterState.sort).toBe("default");
     });
+
+    test("rejects Object.prototype keys (CWE-1321 prototype pollution defence)", () => {
+        // Bracket access on SORT_ORDERS["__proto__"] / ["toString"] is truthy
+        // because those are inherited from Object.prototype.  The whitelist
+        // must use hasOwnProperty to reject them.
+        win.setSortOrder("__proto__");
+        expect(win._filterState.sort).toBe("default");
+        win.setSortOrder("toString");
+        expect(win._filterState.sort).toBe("default");
+        win.setSortOrder("constructor");
+        expect(win._filterState.sort).toBe("default");
+    });
 });
 
 describe("setViewMode", () => {
@@ -2065,6 +2077,15 @@ describe("deserializeFilterState", () => {
         const result = win.deserializeFilterState("q=hello&badentry&tag=AI");
         expect(result.q).toBe("hello");
         expect(result.tag).toBe("AI");
+    });
+
+    test("tolerates malformed percent-encoding (CWE-20)", () => {
+        // `%zz` is not a valid escape sequence — decodeURIComponent throws.
+        // The deserializer must skip the bad pair, not blow up the whole hash.
+        const result = win.deserializeFilterState("q=hi&cat=%zz&tag=AI");
+        expect(result.q).toBe("hi");
+        expect(result.tag).toBe("AI");
+        expect(result).not.toHaveProperty("cat");
     });
 });
 

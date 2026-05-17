@@ -52,8 +52,13 @@ var SORT_ORDERS = {
  * @param {string} sortKey - Key from SORT_ORDERS.
  * @returns {Object[]}
  */
+var _hasOwn = Object.prototype.hasOwnProperty;
+/** Whitelist check that ignores inherited Object.prototype keys (CWE-1321). */
+function _isKnownSortKey(key) {
+    return typeof key === "string" && _hasOwn.call(SORT_ORDERS, key);
+}
 function sortProjects(projects, sortKey) {
-    if (!sortKey || sortKey === "default" || !SORT_ORDERS[sortKey]) {
+    if (!sortKey || sortKey === "default" || !_isKnownSortKey(sortKey)) {
         return projects.slice();
     }
     // Schwartzian transform for string sorts: decorate → sort → undecorate
@@ -77,7 +82,10 @@ function sortProjects(projects, sortKey) {
  * @param {string} sortKey - Sort key (must be a key in SORT_ORDERS).
  */
 function setSortOrder(sortKey) {
-    if (!SORT_ORDERS[sortKey]) return;
+    // Reject inherited Object.prototype keys like "__proto__" or "toString"
+    // that would otherwise pass the bracket-access truthiness check and
+    // poison _filterState.sort (CWE-1321 / CWE-20).
+    if (!_isKnownSortKey(sortKey)) return;
     _filterState.sort = sortKey;
     if (typeof localStorage !== "undefined") {
         localStorage.setItem("sort-order", sortKey);
@@ -222,7 +230,7 @@ function initSortAndView() {
     // Restore persisted preferences
     if (typeof localStorage !== "undefined") {
         var storedSort = localStorage.getItem("sort-order");
-        if (storedSort && SORT_ORDERS[storedSort]) {
+        if (storedSort && _isKnownSortKey(storedSort)) {
             _filterState.sort = storedSort;
         }
         var storedView = localStorage.getItem("view-mode");
