@@ -17,13 +17,18 @@
 ![Commits](https://img.shields.io/badge/Commits-8500+-purple?style=flat-square)
 ![Live Sites](https://img.shields.io/badge/Live_Sites-16-orange?style=flat-square)
 [![GitHub Stars](https://img.shields.io/github/stars/sauravbhattacharya001?style=flat-square&label=Stars&color=yellow)](https://github.com/sauravbhattacharya001)
+[![Followers](https://img.shields.io/github/followers/sauravbhattacharya001?style=flat-square&label=Followers&color=informational)](https://github.com/sauravbhattacharya001)
 [![License: MIT](https://img.shields.io/badge/License-MIT-brightgreen?style=flat-square)](LICENSE)
-[![Tests](https://img.shields.io/github/actions/workflow/status/sauravbhattacharya001/sauravbhattacharya001/test.yml?branch=master&style=flat-square&label=Tests)](https://github.com/sauravbhattacharya001/sauravbhattacharya001/actions/workflows/test.yml)
+[![README CI](https://img.shields.io/github/actions/workflow/status/sauravbhattacharya001/sauravbhattacharya001/ci.yml?branch=master&style=flat-square&label=README+CI)](https://github.com/sauravbhattacharya001/sauravbhattacharya001/actions/workflows/ci.yml)
 ![Last Commit](https://img.shields.io/github/last-commit/sauravbhattacharya001/sauravbhattacharya001?style=flat-square&label=Last+Commit&color=blue)
 ![Languages](https://img.shields.io/badge/Languages-10+-teal?style=flat-square)
 ![Profile Views](https://komarev.com/ghpvc/?username=sauravbhattacharya001&color=brightgreen&style=flat-square&label=Profile+Views)
 
 </div>
+
+---
+
+<sub>**Jump to:** [🔭 Currently](#-currently) · [🚀 What I'm Building](#-what-im-building) · [🔬 Research & Publications](#-research--publications) · [🛠️ Tech Stack](#️-tech-stack) · [🏆 Trophies](#-github-trophies) · [📊 Stats](#-github-stats) · [📂 Full Portfolio](./PROJECTS.md) · [🌐 Portfolio Site](https://sauravbhattacharya001.github.io/sauravbhattacharya001/)</sub>
 
 ---
 
