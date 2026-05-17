@@ -3,6 +3,7 @@ name: Publish to GitHub Packages
 on:
   release:
     types: [published]
+  workflow_dispatch: {}
 
 permissions:
   contents: read
@@ -20,10 +21,15 @@ jobs:
           registry-url: 'https://npm.pkg.github.com'
           scope: '@sauravbhattacharya001'
 
-      - run: npm ci
+      # We deliberately don't commit package-lock.json (see .gitignore),
+      # so `npm ci` is not an option. Use a clean `npm install` instead.
+      - name: Install dependencies
+        run: npm install --no-audit --no-fund
 
-      - run: npm test
+      - name: Run tests
+        run: npm test
 
-      - run: npm publish
+      - name: Publish package
+        run: npm publish
         env:
           NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}

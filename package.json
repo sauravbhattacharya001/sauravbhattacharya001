@@ -1,8 +1,15 @@
 {
   "name": "@sauravbhattacharya001/portfolio",
-  "version": "1.0.0",
+  "version": "2.1.1",
   "description": "Personal portfolio site for Saurav Bhattacharya - Software Engineer, AI Safety Researcher",
   "main": "docs/app.js",
+  "files": [
+    "docs/",
+    "README.md",
+    "PROJECTS.md",
+    "SECURITY.md",
+    "LICENSE"
+  ],
   "directories": {
     "doc": "docs",
     "test": "tests"
@@ -15,11 +22,18 @@
     "type": "git",
     "url": "git+https://github.com/sauravbhattacharya001/sauravbhattacharya001.git"
   },
-  "keywords": [],
-  "author": "",
+  "keywords": [
+    "portfolio",
+    "github-profile",
+    "ai-safety",
+    "agentlens",
+    "winsentinel"
+  ],
+  "author": "Saurav Bhattacharya",
   "license": "MIT",
   "publishConfig": {
-    "registry": "https://npm.pkg.github.com"
+    "registry": "https://npm.pkg.github.com",
+    "access": "public"
   },
   "bugs": {
     "url": "https://github.com/sauravbhattacharya001/sauravbhattacharya001/issues"
