@@ -31,7 +31,11 @@ var TechRadar = (function () {
      * @returns {Array<{tag:string, count:number, type:string, projects:string[]}>}
      */
     function computeStack() {
-        var map = {};
+        // Null-prototype map so a tag literally named "__proto__",
+        // "hasOwnProperty", or "toString" cannot collide with inherited
+        // Object.prototype members and corrupt counts or pollute the
+        // prototype chain (CWE-1321).
+        var map = Object.create(null);
         for (var i = 0; i < PROJECTS.length; i++) {
             var p = PROJECTS[i];
             for (var j = 0; j < p.tags.length; j++) {
@@ -45,7 +49,7 @@ var TechRadar = (function () {
         }
         var arr = [];
         for (var key in map) {
-            if (map.hasOwnProperty(key)) arr.push(map[key]);
+            arr.push(map[key]);
         }
         arr.sort(function(a, b) {
             if (b.count !== a.count) return b.count - a.count;
@@ -60,7 +64,10 @@ var TechRadar = (function () {
      * @returns {Object<string, Array>} Grouped by type.
      */
     function groupByType(stack) {
-        var groups = {};
+        // Null-prototype map so a CATEGORIES override or future tag whose
+        // type string collides with an inherited Object.prototype member
+        // cannot corrupt the grouping (CWE-1321).
+        var groups = Object.create(null);
         var order = ["Language", "Framework", "Tool", "Domain"];
         for (var o = 0; o < order.length; o++) groups[order[o]] = [];
         for (var i = 0; i < stack.length; i++) {
@@ -256,4 +263,4 @@ function setTechRadarFilter(type) { TechRadar.setFilter(type); }
 /** @see TechRadar.wireEvents */
 function wireTechRadarEvents() { TechRadar.wireEvents(); }
 /** @see TechRadar.init */
-function initTechRadar() { TechRadar.init(); }
+function initTechRadar() { TechRadar.init(); }

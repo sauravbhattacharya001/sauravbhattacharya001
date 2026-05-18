@@ -9,6 +9,10 @@
  * @returns {{ name: string, count: number }[]} Sorted descending by count.
  */
 function _countFrequency(items, keyFn) {
+    // Use a null-prototype map so attacker-controlled keys cannot collide
+    // with inherited Object.prototype members (e.g. "__proto__",
+    // "hasOwnProperty", "toString") and poison the frequency table
+    // (CWE-1321).  Removes the need for hasOwnProperty guards on read.
     var map = Object.create(null);
     for (var i = 0; i < items.length; i++) {
         var keys = keyFn(items[i]);
@@ -45,11 +49,20 @@ function computeTagDistribution(projects) {
 
 /**
  * Compute portfolio summary statistics.
+ *
+ * @param {Array} [projects=PROJECTS] - Projects to summarize.
+ * @param {Array<{name:string,count:number}>} [catDist] - Pre-computed
+ *   category distribution.  Pass it in when the caller has already
+ *   built one (see buildAnalyticsPanel) to avoid recomputing the same
+ *   O(N) distribution twice on each panel render.
+ * @param {Array<{name:string,count:number}>} [tagDist] - Pre-computed
+ *   tag distribution.  Same optimization rationale as catDist.
+ * @returns {{totalProjects:number,totalCategories:number,totalTags:number,totalLinks:number,avgTagsPerProject:number}}
  */
-function computePortfolioSummary(projects) {
+function computePortfolioSummary(projects, catDist, tagDist) {
     var items = projects || PROJECTS;
-    var catDist = computeCategoryDistribution(items);
-    var tagDist = computeTagDistribution(items);
+    if (!catDist) catDist = computeCategoryDistribution(items);
+    if (!tagDist) tagDist = computeTagDistribution(items);
 
     var totalLinks = 0;
     var totalTags = 0;
@@ -124,9 +137,13 @@ function buildTagCloud(tags, maxTags) {
  * Build the complete analytics panel inner HTML.
  */
 function buildAnalyticsPanel(projects) {
+    // Compute each distribution once, then thread the results through to
+    // computePortfolioSummary so it does not redundantly rebuild them.
+    // Without this, every panel render walked PROJECTS four times instead
+    // of twice.
     var catDist = computeCategoryDistribution(projects);
     var tagDist = computeTagDistribution(projects);
-    var summary = computePortfolioSummary(projects);
+    var summary = computePortfolioSummary(projects, catDist, tagDist);
 
     var html = '<div class="analytics-grid">' +
         '<div class="analytics-card"><h4>Projects by Category</h4>' +
@@ -185,4 +202,4 @@ function initAnalytics() {
     if (btn) {
         btn.addEventListener("click", toggleAnalytics);
     }
-}
+}
