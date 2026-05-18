@@ -26,11 +26,42 @@ var TechRadar = (function () {
 
     var _state = { expanded: false, activeType: null };
 
+    // ── Memoization ──────────────────────────────────────────────
+    //
+    // PROJECTS is built once at page load and never mutated at runtime, so
+    // computeStack()/groupByType() are pure functions of constant inputs.
+    // Without caching, every render() (i.e. every type-pill click or panel
+    // toggle) walked all N projects × T tags to rebuild identical output,
+    // and buildPanel() also rebuilt the same projectList strings inside its
+    // tooltip loop. We now compute the stack, type-groups, and per-item
+    // joined projectList exactly once and reuse them.
+    //
+    // _cacheKey lets tests / dynamic callers force an invalidation by
+    // mutating PROJECTS and pointing _cacheKey at a new sentinel — but in
+    // production it stays pinned to the original PROJECTS reference.
+    var _stackCache = null;
+    var _groupCache = null;
+    var _cacheKey = null;
+
+    function _ensureCache() {
+        if (_stackCache !== null && _cacheKey === PROJECTS) return;
+        _cacheKey = PROJECTS;
+        _stackCache = _computeStack();
+        _groupCache = _groupByType(_stackCache);
+    }
+
+    /** Test/maintenance hook: drop the memoized stack/groups. */
+    function invalidateCache() {
+        _stackCache = null;
+        _groupCache = null;
+        _cacheKey = null;
+    }
+
     /**
      * Compute tag usage across all projects.
-     * @returns {Array<{tag:string, count:number, type:string, projects:string[]}>}
+     * @returns {Array<{tag:string, count:number, type:string, projects:string[], projectList:string}>}
      */
-    function computeStack() {
+    function _computeStack() {
         // Null-prototype map so a tag literally named "__proto__",
         // "hasOwnProperty", or "toString" cannot collide with inherited
         // Object.prototype members and corrupt counts or pollute the
@@ -55,7 +86,19 @@ var TechRadar = (function () {
             if (b.count !== a.count) return b.count - a.count;
             return a.tag < b.tag ? -1 : a.tag > b.tag ? 1 : 0;
         });
+        // Pre-join project lists once so buildPanel's tooltip loop becomes
+        // O(1) per item instead of rebuilding the same comma-separated
+        // string on every render.
+        for (var n = 0; n < arr.length; n++) {
+            arr[n].projectList = arr[n].projects.join(", ");
+        }
         return arr;
+    }
+
+    /** Public accessor — returns the memoized stack (recomputed once). */
+    function computeStack() {
+        _ensureCache();
+        return _stackCache;
     }
 
     /**
@@ -63,7 +106,7 @@ var TechRadar = (function () {
      * @param {Array} stack - Output of computeStack.
      * @returns {Object<string, Array>} Grouped by type.
      */
-    function groupByType(stack) {
+    function _groupByType(stack) {
         // Null-prototype map so a CATEGORIES override or future tag whose
         // type string collides with an inherited Object.prototype member
         // cannot corrupt the grouping (CWE-1321).
@@ -79,13 +122,26 @@ var TechRadar = (function () {
     }
 
     /**
+     * Public accessor for grouped tech stack — uses the memoized result
+     * when called with the current cached stack, otherwise falls back to
+     * a fresh computation (preserves the historical contract that
+     * `groupByType(customStack)` works on caller-supplied data).
+     */
+    function groupByType(stack) {
+        _ensureCache();
+        if (stack === _stackCache || stack === undefined) return _groupCache;
+        return _groupByType(stack);
+    }
+
+    /**
      * Build HTML for the tech stack radar panel.
      * @param {string|null} activeType - Currently active type filter, or null.
      * @returns {string} HTML string.
      */
     function buildPanel(activeType) {
-        var stack = computeStack();
-        var groups = groupByType(stack);
+        _ensureCache();
+        var stack = _stackCache;
+        var groups = _groupCache;
         var typeNames = ["Language", "Framework", "Tool", "Domain"];
         var typeIcons = { Language: "💻", Framework: "⚙️", Tool: "🔧", Domain: "🎯" };
 
@@ -117,14 +173,11 @@ var TechRadar = (function () {
             for (var k = 0; k < items.length; k++) {
                 var item = items[k];
                 var pct = Math.round((item.count / maxCount) * 100);
-                var projectList = "";
-                for (var m = 0; m < item.projects.length; m++) {
-                    if (m > 0) projectList += ", ";
-                    projectList += item.projects[m];
-                }
+                // projectList is pre-joined once in _computeStack — no
+                // per-render concat loop here.
                 itemsHtml += '<button type="button" class="techradar-item" ' +
                     'data-techradar-tag="' + escapeHTML(item.tag) + '" ' +
-                    'title="' + escapeHTML(item.tag) + ' — used in: ' + escapeHTML(projectList) + '">' +
+                    'title="' + escapeHTML(item.tag) + ' — used in: ' + escapeHTML(item.projectList) + '">' +
                     '<div class="techradar-bar-bg">' +
                         '<div class="techradar-bar" style="width:' + pct + '%"></div>' +
                     '</div>' +
@@ -241,7 +294,8 @@ var TechRadar = (function () {
         toggle: toggle,
         setFilter: setFilter,
         wireEvents: wireEvents,
-        init: init
+        init: init,
+        invalidateCache: invalidateCache
     };
 })();
 
