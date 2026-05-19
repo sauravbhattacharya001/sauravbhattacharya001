@@ -125,39 +125,62 @@ function _applyViewMode() {
 }
 
 /**
- * Update sort pill active states in the DOM.
+ * Toggle the `.active` class on a group of pill/button elements based on
+ * matching a data-attribute value.  Centralises the duplicate "loop over
+ * pills, add/remove .active" pattern that previously lived in
+ * `_updateSortPillActive`, `_updateViewToggleActive`, and the category-pill
+ * sync in `_applyDeepLinkState`.
+ *
+ * Safe to call in non-DOM environments (returns silently when `document` is
+ * undefined or the container can't be found / has no matching pills).
+ *
+ * Matching rules:
+ *  - The active value is compared by `===` against `getAttribute(attr)`.
+ *  - To activate an "all / no filter" pill that has an empty attribute
+ *    value (`data-category=""`), pass `activeValue` as `null` /
+ *    `undefined` and the matcher will also activate pills whose attribute
+ *    is `""`.
+ *
+ * @param {HTMLElement|string} containerOrId - Container element or its id.
+ * @param {string} selector - CSS selector for the pills inside the container.
+ * @param {string} attr - Attribute name (e.g. `"data-sort"`) to read on each pill.
+ * @param {string|null|undefined} activeValue - The attribute value that should be active.
+ * @returns {number} The number of pills that ended up active (0 or 1 in practice).
  */
-function _updateSortPillActive() {
-    if (typeof document === "undefined") return;
-    var sortContainer = document.getElementById("sort-controls");
-    if (!sortContainer) return;
-    var pills = sortContainer.querySelectorAll(".sort-pill");
+function _setActivePillByAttr(containerOrId, selector, attr, activeValue) {
+    if (typeof document === "undefined") return 0;
+    var container = (typeof containerOrId === "string")
+        ? document.getElementById(containerOrId)
+        : containerOrId;
+    if (!container || typeof container.querySelectorAll !== "function") return 0;
+    var pills = container.querySelectorAll(selector);
+    var matchEmpty = (activeValue === null || typeof activeValue === "undefined");
+    var activated = 0;
     for (var i = 0; i < pills.length; i++) {
-        var key = pills[i].getAttribute("data-sort");
-        if (key === _filterState.sort) {
+        var val = pills[i].getAttribute(attr);
+        var isActive = (val === activeValue) || (matchEmpty && val === "");
+        if (isActive) {
             pills[i].classList.add("active");
+            activated++;
         } else {
             pills[i].classList.remove("active");
         }
     }
+    return activated;
+}
+
+/**
+ * Update sort pill active states in the DOM.
+ */
+function _updateSortPillActive() {
+    _setActivePillByAttr("sort-controls", ".sort-pill", "data-sort", _filterState.sort);
 }
 
 /**
  * Update view toggle button active states in the DOM.
  */
 function _updateViewToggleActive() {
-    if (typeof document === "undefined") return;
-    var viewContainer = document.getElementById("view-toggle");
-    if (!viewContainer) return;
-    var btns = viewContainer.querySelectorAll(".view-btn");
-    for (var i = 0; i < btns.length; i++) {
-        var mode = btns[i].getAttribute("data-view");
-        if (mode === _filterState.view) {
-            btns[i].classList.add("active");
-        } else {
-            btns[i].classList.remove("active");
-        }
-    }
+    _setActivePillByAttr("view-toggle", ".view-btn", "data-view", _filterState.view);
 }
 
 /**

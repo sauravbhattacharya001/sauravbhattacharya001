@@ -119,15 +119,11 @@ function _applyDeepLinkState(state) {
     if (typeof state.cat === "string") {
         state.cat = _capDeepLink(state.cat);
         _filterState.category = state.cat || null;
-        var pills = document.querySelectorAll("#category-filters .filter-pill");
-        for (var i = 0; i < pills.length; i++) {
-            var pillCat = pills[i].getAttribute("data-category");
-            if (pillCat === state.cat || (pillCat === "" && !state.cat)) {
-                pills[i].classList.add("active");
-            } else {
-                pills[i].classList.remove("active");
-            }
-        }
+        // `""` is the "All" pill — pass null so the helper's empty-string
+        // fallback activates it.
+        _setActivePillByAttr(
+            "category-filters", ".filter-pill", "data-category",
+            state.cat || null);
         changed = true;
     }
     if (typeof state.tag === "string") {
