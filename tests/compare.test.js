@@ -553,3 +553,157 @@ describe("initCompare", () => {
         expect(win.document.getElementById("compare-bar")).not.toBeNull();
     });
 });
+
+// ── compareToMarkdown ───────────────────────────────────────────────
+
+describe("compareToMarkdown", () => {
+    test("returns empty string with fewer than 2 projects", () => {
+        expect(win.compareToMarkdown()).toBe("");
+        win.toggleCompare(win.PROJECTS[0].repo);
+        expect(win.compareToMarkdown()).toBe("");
+    });
+
+    test("produces a GitHub-flavored Markdown table for 2 projects", () => {
+        const p0 = win.PROJECTS[0];
+        const p1 = win.PROJECTS[1];
+        win.toggleCompare(p0.repo);
+        win.toggleCompare(p1.repo);
+
+        const md = win.compareToMarkdown();
+        const lines = md.split("\n");
+
+        // Header + separator + 4 standard rows (Category, Description, Tags, Links)
+        expect(lines[0]).toContain("Field");
+        expect(lines[0]).toContain(p0.title);
+        expect(lines[0]).toContain(p1.title);
+        expect(lines[1]).toMatch(/^\|( --- \|)+$/);
+        expect(md).toMatch(/\| Category \|/);
+        expect(md).toMatch(/\| Description \|/);
+        expect(md).toMatch(/\| Tags \|/);
+        expect(md).toMatch(/\| Links \|/);
+    });
+
+    test("bolds shared tags and lists them in a footer", () => {
+        // Find a real pair that shares at least one tag.
+        const projects = win.PROJECTS;
+        let pair = null;
+        outer: for (let i = 0; i < projects.length; i++) {
+            for (let j = i + 1; j < projects.length; j++) {
+                const shared = projects[i].tags.filter(t => projects[j].tags.includes(t));
+                if (shared.length > 0) {
+                    pair = [projects[i], projects[j], shared[0]];
+                    break outer;
+                }
+            }
+        }
+        if (!pair) return; // no shared-tag pair in the dataset; bail.
+
+        win.toggleCompare(pair[0].repo);
+        win.toggleCompare(pair[1].repo);
+
+        const md = win.compareToMarkdown();
+        // Shared tag is bolded in the Tags row.
+        expect(md).toContain("**" + pair[2] + "**");
+        // And appears in the Shared tags footer with the 2/2 ratio.
+        expect(md).toMatch(/\*\*Shared tags:\*\*/);
+        expect(md).toContain(pair[2] + " (2/2)");
+    });
+
+    test("escapes pipe characters and flattens newlines inside fields", () => {
+        // Inject a synthetic project with hostile field values.
+        const ugly1 = {
+            repo: "ugly-1", title: "U|gly", icon: "x",
+            category: "a|b", desc: "line1\nline2|piped",
+            tags: ["t|ag"], links: []
+        };
+        const ugly2 = {
+            repo: "ugly-2", title: "Plain", icon: "y",
+            category: "c", desc: "d", tags: ["t|ag"], links: []
+        };
+        win.PROJECTS.push(ugly1, ugly2);
+        try {
+            win.toggleCompare("ugly-1");
+            win.toggleCompare("ugly-2");
+            const md = win.compareToMarkdown();
+            // Pipes inside cells must be backslash-escaped, not raw.
+            expect(md).toContain("U\\|gly");
+            expect(md).toContain("a\\|b");
+            expect(md).toContain("line1 line2\\|piped");
+            expect(md).toContain("t\\|ag");
+        } finally {
+            win.PROJECTS.pop();
+            win.PROJECTS.pop();
+        }
+    });
+});
+
+describe("copyCompareMarkdown", () => {
+    test("returns empty string when nothing to compare", () => {
+        expect(win.copyCompareMarkdown()).toBe("");
+    });
+
+    test("falls back to returning the markdown when clipboard API is absent", () => {
+        const originalClipboard = win.navigator.clipboard;
+        // jsdom does not implement navigator.clipboard - assert that
+        // the function gracefully returns the markdown string instead
+        // of throwing.
+        if (originalClipboard) {
+            // Force the fallback path.
+            Object.defineProperty(win.navigator, "clipboard", {
+                value: undefined, configurable: true
+            });
+        }
+        try {
+            win.toggleCompare(win.PROJECTS[0].repo);
+            win.toggleCompare(win.PROJECTS[1].repo);
+            const result = win.copyCompareMarkdown();
+            expect(typeof result).toBe("string");
+            expect(result).toContain("| Category |");
+        } finally {
+            if (originalClipboard) {
+                Object.defineProperty(win.navigator, "clipboard", {
+                    value: originalClipboard, configurable: true
+                });
+            }
+        }
+    });
+
+    test("uses navigator.clipboard.writeText when available", async () => {
+        const calls = [];
+        const fakeClipboard = {
+            writeText: (s) => { calls.push(s); return Promise.resolve(); }
+        };
+        const originalClipboard = Object.getOwnPropertyDescriptor(win.navigator, "clipboard");
+        Object.defineProperty(win.navigator, "clipboard", {
+            value: fakeClipboard, configurable: true
+        });
+        try {
+            win.toggleCompare(win.PROJECTS[0].repo);
+            win.toggleCompare(win.PROJECTS[1].repo);
+            const result = win.copyCompareMarkdown();
+            expect(typeof result.then).toBe("function");
+            const md = await result;
+            expect(calls.length).toBe(1);
+            expect(calls[0]).toBe(md);
+            expect(md).toContain("| Category |");
+        } finally {
+            if (originalClipboard) {
+                Object.defineProperty(win.navigator, "clipboard", originalClipboard);
+            } else {
+                delete win.navigator.clipboard;
+            }
+        }
+    });
+});
+
+describe("compare panel Copy MD button", () => {
+    test("renderPanel includes a copy-compare-md action button", () => {
+        win.toggleCompare(win.PROJECTS[0].repo);
+        win.toggleCompare(win.PROJECTS[1].repo);
+        win.renderComparePanel();
+
+        const panel = win.document.getElementById("compare-panel");
+        const btn = panel.querySelector('[data-action="copy-compare-md"]');
+        expect(btn).not.toBeNull();
+    });
+});

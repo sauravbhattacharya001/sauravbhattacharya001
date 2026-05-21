@@ -99,6 +99,7 @@ var Compare = (function () {
 
         var html = '<div class="compare-header">' +
             '<h2>Project Comparison</h2>' +
+            '<button class="compare-copy-md" data-action="copy-compare-md" title="Copy as Markdown" aria-label="Copy comparison as Markdown">Copy MD</button>' +
             '<button class="compare-close" data-action="close-compare" title="Close">&times;</button>' +
             '</div>';
 
@@ -152,6 +153,110 @@ var Compare = (function () {
         _activateModal(panel);
     }
 
+    /**
+     * Export the current comparison set as a GitHub-flavored Markdown
+     * table.  Returns an empty string if fewer than 2 projects are
+     * selected (matching renderPanel's threshold).
+     *
+     * The output is plain Markdown - safe to drop into an issue,
+     * README, or docs page without any escaping of HTML.  Pipe / newline
+     * characters inside project fields are normalised so the table stays
+     * well-formed.
+     *
+     * @returns {string} Markdown table, or "" when nothing to compare.
+     */
+    function toMarkdown() {
+        if (_set.size < 2) return "";
+        if (typeof PROJECTS === "undefined" || !PROJECTS) return "";
+
+        var selected = PROJECTS.filter(function(p) { return _set.has(p.repo); });
+        if (selected.length < 2) return "";
+
+        // Cells must not contain raw '|' or newlines or the table breaks.
+        function cell(s) {
+            if (s == null) return "";
+            return String(s)
+                .replace(/\r?\n+/g, " ")
+                .replace(/\|/g, "\\|")
+                .trim();
+        }
+
+        // Count tag occurrences so we can mark shared ones in bold.
+        // Null-prototype map to keep keys like "__proto__" honest.
+        var tagCounts = Object.create(null);
+        for (var i = 0; i < selected.length; i++) {
+            var tags = selected[i].tags || [];
+            for (var t = 0; t < tags.length; t++) {
+                tagCounts[tags[t]] = (tagCounts[tags[t]] || 0) + 1;
+            }
+        }
+
+        var headers = ["Field"];
+        for (i = 0; i < selected.length; i++) {
+            headers.push(cell((selected[i].icon || "") + " " + (selected[i].title || "")));
+        }
+
+        var lines = [];
+        lines.push("| " + headers.join(" | ") + " |");
+        lines.push("| " + headers.map(function() { return "---"; }).join(" | ") + " |");
+
+        function row(label, fn) {
+            var parts = [cell(label)];
+            for (var k = 0; k < selected.length; k++) {
+                parts.push(cell(fn(selected[k])));
+            }
+            lines.push("| " + parts.join(" | ") + " |");
+        }
+
+        row("Category", function(p) { return p.category; });
+        row("Description", function(p) { return p.desc; });
+        row("Tags", function(p) {
+            return (p.tags || []).map(function(tg) {
+                // Bold shared tags - same visual intent as compare-tag-shared
+                // in the HTML panel.
+                return tagCounts[tg] > 1 ? "**" + tg + "**" : tg;
+            }).join(", ");
+        });
+        row("Links", function(p) {
+            return (p.links || []).map(function(lnk) {
+                var url = (typeof sanitizeURL === "function")
+                    ? sanitizeURL(lnk.url)
+                    : (lnk.url || "");
+                return "[" + (lnk.label || "link") + "](" + url + ")";
+            }).join(" · ");
+        });
+
+        var shared = Object.keys(tagCounts).filter(function(k) { return tagCounts[k] > 1; });
+        if (shared.length > 0) {
+            lines.push("");
+            lines.push("**Shared tags:** " + shared.map(function(k) {
+                return cell(k) + " (" + tagCounts[k] + "/" + selected.length + ")";
+            }).join(", "));
+        }
+
+        return lines.join("\n");
+    }
+
+    /**
+     * Copy the Markdown comparison to the clipboard, when available.
+     * Falls back to returning the Markdown string so callers can show
+     * it in a toast / textarea on browsers without the Clipboard API.
+     *
+     * @returns {Promise<string>|string} Resolved with the Markdown on
+     *   success, rejected on clipboard error, or the raw string when
+     *   no clipboard API is available.
+     */
+    function copyMarkdown() {
+        var md = toMarkdown();
+        if (!md) return md;
+        if (typeof navigator !== "undefined" &&
+            navigator.clipboard &&
+            typeof navigator.clipboard.writeText === "function") {
+            return navigator.clipboard.writeText(md).then(function() { return md; });
+        }
+        return md;
+    }
+
     /** Close the comparison panel. */
     function close() {
         var panel = document.getElementById("compare-panel");
@@ -195,6 +300,20 @@ var Compare = (function () {
             if (action === "close-compare") close();
             else if (action === "open-compare") renderPanel();
             else if (action === "clear-compare") clear();
+            else if (action === "copy-compare-md") {
+                var result = copyMarkdown();
+                // Best-effort visual ack; ignore errors (e.g. no clipboard).
+                if (result && typeof result.then === "function") {
+                    result.then(function() {
+                        if (e.target && e.target.classList) {
+                            e.target.classList.add("copied");
+                            setTimeout(function() {
+                                e.target.classList.remove("copied");
+                            }, 1200);
+                        }
+                    }, function() { /* swallow - user can re-try */ });
+                }
+            }
         });
     }
 
@@ -206,6 +325,8 @@ var Compare = (function () {
         syncUI: syncUI,
         buildRow: buildRow,
         renderPanel: renderPanel,
+        toMarkdown: toMarkdown,
+        copyMarkdown: copyMarkdown,
         close: close,
         buildBar: buildBar,
         buildCheckbox: buildCheckbox,
@@ -231,5 +352,9 @@ function closeCompare() { Compare.close(); }
 function buildCompareBar() { return Compare.buildBar(); }
 /** Build a compare checkbox element for a project card. @param {string} repo @returns {HTMLElement} */
 function buildCompareCheckbox(repo) { return Compare.buildCheckbox(repo); }
+/** Export the current comparison set as a Markdown table. @returns {string} */
+function compareToMarkdown() { return Compare.toMarkdown(); }
+/** Copy the Markdown comparison to the clipboard. @returns {Promise<string>|string} */
+function copyCompareMarkdown() { return Compare.copyMarkdown(); }
 /** Initialize the comparison feature: bar, event listeners, and initial state. */
-function initCompare() { Compare.init(); }
+function initCompare() { Compare.init(); }

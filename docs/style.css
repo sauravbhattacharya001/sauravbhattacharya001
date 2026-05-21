@@ -900,6 +900,20 @@ a:hover { color: var(--accent-hover); }
 }
 .compare-close:hover { background: var(--hover-bg, #f0f0f0); }
 
+.compare-copy-md {
+    background: none; border: 1px solid var(--border, #ccc);
+    cursor: pointer; color: var(--text-secondary, #555);
+    padding: 0.25rem 0.55rem; border-radius: 0.3rem;
+    font-size: 0.78rem; margin-left: auto; margin-right: 0.5rem;
+    transition: background 0.15s, color 0.15s, border-color 0.15s;
+}
+.compare-copy-md:hover { background: var(--hover-bg, #f0f0f0); }
+.compare-copy-md.copied {
+    background: var(--accent, #2da44e); color: #fff;
+    border-color: var(--accent, #2da44e);
+}
+.compare-copy-md.copied::after { content: " \2713"; }
+
 .compare-table-wrap { overflow-x: auto; }
 .compare-table {
     width: 100%; border-collapse: collapse; font-size: 0.85rem;
