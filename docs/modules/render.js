@@ -351,8 +351,12 @@ function _applyFilters() {
     var filtered = filterProjects();
     filtered = sortProjects(filtered, _filterState.sort);
     var ids = filtered.map(function(p) { return p.repo; }).join(",");
-    // Include bookmark state in cache key so toggling a bookmark re-renders
-    var bookmarkKey = _bookmarks ? Array.from(_bookmarks).sort().join(",") : "";
+    // Include bookmark state in cache key so toggling a bookmark re-renders.
+    // Use the monotonic _bookmarksVersion counter (O(1)) instead of
+    // re-serialising the entire bookmark Set on every keystroke (O(B log B)).
+    var bookmarkKey = (typeof getBookmarksVersion === "function")
+        ? getBookmarksVersion()
+        : (_bookmarks ? _bookmarks.size : 0);
     var cacheKey = ids + "|" + bookmarkKey;
     if (cacheKey === _lastRenderedIds) return;
     _lastRenderedIds = cacheKey;
@@ -460,4 +464,4 @@ function initFilters() {
     createFilterPills(filtersContainer, categories);
     wireFilterEvents(filtersContainer, searchInput);
     wireTagClicks();
-}
+}

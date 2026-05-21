@@ -15,6 +15,29 @@ var _bookmarks = new (typeof Set !== "undefined" ? Set : function() {
 })();
 
 /**
+ * Monotonically increasing version counter bumped on every successful
+ * mutation of `_bookmarks` (initial load, add, remove).  Used by
+ * `_applyFilters` to build its render cache key in O(1) instead of
+ * scanning + sorting the entire bookmark set on every keystroke /
+ * filter event (O(B log B), where B = number of bookmarks).
+ *
+ * Two different bookmark sets can never share the same version number,
+ * because every mutation bumps the counter.  That's the only property
+ * the cache key needs.
+ * @type {number}
+ */
+var _bookmarksVersion = 0;
+
+/**
+ * Return the current bookmarks version.  Stable as long as the bookmark
+ * set has not changed; bumps on every add/remove/load.
+ * @returns {number}
+ */
+function getBookmarksVersion() {
+    return _bookmarksVersion;
+}
+
+/**
  * Check if a project is bookmarked.
  * @param {string} repo - Repository name.
  * @returns {boolean}
@@ -47,6 +70,7 @@ function toggleBookmark(repo) {
         _bookmarks.add(repo);
         nowBookmarked = true;
     }
+    _bookmarksVersion++;
     _persistBookmarks();
     _lastRenderedIds = null; // force re-render
     _applyFilters();
@@ -118,6 +142,7 @@ function _loadBookmarks() {
                         loaded++;
                     }
                 }
+                if (loaded > 0) _bookmarksVersion++;
             }
         }
     } catch (e) {
@@ -182,4 +207,4 @@ function initBookmarks() {
             if (repo) toggleBookmark(repo);
         });
     }
-}
+}

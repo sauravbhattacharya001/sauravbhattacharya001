@@ -122,6 +122,7 @@ if (typeof module !== "undefined" && module.exports) {
         toggleBookmark: toggleBookmark,
         setBookmarkFilter: setBookmarkFilter,
         initBookmarks: initBookmarks,
+        getBookmarksVersion: getBookmarksVersion,
         // Deep Link
         _deepLinkEnabled: _deepLinkEnabled,
         serializeFilterState: serializeFilterState,
