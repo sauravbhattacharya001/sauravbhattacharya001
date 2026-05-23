@@ -1,34 +1,50 @@
-# Labeler configuration — auto-label PRs based on changed files
-# See: https://github.com/actions/labeler
+# Labeler configuration — auto-label PRs based on changed files.
+#
+# Uses actions/labeler v6 syntax (see .github/workflows/labeler.yml).
+# Docs: https://github.com/actions/labeler
+#
+# All label names below MUST exist on the repository. New labels are created
+# alongside this change (dependencies, scripts, seo). The companion test
+# tests/labeler-config.test.js asserts the file parses, all glob lists are
+# non-empty, and the label set matches an allow-list.
 
 documentation:
   - changed-files:
       - any-glob-to-any-file:
-          - '*.md'
-          - 'PROJECTS.md'
-          - 'CONTRIBUTING.md'
-          - 'SECURITY.md'
+          - '**/*.md'
           - 'LICENSE'
 
 profile:
   - changed-files:
       - any-glob-to-any-file:
           - 'README.md'
+          - 'PROJECTS.md'
 
 ci:
   - changed-files:
       - any-glob-to-any-file:
-          - '.github/**'
+          - '.github/workflows/**'
+          - '.github/actions/**'
+          - '.github/labeler.yml'
+          - '.github/CODEOWNERS'
+          - '.github/pull_request_template.md'
+          - '.github/copilot-*'
 
 config:
   - changed-files:
       - any-glob-to-any-file:
           - '.gitignore'
           - '.markdownlint.json'
+          - '.dockerignore'
           - 'jest.config.js'
           - 'package.json'
-          - 'Dockerfile'
-          - '.dockerignore'
+
+dependencies:
+  - changed-files:
+      - any-glob-to-any-file:
+          - 'package.json'
+          - 'package-lock.json'
+          - '.github/dependabot.yml'
 
 modules:
   - changed-files:
@@ -42,12 +58,15 @@ design:
           - 'docs/style.css'
           - 'docs/shared/*.css'
           - 'docs/**/*.html'
+          - 'docs/**/*.svg'
 
 tests:
   - changed-files:
       - any-glob-to-any-file:
           - '__tests__/**'
           - 'tests/**'
+          - '**/*.test.js'
+          - '**/*.spec.js'
           - 'jest.config.js'
 
 docker:
@@ -63,9 +82,34 @@ security:
           - 'SECURITY.md'
           - '.github/workflows/codeql.yml'
           - '.github/dependabot.yml'
+          - '.github/CODEOWNERS'
+
+performance:
+  - changed-files:
+      - any-glob-to-any-file:
+          - '.github/workflows/lighthouse.yml'
+          - 'docs/modules/analytics.js'
+
+accessibility:
+  - changed-files:
+      - any-glob-to-any-file:
+          - '.github/workflows/lighthouse.yml'
+          - 'docs/**/*.html'
 
 rheology:
   - changed-files:
       - any-glob-to-any-file:
           - 'docs/rheology.html'
           - 'docs/shared/rheology*'
+
+scripts:
+  - changed-files:
+      - any-glob-to-any-file:
+          - 'scripts/**'
+
+seo:
+  - changed-files:
+      - any-glob-to-any-file:
+          - 'docs/sitemap.xml'
+          - 'docs/robots.txt'
+          - 'scripts/refresh-sitemap.js'

@@ -28,7 +28,7 @@
 
 ---
 
-<sub>**Jump to:** [🔭 Currently](#-currently) · [🚀 What I'm Building](#-what-im-building) · [🔬 Research & Publications](#-research--publications) · [🛠️ Tech Stack](#️-tech-stack) · [🏆 Trophies](#-github-trophies) · [📊 Stats](#-github-stats) · [📂 Full Portfolio](./PROJECTS.md) · [🌐 Portfolio Site](https://sauravbhattacharya001.github.io/sauravbhattacharya001/)</sub>
+<sub>**Jump to:** [🔭 Currently](#-currently) · [🚀 What I'm Building](#-what-im-building) · [🔬 Research & Publications](#-research--publications) · [🛠️ Tech Stack](#️-tech-stack) · [🏆 Trophies](#-github-trophies) · [📊 Stats](#-github-stats) · [📂 Full Portfolio](./PROJECTS.md) · [🌐 Portfolio Site](https://sauravbhattacharya001.github.io/sauravbhattacharya001/) · [🛠️ Developer Docs](./docs-dev/README.md)</sub>
 
 ---
 
@@ -165,6 +165,6 @@ I build software at Microsoft, research AI agent governance, and create tools fo
 
 *Building tools that make intelligent systems observable, accountable, and safe.*
 
-**[📂 Full Portfolio →](./PROJECTS.md)** · **[🌐 Portfolio Site →](https://sauravbhattacharya001.github.io/sauravbhattacharya001/)**
+**[📂 Full Portfolio →](./PROJECTS.md)** · **[🌐 Portfolio Site →](https://sauravbhattacharya001.github.io/sauravbhattacharya001/)** · **[🛠️ Developer Docs](./docs-dev/README.md)**
 
 </div>

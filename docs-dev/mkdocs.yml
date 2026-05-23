@@ -1,0 +1,58 @@
+# Optional MkDocs Material config for previewing docs-dev/ locally.
+# Not used by CI. Not part of the published site.
+# See: docs-dev/development.md#mkdocs-preview-optional
+
+site_name: sauravbhattacharya001 — Developer Docs
+site_description: Engineering reference for the sauravbhattacharya001 portfolio repository.
+site_url: https://github.com/sauravbhattacharya001/sauravbhattacharya001/tree/master/docs-dev
+repo_url: https://github.com/sauravbhattacharya001/sauravbhattacharya001
+repo_name: sauravbhattacharya001/sauravbhattacharya001
+edit_uri: edit/master/docs-dev/
+
+docs_dir: .
+site_dir: ../.mkdocs-site
+
+theme:
+  name: material
+  features:
+    - navigation.instant
+    - navigation.tracking
+    - navigation.tabs
+    - navigation.sections
+    - toc.integrate
+    - content.code.copy
+  palette:
+    - media: "(prefers-color-scheme: light)"
+      scheme: default
+      primary: indigo
+      accent: indigo
+      toggle:
+        icon: material/brightness-7
+        name: Switch to dark mode
+    - media: "(prefers-color-scheme: dark)"
+      scheme: slate
+      primary: indigo
+      accent: indigo
+      toggle:
+        icon: material/brightness-4
+        name: Switch to light mode
+
+nav:
+  - Home: README.md
+  - Architecture: architecture.md
+  - Local Development: development.md
+  - Testing: testing.md
+  - Module Reference: modules.md
+  - Build & Deploy: deploy.md
+  - CI/CD Reference: ci.md
+  - Release Process: releases.md
+  - Security Model: security.md
+  - Glossary: glossary.md
+
+markdown_extensions:
+  - admonition
+  - pymdownx.details
+  - pymdownx.superfences
+  - tables
+  - toc:
+      permalink: true
