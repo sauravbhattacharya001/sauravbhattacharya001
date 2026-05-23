@@ -11,7 +11,7 @@ with zero build step. Each module is loaded via a `<script>` tag in
 - **Zero build, zero CI surprises.** What you see in `docs/` is what GitHub
   Pages serves. No webpack config to debug.
 - **Stable SRI hashes.** Each file has a stable hash referenced by the
-  `integrity=` attribute in `index.html` — see [`SECURITY.md`](../../SECURITY.md).
+  `integrity=` attribute in `index.html` - see [`SECURITY.md`](../../SECURITY.md).
   A bundler would invalidate this on every build.
 - **JSDOM-friendly tests.** Jest tests in `tests/` `eval()` these scripts
   inside a JSDOM context (see `tests/helpers/`). No transpilation step
@@ -36,8 +36,8 @@ find the implementation).
 ### `modules/html-helpers.js`
 XSS-safe HTML escaping and URL sanitisation. Pure functions, no DOM
 writes, safe to call from tests.
-- `escapeHTML(str)` — escapes `& < > " '` via a single compiled regex.
-- `sanitizeURL(url)` — rejects `javascript:` / `data:` schemes.
+- `escapeHTML(str)` - escapes `& < > " '` via a single compiled regex.
+- `sanitizeURL(url)` - rejects `javascript:` / `data:` schemes.
 
 ### `modules/theme.js`
 Dark/light theme: reads system preference, persists choice in
@@ -63,7 +63,7 @@ Per-user starred projects, persisted in `localStorage`. Triggers a
 
 ### `modules/render.js`
 Builds project card HTML, tag chips, link lists, and the full grid.
-Always goes through `escapeHTML` — never builds HTML by concatenating
+Always goes through `escapeHTML` - never builds HTML by concatenating
 untrusted strings.
 - `buildCard(p, opts)`, `buildCardHeader(p)`, `buildCardTags(tags)`,
   `buildCardLinks(links)`, `buildTagList(tags, opts)`,
@@ -115,14 +115,22 @@ Global keyboard shortcuts: `/` to focus search, `j/k` to move card focus,
 ### `modules/deep-link.js`
 Reads filter state from the URL hash on load and writes it back when
 filters change, so a filtered view is shareable. **Hardened against
-prototype pollution & DoS** — see commit `db3aec3`; `_capDeepLink`
-truncates pathological inputs.
+prototype pollution & DoS** - see commit `db3aec3`; `_capDeepLink`
+truncates oversized values to `_MAX_DEEPLINK_LEN` (200 chars), and the
+parser refuses to inspect more than `_MAX_DEEPLINK_PAIRS` (32)
+`&`-separated pairs. The `hashchange` handler routes through
+`_resetDeepLinkUIToDefaults()` so removing a key from the URL also
+resets its visible pill / input state instead of leaving stale UI
+behind.
 - `serializeFilterState()`, `deserializeFilterState(hash)`,
   `pushFilterState()`, `initDeepLink()`
+- Internal helpers (exposed for tests): `_capDeepLink(v)`,
+  `_resetDeepLinkUIToDefaults()`, `_MAX_DEEPLINK_LEN`,
+  `_MAX_DEEPLINK_PAIRS`.
 
 ### `modules/analytics.js`
 Lightweight, privacy-preserving analytics computed entirely from the
-local `PROJECTS[]` catalog — no third-party calls, no PII.
+local `PROJECTS[]` catalog - no third-party calls, no PII.
 - `computeCategoryDistribution(projects)`,
   `computeTagDistribution(projects)`,
   `computePortfolioSummary(projects)`,
@@ -138,7 +146,7 @@ Tiny on purpose.
 
 | File | Purpose |
 |---|---|
-| `rheology.js` | Pure math: shear-rate / viscosity calculations for the rheology / 3D-printability page. **No DOM access** — safe to unit-test directly. |
+| `rheology.js` | Pure math: shear-rate / viscosity calculations for the rheology / 3D-printability page. **No DOM access** - safe to unit-test directly. |
 | `rheology-ui.js` | DOM and chart code for `rheology.html`. Depends on `rheology.js`. |
 | `rheology.css` | Styles for `rheology.html` only. |
 
@@ -166,11 +174,25 @@ Tiny on purpose.
    in the correct load-order slot.
 3. Add a test in `tests/your-module.test.js` that loads the script via
    the JSDOM helper in `tests/helpers/`.
-4. Update SRI hashes for any file referenced from `index.html` — see
+4. Update SRI hashes for any file referenced from `index.html` - see
    `SECURITY.md` § Subresource Integrity for the one-liner.
+
+## Sitemap freshness
+
+`docs/sitemap.xml` is regenerated from the git mtime of the underlying
+HTML files by [`scripts/refresh-sitemap.js`](../../scripts/refresh-sitemap.js).
+Run it manually before pushing a substantive content change:
+
+```sh
+node scripts/refresh-sitemap.js          # rewrite sitemap.xml
+node scripts/refresh-sitemap.js --check  # exit 1 if stale (CI-friendly)
+```
+
+The script has zero dependencies and is unit-tested in
+`tests/refresh-sitemap.test.js`.
 
 ## Related
 
-- [`SECURITY.md`](../../SECURITY.md) — SRI hashes, vulnerability reporting.
-- [`CONTRIBUTING.md`](../../CONTRIBUTING.md) — full contributor guide.
-- [`../../.github/copilot-instructions.md`](../../.github/copilot-instructions.md) — context for AI coding agents.
+- [`SECURITY.md`](../../SECURITY.md) - SRI hashes, vulnerability reporting.
+- [`CONTRIBUTING.md`](../../CONTRIBUTING.md) - full contributor guide.
+- [`../../.github/copilot-instructions.md`](../../.github/copilot-instructions.md) - context for AI coding agents.
