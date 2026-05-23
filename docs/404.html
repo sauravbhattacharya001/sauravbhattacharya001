@@ -3,7 +3,21 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>404 — Page Not Found | Saurav Bhattacharya</title>
+    <title>404 - Page Not Found | Saurav Bhattacharya</title>
+    <!-- Match the security headers used by index.html and rheology.html.
+         GitHub Pages cannot set HTTP headers, so meta http-equiv is the
+         only way to enforce CSP / X-Content-Type-Options on the static
+         deployment. Without these, a 404 landing (the most common entry
+         point for typo'd URLs and broken links) was missing the same XSS,
+         MIME-sniffing, and referrer hardening as the rest of the site. -->
+    <meta http-equiv="Content-Security-Policy"
+          content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; font-src 'self'; connect-src 'self'; frame-src 'none'; object-src 'none'; base-uri 'self'; form-action 'self';">
+    <meta http-equiv="X-Content-Type-Options" content="nosniff">
+    <meta name="referrer" content="strict-origin-when-cross-origin">
+    <!-- Permissions-Policy disables browser features this page never uses,
+         shrinking the attack surface available to any future injection. -->
+    <meta http-equiv="Permissions-Policy"
+          content="accelerometer=(), ambient-light-sensor=(), autoplay=(), battery=(), camera=(), display-capture=(), document-domain=(), encrypted-media=(), fullscreen=(self), geolocation=(), gyroscope=(), keyboard-map=(), magnetometer=(), microphone=(), midi=(), payment=(), picture-in-picture=(), publickey-credentials-get=(), screen-wake-lock=(), sync-xhr=(self), usb=(), web-share=(), xr-spatial-tracking=()">
     <meta name="robots" content="noindex">
     <link rel="stylesheet" href="style.css">
     <style>

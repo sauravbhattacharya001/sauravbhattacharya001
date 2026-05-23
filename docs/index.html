@@ -16,6 +16,14 @@
           content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; font-src 'self'; connect-src 'self'; frame-src 'none'; object-src 'none'; base-uri 'self'; form-action 'self';">
     <meta http-equiv="X-Content-Type-Options" content="nosniff">
     <meta name="referrer" content="strict-origin-when-cross-origin">
+    <!-- Permissions-Policy disables browser features this static portfolio
+         never uses (camera, microphone, geolocation, payment, USB, etc.),
+         shrinking the attack surface available to any future injected or
+         third-party script.  Functional features the page DOES use are kept:
+         fullscreen and sync-xhr are allowed for 'self' so legitimate first-
+         party features keep working. -->
+    <meta http-equiv="Permissions-Policy"
+          content="accelerometer=(), ambient-light-sensor=(), autoplay=(), battery=(), camera=(), display-capture=(), document-domain=(), encrypted-media=(), fullscreen=(self), geolocation=(), gyroscope=(), keyboard-map=(), magnetometer=(), microphone=(), midi=(), payment=(), picture-in-picture=(), publickey-credentials-get=(), screen-wake-lock=(), sync-xhr=(self), usb=(), web-share=(), xr-spatial-tracking=()">
     <meta property="og:title" content="Saurav Bhattacharya — Portfolio">
     <meta property="og:description" content="Software Engineer at Microsoft · AI Safety Researcher · Language Designer">
     <meta property="og:type" content="website">
