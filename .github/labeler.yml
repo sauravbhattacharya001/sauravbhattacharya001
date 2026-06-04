@@ -1,0 +1,24 @@
+# Labeler configuration — auto-label PRs based on changed files
+# See: https://github.com/actions/labeler
+
+documentation:
+  - changed-files:
+      - any-glob-to-any-file:
+          - '*.md'
+          - 'PROJECTS.md'
+
+profile:
+  - changed-files:
+      - any-glob-to-any-file:
+          - 'README.md'
+
+ci:
+  - changed-files:
+      - any-glob-to-any-file:
+          - '.github/**'
+
+config:
+  - changed-files:
+      - any-glob-to-any-file:
+          - '.gitignore'
+          - '.markdownlint.json'

@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Saurav Bhattacharya — Software Engineer &amp; AI Safety Researcher</title>
+    <meta name="description" content="Software Engineer at Microsoft, AI Safety Researcher, and Programming Language Designer. Building observable, accountable, and safe intelligent systems.">
+    <meta name="author" content="Saurav Bhattacharya">
+    <meta name="theme-color" content="#0d1117">
+    <!-- CSP via meta tag — GitHub Pages doesn't support custom HTTP headers,
+         so this is the only way to enforce Content Security Policy on the
+         production deployment. The script-src 'self' prevents inline script
+         injection; style-src 'unsafe-inline' is needed for inline styles
+         used by the card hover transitions. -->
+    <meta http-equiv="Content-Security-Policy"
+          content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self'; frame-src 'none'; object-src 'none'; base-uri 'self'; form-action 'self';">
+    <meta http-equiv="X-Content-Type-Options" content="nosniff">
+    <meta name="referrer" content="strict-origin-when-cross-origin">
+    <meta property="og:title" content="Saurav Bhattacharya — Portfolio">
+    <meta property="og:description" content="Software Engineer at Microsoft · AI Safety Researcher · Language Designer">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://sauravbhattacharya001.github.io/sauravbhattacharya001/">
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:title" content="Saurav Bhattacharya — Portfolio">
+    <meta name="twitter:description" content="Software Engineer at Microsoft · AI Safety Researcher · Language Designer">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🚀</text></svg>">
+    <link rel="canonical" href="https://sauravbhattacharya001.github.io/sauravbhattacharya001/">
+    <link rel="preconnect" href="https://github.com" crossorigin>
+    <link rel="dns-prefetch" href="https://github.com">
+    <link rel="stylesheet" href="style.css" integrity="sha384-r1IT7XwV3ObkDWsQbLdfrJ1gbSzCuHtQtFJa+yELJsTq8G7xrAedzP+YeffTUuqy" crossorigin="anonymous">
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "Person",
+        "name": "Saurav Bhattacharya",
+        "url": "https://sauravbhattacharya001.github.io/sauravbhattacharya001/",
+        "jobTitle": "Software Engineer",
+        "worksFor": { "@type": "Organization", "name": "Microsoft" },
+        "sameAs": [
+            "https://github.com/sauravbhattacharya001",
+            "https://www.linkedin.com/in/sauravbhattacharya001/"
+        ],
+        "knowsAbout": ["AI Safety", "Agent Systems", "Programming Language Design", "Distributed Systems"]
+    }
+    </script>
+</head>
+<body>
+
+<nav class="nav">
+    <div class="nav-inner">
+        <div class="nav-brand">Saurav <span style="color: var(--accent)">Bhattacharya</span></div>
+        <ul class="nav-links">
+            <li><a href="#projects">Projects</a></li>
+            <li><a href="#research">Research</a></li>
+            <li><a href="#tech">Tech Stack</a></li>
+            <li><a href="https://github.com/sauravbhattacharya001" target="_blank" rel="noopener">GitHub ↗</a></li>
+        </ul>
+        <button class="theme-toggle" id="theme-toggle" type="button" aria-label="Toggle dark/light theme" title="Toggle theme">🌙</button>
+    </div>
+</nav>
+
+<header class="hero">
+    <h1>Hey, I'm <span>Saurav</span> 👋</h1>
+    <p class="subtitle">Software Engineer @ Microsoft · AI Safety Researcher · Language Designer</p>
+    <p class="hero-bio">
+        I build software at Microsoft, research AI agent governance, and create tools for
+        the next generation of intelligent systems. I also designed my own programming language — because why not.
+    </p>
+    <div class="hero-links">
+        <a href="https://github.com/sauravbhattacharya001" class="btn-primary" target="_blank" rel="noopener">GitHub Profile</a>
+        <a href="https://www.linkedin.com/in/sauravbhattacharya001/" class="btn-outline" target="_blank" rel="noopener">LinkedIn</a>
+        <a href="mailto:online.saurav@gmail.com" class="btn-outline">Contact</a>
+    </div>
+</header>
+
+<!-- Stats -->
+<section class="section">
+    <div class="stats-grid">
+        <div class="stat">
+            <div class="stat-number">16</div>
+            <div class="stat-label">Repositories</div>
+        </div>
+        <div class="stat">
+            <div class="stat-number">22</div>
+            <div class="stat-label">Releases</div>
+        </div>
+        <div class="stat">
+            <div class="stat-number">2000+</div>
+            <div class="stat-label">Commits</div>
+        </div>
+        <div class="stat">
+            <div class="stat-number">16</div>
+            <div class="stat-label">Live Sites</div>
+        </div>
+        <div class="stat">
+            <div class="stat-number">10+</div>
+            <div class="stat-label">Languages</div>
+        </div>
+    </div>
+</section>
+
+<!-- Projects (rendered by app.js) -->
+<section class="section" id="projects">
+    <h2 class="section-title"><span>🚀</span> Projects</h2>
+    <div class="filter-bar">
+        <input type="text" id="project-search" class="search-input" placeholder="Search projects..." aria-label="Search projects">
+        <div id="category-filters" class="category-filters"></div>
+    </div>
+    <div id="projects-container"></div>
+    <div id="no-results" class="no-results" style="display: none;">
+        <p>No projects match your search.</p>
+    </div>
+</section>
+
+<!-- Research -->
+<section class="section" id="research">
+    <h2 class="section-title"><span>🔬</span> Research &amp; Publications</h2>
+    <div class="research-item">
+        <h3>AI Agent Identity &amp; Accountability</h3>
+        <p>Frameworks for governing autonomous agents in distributed systems — identity verification, decision tracing, and accountability chains.</p>
+    </div>
+    <div class="research-item">
+        <h3>AI Self-Replication Safety</h3>
+        <p>Contract-enforced sandboxes to study and contain agent replication behaviors. Monte Carlo risk analysis with configurable safety policies.</p>
+    </div>
+    <div class="research-item">
+        <h3>ICGIS 2026 — Editor &amp; Chair</h3>
+        <p>International Conference on Global Innovations &amp; Solutions · <span class="highlight">June 6–7, 2026</span><br>
+        ICGIS 2025: 49 papers accepted · <a href="https://link.springer.com/book/10.1007/978-3-032-02853-2" target="_blank" rel="noopener">Springer proceedings</a><br>
+        Themes: AI, Smart Infrastructure, Climate, Renewable Energy, Cybersecurity, Digital Health</p>
+    </div>
+    <div class="research-item">
+        <h3>Publications</h3>
+        <p>Published in <strong>IEEE</strong> and <strong>Springer</strong> on topics spanning AI governance, agent systems, and distributed computing.</p>
+    </div>
+</section>
+
+<!-- Tech Stack -->
+<section class="section" id="tech" style="text-align: center;">
+    <h2 class="section-title" style="text-align: left;"><span>🛠️</span> Tech Stack</h2>
+    <div class="tech-grid">
+        <span class="tech-badge">C#</span>
+        <span class="tech-badge">TypeScript</span>
+        <span class="tech-badge">Python</span>
+        <span class="tech-badge">C</span>
+        <span class="tech-badge">Go</span>
+        <span class="tech-badge">Rust</span>
+        <span class="tech-badge">Dart</span>
+        <span class="tech-badge">Swift</span>
+        <span class="tech-badge">OCaml</span>
+        <span class="tech-badge">Java</span>
+        <span class="tech-badge">Azure</span>
+        <span class="tech-badge">Kubernetes</span>
+        <span class="tech-badge">Docker</span>
+        <span class="tech-badge">.NET</span>
+        <span class="tech-badge">React</span>
+        <span class="tech-badge">Node.js</span>
+        <span class="tech-badge">Flutter</span>
+    </div>
+</section>
+
+<footer class="footer">
+    <div class="footer-links">
+        <a href="https://github.com/sauravbhattacharya001" target="_blank" rel="noopener">GitHub</a>
+        <a href="https://www.linkedin.com/in/sauravbhattacharya001/" target="_blank" rel="noopener">LinkedIn</a>
+        <a href="mailto:online.saurav@gmail.com">Email</a>
+    </div>
+    <p>Building tools that make intelligent systems observable, accountable, and safe.</p>
+    <p style="margin-top: 0.5rem;">© 2026 Saurav Bhattacharya</p>
+</footer>
+
+<script src="app.js" integrity="sha384-1KrHBtna/LN156ytDRmK0KZBdVDZkXSbFcONCjtCnL3LC0qVl77uqqr78PbKbp0d" crossorigin="anonymous"></script>
+</body>
+</html>

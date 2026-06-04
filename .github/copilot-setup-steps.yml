@@ -1,0 +1,31 @@
+# Copilot Setup Steps — Profile README
+# Installs dependencies so GitHub Copilot coding agents (Claude, Codex)
+# can autonomously lint, validate, and iterate on this repository.
+
+name: Copilot Setup
+
+on: workflow_dispatch
+
+jobs:
+  setup:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install Node.js (for markdownlint-cli2)
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install markdown tooling
+        run: |
+          npm install -g markdownlint-cli2
+
+      - name: Verify tooling
+        run: |
+          markdownlint-cli2 --version
+          echo "✅ Copilot agent environment ready"
+
+      - name: Run markdown lint
+        run: |
+          markdownlint-cli2 "**/*.md" || true

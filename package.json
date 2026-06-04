@@ -1,0 +1,28 @@
+{
+  "name": "sauravbhattacharya001-portfolio",
+  "version": "1.0.0",
+  "description": "Personal portfolio site for Saurav Bhattacharya - Software Engineer, AI Safety Researcher",
+  "main": "docs/app.js",
+  "directories": {
+    "doc": "docs",
+    "test": "tests"
+  },
+  "scripts": {
+    "test": "jest --verbose"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/sauravbhattacharya001/sauravbhattacharya001.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/sauravbhattacharya001/sauravbhattacharya001/issues"
+  },
+  "homepage": "https://github.com/sauravbhattacharya001/sauravbhattacharya001#readme",
+  "devDependencies": {
+    "jest": "^29.7.0",
+    "jsdom": "^25.0.1"
+  }
+}

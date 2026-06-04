@@ -1,0 +1,17 @@
+# Git
+.git
+.gitignore
+
+# GitHub config (not needed in container)
+.github
+
+# Documentation (not the site)
+*.md
+!docs/**/*.md
+LICENSE
+
+# Editor files
+.vscode
+.idea
+*.swp
+*~

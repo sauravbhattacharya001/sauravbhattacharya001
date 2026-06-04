@@ -1,0 +1,54 @@
+name: Deploy Portfolio Site
+
+on:
+  push:
+    branches: [master]
+    paths:
+      - 'docs/**'
+      - '.github/workflows/pages.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    name: Deploy to GitHub Pages
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Verify SRI hashes
+        run: |
+          cd docs
+          for file in app.js style.css; do
+            expected=$(grep -oP "(?<=$file\" integrity=\")[^\"]*" index.html)
+            actual="sha384-$(openssl dgst -sha384 -binary "$file" | base64 -w0)"
+            if [ "$expected" != "$actual" ]; then
+              echo "::error::SRI mismatch for $file: expected=$expected actual=$actual"
+              echo "Run: cd docs && for f in app.js style.css; do echo \"sha384-\$(openssl dgst -sha384 -binary \$f | base64 -w0)\"; done"
+              exit 1
+            fi
+            echo "✅ $file integrity verified"
+          done
+
+      - name: Setup Pages
+        uses: actions/configure-pages@v5
+
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v4
+        with:
+          path: docs
+
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
