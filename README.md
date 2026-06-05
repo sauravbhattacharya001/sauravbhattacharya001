@@ -38,10 +38,11 @@ I build software at Microsoft, research AI agent governance, and create tools fo
 - 🧬 Building **[AgentLens](https://github.com/sauravbhattacharya001/agentlens)** — observability for AI agents ("Datadog for AI agents") · **v1.64.0** — AgentLoopDetector, TraceCompletionAdvisor, SLOBurnRateAdvisor, ModelMigrationAdvisor
 - 🛡️ Building **[WinSentinel](https://github.com/sauravbhattacharya001/WinSentinel)** — always-on Windows security agent · **v1.19.1** live · 13 audit modules, AI-powered threat detection
 - 📱 Building **[FeedReader](https://github.com/sauravbhattacharya001/FeedReader)** — intelligent iOS RSS reader with 330+ Swift modules · **v1.15.0** — quiet hours, outage forecasting & goal tracking
+- 🧪 Building **[agent-eval](https://github.com/sauravbhattacharya001/agent-eval)** — lightweight TypeScript framework for testing AI agent outputs — hallucination detection, drift monitoring, pass/fail assertions
 - 🤖 Running **[AgentBox](https://sauravbhattacharya001.github.io/getagentbox/)** — AI agents as a service, open access
-- 🔤 Evolving **[sauravcode](https://github.com/sauravbhattacharya001/sauravcode)** — my own programming language with f-strings, try/catch, and zero noise
+- 🔤 Evolving **[sauravcode](https://github.com/sauravbhattacharya001/sauravcode)** — my own programming language with f-strings, try/catch, and zero noise · **v7.10.0** — code immune system & security hardening
 - 📋 Chairing **ICGIS 2026** (June 6–7) — international conference on global innovations
-- 🔬 Researching AI agent identity, accountability & self-replication safety
+- 🔬 Researching AI agent identity, accountability & self-replication safety · **v3.15.0** — agentic advisors, SLA monitor refactor & 190 new tests
 - 🧠 Building **[mBFT](https://github.com/sauravbhattacharya001/metacognition)** — Metacognitive Byzantine Fault Tolerance · **v1.8.0** — circuit breaker for consensus fault isolation
 
 ---
@@ -53,9 +54,10 @@ I build software at Microsoft, research AI agent governance, and create tools fo
 | Project | What it does | Release | Live |
 |---|---|---|---|
 | **[AgentLens](https://github.com/sauravbhattacharya001/agentlens)** ⭐ 2 | Observability & explainability platform for AI agents — trace, debug, and understand agent behavior at scale. Python SDK + Node.js backend + dashboard. Loop detection, SLO burn-rate, model migration advisor. | [![v1.64.0](https://img.shields.io/badge/release-v1.64.0-blue?style=flat)](https://github.com/sauravbhattacharya001/agentlens/releases/tag/v1.64.0) | [📄 Docs](https://sauravbhattacharya001.github.io/agentlens/) |
+| **[agent-eval](https://github.com/sauravbhattacharya001/agent-eval)** | Lightweight TypeScript framework for testing and evaluating AI agent outputs — prompt chain testing, hallucination detection, drift monitoring, and pass/fail assertions for agentic workflows. | [![New](https://img.shields.io/badge/status-new-brightgreen?style=flat)](https://github.com/sauravbhattacharya001/agent-eval) | — |
 | **[AgentBox](https://github.com/sauravbhattacharya001/getagentbox)** | AI agents as a service — personal AI assistants accessible via messaging. Open access, 20 msg/day free tier. | [![Live](https://img.shields.io/badge/status-live-green?style=flat)](https://sauravbhattacharya001.github.io/getagentbox/) | [🌐 Site](https://sauravbhattacharya001.github.io/getagentbox/) |
 | **[AgenticChat](https://github.com/sauravbhattacharya001/agenticchat)** ⭐ 2 | Agentic conversation framework — client-side GPT-4o chat with sandboxed code execution, 30+ modular features including voice input, session management, slash commands, message search, bookmarks, annotations, conversation tags, focus mode. | [![v1.0.0](https://img.shields.io/badge/release-v1.0.0-blue?style=flat)](https://github.com/sauravbhattacharya001/agenticchat/releases/tag/v1.0.0) | [🌐 Demo](https://sauravbhattacharya001.github.io/agenticchat/) |
-| **[AI Safety Research](https://github.com/sauravbhattacharya001/ai)** | Contract-enforced sandbox for studying AI agent self-replication safety — Monte Carlo simulation, game-theory modeling, alignment drift detection, escalation detection, security hardening, and interactive HTML reports. | [![v3.14.0](https://img.shields.io/badge/release-v3.14.0-blue?style=flat)](https://github.com/sauravbhattacharya001/ai/releases/tag/v3.14.0) | [📄 Site](https://sauravbhattacharya001.github.io/ai/) |
+| **[AI Safety Research](https://github.com/sauravbhattacharya001/ai)** | Contract-enforced sandbox for studying AI agent self-replication safety — Monte Carlo simulation, game-theory modeling, alignment drift detection, escalation detection, security hardening, agentic advisors, SLA monitoring, and interactive HTML reports. | [![v3.15.0](https://img.shields.io/badge/release-v3.15.0-blue?style=flat)](https://github.com/sauravbhattacharya001/ai/releases/tag/v3.15.0) | [📄 Site](https://sauravbhattacharya001.github.io/ai/) |
 | **[mBFT (Metacognition)](https://github.com/sauravbhattacharya001/metacognition)** ⭐ 3 | Metacognitive Byzantine Fault Tolerance — reference implementation for consensus-driven metacognition in multi-agent systems. Circuit breaker for consensus fault isolation. | [![v1.8.0](https://img.shields.io/badge/release-v1.8.0-blue?style=flat)](https://github.com/sauravbhattacharya001/metacognition/releases/tag/v1.8.0) | — |
 
 ### Security
@@ -69,8 +71,8 @@ I build software at Microsoft, research AI agent governance, and create tools fo
 
 | Project | What it does | Release | Live |
 |---|---|---|---|
-| **[sauravcode](https://github.com/sauravbhattacharya001/sauravcode)** ⭐ 2 | A programming language with zero noise — no parens, no commas, no semicolons. Interpreter + compiler (.srv → C → native). F-strings, try/catch/throw, module imports, 600+ tests. | [![v2.0.0](https://img.shields.io/badge/release-v2.0.0_Compiler-blue?style=flat)](https://github.com/sauravbhattacharya001/sauravcode/releases/tag/v2.0.0) | [📄 Docs](https://sauravbhattacharya001.github.io/sauravcode/) |
-| **[prompt](https://github.com/sauravbhattacharya001/prompt)** | .NET 8 prompt engineering toolkit — Azure OpenAI client, template engine, prompt chaining, PromptGuard injection detection, PromptLibrary registry. | [![v2.0.0](https://img.shields.io/badge/release-v2.0.0-blue?style=flat)](https://github.com/sauravbhattacharya001/prompt/releases/tag/v2.0.0) | [📄 Site](https://sauravbhattacharya001.github.io/prompt/) |
+| **[sauravcode](https://github.com/sauravbhattacharya001/sauravcode)** ⭐ 2 | A programming language with zero noise — no parens, no commas, no semicolons. Interpreter + compiler (.srv → C → native). F-strings, try/catch/throw, module imports, code immune system, 600+ tests. | [![v7.10.0](https://img.shields.io/badge/release-v7.10.0-blue?style=flat)](https://github.com/sauravbhattacharya001/sauravcode/releases/tag/v7.10.0) | [📄 Docs](https://sauravbhattacharya001.github.io/sauravcode/) |
+| **[prompt](https://github.com/sauravbhattacharya001/prompt)** | .NET 8 prompt engineering toolkit — Azure OpenAI client, template engine, prompt chaining, PromptGuard injection detection, PromptLibrary registry, agentic advisors, normalizer performance tuning. | [![v5.25.0](https://img.shields.io/badge/release-v5.25.0-blue?style=flat)](https://github.com/sauravbhattacharya001/prompt/releases/tag/v5.25.0) | [📄 Site](https://sauravbhattacharya001.github.io/prompt/) |
 | **[gif-captcha](https://github.com/sauravbhattacharya001/gif-captcha)** | GIF-based CAPTCHA research — 7 interactive tools: visual puzzles, temporal challenges, AI simulator, benchmark suite, cognitive load analyzer, CAPTCHA generator. 99.9% test coverage. | [![v1.2.0](https://img.shields.io/badge/release-v1.2.0-blue?style=flat)](https://github.com/sauravbhattacharya001/gif-captcha/releases/tag/v1.2.0) | [🌐 Demo](https://sauravbhattacharya001.github.io/gif-captcha/) |
 
 ### Visualization & Data
@@ -97,6 +99,7 @@ I build software at Microsoft, research AI agent governance, and create tools fo
 - **AI Agent Identity & Accountability** — frameworks for governing autonomous agents in distributed systems
 - **AI Self-Replication Safety** — contract-enforced sandboxes to study and contain agent replication behaviors
 - **Metacognitive Byzantine Fault Tolerance (mBFT)** — consensus-driven metacognition for multi-agent systems
+- **AI Agent Evaluation** — testing frameworks for hallucination detection, drift monitoring, and behavioral assertions
 - **ICGIS 2026** Editor & Chair — June 6–7, 2026
   - ICGIS 2025: 49 papers accepted · [Springer proceedings](https://link.springer.com/book/10.1007/978-3-032-02853-2)
   - Themes: AI, Smart Infrastructure, Climate, Renewable Energy, Cybersecurity, Digital Health
