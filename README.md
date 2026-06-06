@@ -7,15 +7,15 @@
 
 [![LinkedIn](https://img.shields.io/badge/LinkedIn-0A66C2?style=for-the-badge&logo=linkedin&logoColor=white)](https://www.linkedin.com/in/sauravbhattacharya001/)
 [![Email](https://img.shields.io/badge/Email-EA4335?style=for-the-badge&logo=gmail&logoColor=white)](mailto:online.saurav@gmail.com)
-[![ICGIS 2026](https://img.shields.io/badge/ICGIS_2026-June_6--7-4B0082?style=for-the-badge)](#-research--publications)
+[![ICGIS 2026](https://img.shields.io/badge/ICGIS_2026-Happening_Now!-4B0082?style=for-the-badge)](#-research--publications)
 [![AgentBox](https://img.shields.io/badge/AgentBox-Live-00C853?style=for-the-badge&logo=probot&logoColor=white)](https://sauravbhattacharya001.github.io/getagentbox/)
 [![WinSentinel](https://img.shields.io/badge/WinSentinel-v1.19.1-FF6F00?style=for-the-badge&logo=windows&logoColor=white)](https://winsentinel.ai)
 
 <br/>
 
 ![Repos](https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Fapi.github.com%2Fusers%2Fsauravbhattacharya001&query=%24.public_repos&label=Repos&color=blue&style=flat-square)
-![Releases](https://img.shields.io/badge/Releases-30+-green?style=flat-square)
-![Commits](https://img.shields.io/badge/Commits-2500+-purple?style=flat-square)
+![Releases](https://img.shields.io/badge/Releases-35+-green?style=flat-square)
+![Commits](https://img.shields.io/badge/Commits-2800+-purple?style=flat-square)
 ![Live Sites](https://img.shields.io/badge/Live_Sites-16-orange?style=flat-square)
 [![GitHub Stars](https://img.shields.io/github/stars/sauravbhattacharya001?style=flat-square&label=Stars&color=yellow)](https://github.com/sauravbhattacharya001)
 [![License: MIT](https://img.shields.io/badge/License-MIT-brightgreen?style=flat-square)](LICENSE)
@@ -41,9 +41,10 @@ I build software at Microsoft, research AI agent governance, and create tools fo
 - 🧪 Building **[agent-eval](https://github.com/sauravbhattacharya001/agent-eval)** — lightweight TypeScript framework for testing AI agent outputs — hallucination detection, drift monitoring, pass/fail assertions
 - 🤖 Running **[AgentBox](https://sauravbhattacharya001.github.io/getagentbox/)** — AI agents as a service, open access
 - 🔤 Evolving **[sauravcode](https://github.com/sauravbhattacharya001/sauravcode)** — my own programming language with f-strings, try/catch, and zero noise · **v7.10.0** — code immune system & security hardening
-- 📋 Chairing **ICGIS 2026** (June 6–7) — international conference on global innovations
+- 📋 Chairing **ICGIS 2026** (June 6–7) — **happening now!** International conference on global innovations
 - 🔬 Researching AI agent identity, accountability & self-replication safety · **v3.15.0** — agentic advisors, SLA monitor refactor & 190 new tests
 - 🧠 Building **[mBFT](https://github.com/sauravbhattacharya001/metacognition)** — Metacognitive Byzantine Fault Tolerance · **v1.8.0** — circuit breaker for consensus fault isolation
+- 💬 Building **[AgenticChat](https://github.com/sauravbhattacharya001/agenticchat)** — agentic conversation framework · **v2.46.0** — deadline-tracker perf, SW LRU bound, sandbox hardening
 
 ---
 
@@ -56,7 +57,7 @@ I build software at Microsoft, research AI agent governance, and create tools fo
 | **[AgentLens](https://github.com/sauravbhattacharya001/agentlens)** ⭐ 2 | Observability & explainability platform for AI agents — trace, debug, and understand agent behavior at scale. Python SDK + Node.js backend + dashboard. Loop detection, SLO burn-rate, model migration advisor. | [![v1.64.0](https://img.shields.io/badge/release-v1.64.0-blue?style=flat)](https://github.com/sauravbhattacharya001/agentlens/releases/tag/v1.64.0) | [📄 Docs](https://sauravbhattacharya001.github.io/agentlens/) |
 | **[agent-eval](https://github.com/sauravbhattacharya001/agent-eval)** | Lightweight TypeScript framework for testing and evaluating AI agent outputs — prompt chain testing, hallucination detection, drift monitoring, and pass/fail assertions for agentic workflows. | [![New](https://img.shields.io/badge/status-new-brightgreen?style=flat)](https://github.com/sauravbhattacharya001/agent-eval) | — |
 | **[AgentBox](https://github.com/sauravbhattacharya001/getagentbox)** | AI agents as a service — personal AI assistants accessible via messaging. Open access, 20 msg/day free tier. | [![Live](https://img.shields.io/badge/status-live-green?style=flat)](https://sauravbhattacharya001.github.io/getagentbox/) | [🌐 Site](https://sauravbhattacharya001.github.io/getagentbox/) |
-| **[AgenticChat](https://github.com/sauravbhattacharya001/agenticchat)** ⭐ 2 | Agentic conversation framework — client-side GPT-4o chat with sandboxed code execution, 30+ modular features including voice input, session management, slash commands, message search, bookmarks, annotations, conversation tags, focus mode. | [![v1.0.0](https://img.shields.io/badge/release-v1.0.0-blue?style=flat)](https://github.com/sauravbhattacharya001/agenticchat/releases/tag/v1.0.0) | [🌐 Demo](https://sauravbhattacharya001.github.io/agenticchat/) |
+| **[AgenticChat](https://github.com/sauravbhattacharya001/agenticchat)** ⭐ 2 | Agentic conversation framework — client-side GPT-4o chat with sandboxed code execution, 30+ modular features including voice input, session management, slash commands, message search, bookmarks, annotations, conversation tags, focus mode. | [![v2.46.0](https://img.shields.io/badge/release-v2.46.0-blue?style=flat)](https://github.com/sauravbhattacharya001/agenticchat/releases/tag/v2.46.0) | [🌐 Demo](https://sauravbhattacharya001.github.io/agenticchat/) |
 | **[AI Safety Research](https://github.com/sauravbhattacharya001/ai)** | Contract-enforced sandbox for studying AI agent self-replication safety — Monte Carlo simulation, game-theory modeling, alignment drift detection, escalation detection, security hardening, agentic advisors, SLA monitoring, and interactive HTML reports. | [![v3.15.0](https://img.shields.io/badge/release-v3.15.0-blue?style=flat)](https://github.com/sauravbhattacharya001/ai/releases/tag/v3.15.0) | [📄 Site](https://sauravbhattacharya001.github.io/ai/) |
 | **[mBFT (Metacognition)](https://github.com/sauravbhattacharya001/metacognition)** ⭐ 3 | Metacognitive Byzantine Fault Tolerance — reference implementation for consensus-driven metacognition in multi-agent systems. Circuit breaker for consensus fault isolation. | [![v1.8.0](https://img.shields.io/badge/release-v1.8.0-blue?style=flat)](https://github.com/sauravbhattacharya001/metacognition/releases/tag/v1.8.0) | — |
 
@@ -73,7 +74,7 @@ I build software at Microsoft, research AI agent governance, and create tools fo
 |---|---|---|---|
 | **[sauravcode](https://github.com/sauravbhattacharya001/sauravcode)** ⭐ 2 | A programming language with zero noise — no parens, no commas, no semicolons. Interpreter + compiler (.srv → C → native). F-strings, try/catch/throw, module imports, code immune system, 600+ tests. | [![v7.10.0](https://img.shields.io/badge/release-v7.10.0-blue?style=flat)](https://github.com/sauravbhattacharya001/sauravcode/releases/tag/v7.10.0) | [📄 Docs](https://sauravbhattacharya001.github.io/sauravcode/) |
 | **[prompt](https://github.com/sauravbhattacharya001/prompt)** | .NET 8 prompt engineering toolkit — Azure OpenAI client, template engine, prompt chaining, PromptGuard injection detection, PromptLibrary registry, agentic advisors, normalizer performance tuning. | [![v5.25.0](https://img.shields.io/badge/release-v5.25.0-blue?style=flat)](https://github.com/sauravbhattacharya001/prompt/releases/tag/v5.25.0) | [📄 Site](https://sauravbhattacharya001.github.io/prompt/) |
-| **[gif-captcha](https://github.com/sauravbhattacharya001/gif-captcha)** | GIF-based CAPTCHA research — 7 interactive tools: visual puzzles, temporal challenges, AI simulator, benchmark suite, cognitive load analyzer, CAPTCHA generator. 99.9% test coverage. | [![v1.2.0](https://img.shields.io/badge/release-v1.2.0-blue?style=flat)](https://github.com/sauravbhattacharya001/gif-captcha/releases/tag/v1.2.0) | [🌐 Demo](https://sauravbhattacharya001.github.io/gif-captcha/) |
+| **[gif-captcha](https://github.com/sauravbhattacharya001/gif-captcha)** | GIF-based CAPTCHA research — 7 interactive tools: visual puzzles, temporal challenges, AI simulator, benchmark suite, cognitive load analyzer, CAPTCHA generator. Supply-chain hardening. 99.9% test coverage. | [![v1.26.0](https://img.shields.io/badge/release-v1.26.0-blue?style=flat)](https://github.com/sauravbhattacharya001/gif-captcha/releases/tag/v1.26.0) | [🌐 Demo](https://sauravbhattacharya001.github.io/gif-captcha/) |
 
 ### Visualization & Data
 
@@ -87,7 +88,7 @@ I build software at Microsoft, research AI agent governance, and create tools fo
 | Project | What it does | Release | Live |
 |---|---|---|---|
 | **[FeedReader](https://github.com/sauravbhattacharya001/FeedReader)** ⭐ 5 | Intelligent RSS reader for iOS — AI-powered feed analysis, knowledge graphs, sentiment radar, trend forecasting, narrative tracking, autonomous reading. 330+ Swift modules. | [![v1.15.0](https://img.shields.io/badge/release-v1.15.0-blue?style=flat)](https://github.com/sauravbhattacharya001/FeedReader/releases/tag/v1.15.0) | [🌐 Site](https://sauravbhattacharya001.github.io/FeedReader/) |
-| **[everything](https://github.com/sauravbhattacharya001/everything)** | Full-stack Flutter/Dart app — event management with calendar view, recurring events, conflict detection, activity heatmap, time budgets, streak tracking, BLoC pattern, SQLite persistence. | [![v1.0.0](https://img.shields.io/badge/release-v1.0.0-blue?style=flat)](https://github.com/sauravbhattacharya001/everything/releases/tag/v1.0.0) | [🌐 App](https://sauravbhattacharya001.github.io/everything/) |
+| **[everything](https://github.com/sauravbhattacharya001/everything)** | Full-stack Flutter/Dart productivity hub — event management with calendar view, recurring events, conflict detection, activity heatmap, time budgets, streak tracking, agentic advisors, security hardening. BLoC pattern, SQLite persistence. | [![v7.36.0](https://img.shields.io/badge/release-v7.36.0-blue?style=flat)](https://github.com/sauravbhattacharya001/everything/releases/tag/v7.36.0) | [🌐 App](https://sauravbhattacharya001.github.io/everything/) |
 | **[OCaml Samples](https://github.com/sauravbhattacharya001/Ocaml-sample-code)** ⭐ 4 | 214 OCaml implementations — data structures, algorithms, interpreters, theorem provers, neural networks, distributed systems, cryptography, formal methods. String-search algorithms, BWT/LCS. | [![v1.10.0](https://img.shields.io/badge/release-v1.10.0-blue?style=flat)](https://github.com/sauravbhattacharya001/Ocaml-sample-code/releases/tag/v1.10.0) | [📄 Site](https://sauravbhattacharya001.github.io/Ocaml-sample-code/) |
 | **[BioBots](https://github.com/sauravbhattacharya001/BioBots)** | 3D bioprinter analytics — 11 metrics, anomaly detection (Z-Score + IQR), interactive data explorer with histograms, scatter plots, regression. | [![v1.0.0](https://img.shields.io/badge/release-v1.0.0-blue?style=flat)](https://github.com/sauravbhattacharya001/BioBots/releases/tag/v1.0.0) | [🌐 Site](https://sauravbhattacharya001.github.io/BioBots/) |
 | **[Vidly](https://github.com/sauravbhattacharya001/Vidly)** ⭐ 2 | Video rental management (C# / ASP.NET MVC) — CRUD, 4-tier membership, rental checkout/returns, late fees. | [![v1.0.0](https://img.shields.io/badge/release-v1.0.0-blue?style=flat)](https://github.com/sauravbhattacharya001/Vidly/releases/tag/v1.0.0) | [🌐 Site](https://sauravbhattacharya001.github.io/Vidly/) |
@@ -100,7 +101,7 @@ I build software at Microsoft, research AI agent governance, and create tools fo
 - **AI Self-Replication Safety** — contract-enforced sandboxes to study and contain agent replication behaviors
 - **Metacognitive Byzantine Fault Tolerance (mBFT)** — consensus-driven metacognition for multi-agent systems
 - **AI Agent Evaluation** — testing frameworks for hallucination detection, drift monitoring, and behavioral assertions
-- **ICGIS 2026** Editor & Chair — June 6–7, 2026
+- **ICGIS 2026** Editor & Chair — June 6–7, 2026 ⚡ **Happening now!**
   - ICGIS 2025: 49 papers accepted · [Springer proceedings](https://link.springer.com/book/10.1007/978-3-032-02853-2)
   - Themes: AI, Smart Infrastructure, Climate, Renewable Energy, Cybersecurity, Digital Health
 - Published in **IEEE** and **Springer**
