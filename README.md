@@ -14,8 +14,8 @@
 <br/>
 
 ![Repos](https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Fapi.github.com%2Fusers%2Fsauravbhattacharya001&query=%24.public_repos&label=Repos&color=blue&style=flat-square)
-![Releases](https://img.shields.io/badge/Releases-580+-green?style=flat-square)
-![Commits](https://img.shields.io/badge/Commits-8200+-purple?style=flat-square)
+![Releases](https://img.shields.io/badge/Releases-590+-green?style=flat-square)
+![Commits](https://img.shields.io/badge/Commits-8400+-purple?style=flat-square)
 ![Live Sites](https://img.shields.io/badge/Live_Sites-16-orange?style=flat-square)
 [![GitHub Stars](https://img.shields.io/github/stars/sauravbhattacharya001?style=flat-square&label=Stars&color=yellow)](https://github.com/sauravbhattacharya001)
 [![License: MIT](https://img.shields.io/badge/License-MIT-brightgreen?style=flat-square)](LICENSE)
@@ -39,6 +39,7 @@ I build software at Microsoft, research AI agent governance, and create tools fo
 - 🛡️ Building **[WinSentinel](https://github.com/sauravbhattacharya001/WinSentinel)** — always-on Windows security agent · **v1.19.1** live · 13 audit modules, AI-powered threat detection
 - 📱 Building **[FeedReader](https://github.com/sauravbhattacharya001/FeedReader)** — intelligent iOS RSS reader with 330+ Swift modules · **v1.15.0** — quiet hours, outage forecasting & goal tracking
 - 🧪 Building **[agent-eval](https://github.com/sauravbhattacharya001/agent-eval)** — lightweight TypeScript framework for testing AI agent outputs — hallucination detection, drift monitoring, pass/fail assertions
+- 🔗 Building **[agentic-recipes](https://github.com/sauravbhattacharya001/agentic-recipes)** — canonical agentic pipeline examples: linear chains, fan-out/fan-in, middleware pipelines built on prompt-lib
 - 🤖 Running **[AgentBox](https://sauravbhattacharya001.github.io/getagentbox/)** — AI agents as a service, open access
 - 🔤 Evolving **[sauravcode](https://github.com/sauravbhattacharya001/sauravcode)** — my own programming language with f-strings, try/catch, and zero noise · **v7.10.0** — code immune system & security hardening
 - 📋 Chairing **ICGIS 2026** (June 27–28) — international conference on global innovations
@@ -56,6 +57,7 @@ I build software at Microsoft, research AI agent governance, and create tools fo
 |---|---|---|---|
 | **[AgentLens](https://github.com/sauravbhattacharya001/agentlens)** ⭐ 2 | Observability & explainability platform for AI agents — trace, debug, and understand agent behavior at scale. Python SDK + Node.js backend + dashboard. Loop detection, SLO burn-rate, model migration advisor. | [![v1.64.0](https://img.shields.io/badge/release-v1.64.0-blue?style=flat)](https://github.com/sauravbhattacharya001/agentlens/releases/tag/v1.64.0) | [📄 Docs](https://sauravbhattacharya001.github.io/agentlens/) |
 | **[agent-eval](https://github.com/sauravbhattacharya001/agent-eval)** ⭐ 1 | Lightweight TypeScript framework for testing and evaluating AI agent outputs — prompt chain testing, hallucination detection, drift monitoring, and pass/fail assertions for agentic workflows. | [![New](https://img.shields.io/badge/status-new-brightgreen?style=flat)](https://github.com/sauravbhattacharya001/agent-eval) | — |
+| **[agentic-recipes](https://github.com/sauravbhattacharya001/agentic-recipes)** ⭐ 1 | Canonical agentic pipeline examples built on prompt-lib — linear chains, fan-out/fan-in, middleware pipelines. Reference patterns for building composable AI agent workflows in C#/.NET. | [![New](https://img.shields.io/badge/status-new-brightgreen?style=flat)](https://github.com/sauravbhattacharya001/agentic-recipes) | — |
 | **[AgentBox](https://github.com/sauravbhattacharya001/getagentbox)** | AI agents as a service — personal AI assistants accessible via messaging. Open access, 20 msg/day free tier. | [![Live](https://img.shields.io/badge/status-live-green?style=flat)](https://sauravbhattacharya001.github.io/getagentbox/) | [🌐 Site](https://sauravbhattacharya001.github.io/getagentbox/) |
 | **[AgenticChat](https://github.com/sauravbhattacharya001/agenticchat)** ⭐ 2 | Agentic conversation framework — client-side GPT-4o chat with sandboxed code execution, 30+ modular features including voice input, session management, slash commands, message search, bookmarks, annotations, conversation tags, focus mode. | [![v2.46.0](https://img.shields.io/badge/release-v2.46.0-blue?style=flat)](https://github.com/sauravbhattacharya001/agenticchat/releases/tag/v2.46.0) | [🌐 Demo](https://sauravbhattacharya001.github.io/agenticchat/) |
 | **[AI Safety Research](https://github.com/sauravbhattacharya001/ai)** | Contract-enforced sandbox for studying AI agent self-replication safety — Monte Carlo simulation, game-theory modeling, alignment drift detection, escalation detection, security hardening, agentic advisors, SLA monitoring, and interactive HTML reports. | [![v3.15.0](https://img.shields.io/badge/release-v3.15.0-blue?style=flat)](https://github.com/sauravbhattacharya001/ai/releases/tag/v3.15.0) | [📄 Site](https://sauravbhattacharya001.github.io/ai/) |
@@ -101,6 +103,7 @@ I build software at Microsoft, research AI agent governance, and create tools fo
 - **AI Self-Replication Safety** — contract-enforced sandboxes to study and contain agent replication behaviors
 - **Metacognitive Byzantine Fault Tolerance (mBFT)** — consensus-driven metacognition for multi-agent systems
 - **AI Agent Evaluation** — testing frameworks for hallucination detection, drift monitoring, and behavioral assertions
+- **Agentic Pipeline Patterns** — composable chain architectures for reliable multi-step AI workflows
 - **ICGIS 2026** Editor & Chair — June 27–28, 2026
   - ICGIS 2025: 49 papers accepted · [Springer proceedings](https://link.springer.com/book/10.1007/978-3-032-02853-2)
   - Themes: AI, Smart Infrastructure, Climate, Renewable Energy, Cybersecurity, Digital Health
