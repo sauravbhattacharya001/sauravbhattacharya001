@@ -14,8 +14,8 @@
 <br/>
 
 ![Repos](https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Fapi.github.com%2Fusers%2Fsauravbhattacharya001&query=%24.public_repos&label=Repos&color=blue&style=flat-square)
-![Releases](https://img.shields.io/badge/Releases-590+-green?style=flat-square)
-![Commits](https://img.shields.io/badge/Commits-8400+-purple?style=flat-square)
+![Releases](https://img.shields.io/badge/Releases-600+-green?style=flat-square)
+![Commits](https://img.shields.io/badge/Commits-8500+-purple?style=flat-square)
 ![Live Sites](https://img.shields.io/badge/Live_Sites-16-orange?style=flat-square)
 [![GitHub Stars](https://img.shields.io/github/stars/sauravbhattacharya001?style=flat-square&label=Stars&color=yellow)](https://github.com/sauravbhattacharya001)
 [![License: MIT](https://img.shields.io/badge/License-MIT-brightgreen?style=flat-square)](LICENSE)
@@ -82,8 +82,8 @@ I build software at Microsoft, research AI agent governance, and create tools fo
 
 | Project | What it does | Release | Live |
 |---|---|---|---|
-| **[VoronoiMap](https://github.com/sauravbhattacharya001/VoronoiMap)** ⭐ 5 | Voronoi diagram generation and spatial partitioning toolkit. Lloyd relaxation, neighbourhood graphs, vectorized referee, 6 color schemes, GeoJSON export. | [![v1.55.0](https://img.shields.io/badge/release-v1.55.0-blue?style=flat)](https://github.com/sauravbhattacharya001/VoronoiMap/releases/tag/v1.55.0) | [🌐 Demo](https://sauravbhattacharya001.github.io/VoronoiMap/) |
-| **[GraphVisual](https://github.com/sauravbhattacharya001/GraphVisual)** | Graph visualization for studying community evolution — centrality analysis (Brandes'), MST (Kruskal/Prim), graph coloring, community detection, shortest path (BFS/Dijkstra), link prediction, graph generation, topological sort, influence spread simulation, GraphML export. 2400+ tests. | [![v1.0.0](https://img.shields.io/badge/release-v1.0.0-blue?style=flat)](https://github.com/sauravbhattacharya001/GraphVisual/releases/tag/v1.0.0) | [🌐 Site](https://sauravbhattacharya001.github.io/GraphVisual/) |
+| **[VoronoiMap](https://github.com/sauravbhattacharya001/VoronoiMap)** ⭐ 5 | Voronoi diagram generation and spatial partitioning toolkit. Lloyd relaxation, neighbourhood graphs, vectorized referee, calibration & causality advisors, 6 color schemes, GeoJSON export. | [![v1.56.0](https://img.shields.io/badge/release-v1.56.0-blue?style=flat)](https://github.com/sauravbhattacharya001/VoronoiMap/releases/tag/v1.56.0) | [🌐 Demo](https://sauravbhattacharya001.github.io/VoronoiMap/) |
+| **[GraphVisual](https://github.com/sauravbhattacharya001/GraphVisual)** | Graph visualization for studying community evolution — centrality analysis (Brandes'), MST (Kruskal/Prim), graph coloring, community detection, shortest path (BFS/Dijkstra), link prediction, GNN playground, narrative generator, graph partitioning visualizer, agentic advisors, GraphML export. 2400+ tests. | [![v2.63.0](https://img.shields.io/badge/release-v2.63.0-blue?style=flat)](https://github.com/sauravbhattacharya001/GraphVisual/releases/tag/v2.63.0) | [🌐 Site](https://sauravbhattacharya001.github.io/GraphVisual/) |
 
 ### Apps & More
 
