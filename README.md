@@ -9,14 +9,15 @@
 [![Email](https://img.shields.io/badge/Email-EA4335?style=for-the-badge&logo=gmail&logoColor=white)](mailto:online.saurav@gmail.com)
 [![ICGIS 2026](https://img.shields.io/badge/ICGIS_2026-June_27--28-4B0082?style=for-the-badge)](#-research--publications)
 [![AgentBox](https://img.shields.io/badge/AgentBox-Live-00C853?style=for-the-badge&logo=probot&logoColor=white)](https://sauravbhattacharya001.github.io/getagentbox/)
+[![AgentLens](https://img.shields.io/badge/AgentLens-v1.65.0-58A6FF?style=for-the-badge&logo=python&logoColor=white)](https://github.com/sauravbhattacharya001/agentlens)
 [![WinSentinel](https://img.shields.io/badge/WinSentinel-v1.19.1-FF6F00?style=for-the-badge&logo=windows&logoColor=white)](https://winsentinel.ai)
 
 <br/>
 
 ![Repos](https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Fapi.github.com%2Fusers%2Fsauravbhattacharya001&query=%24.public_repos&label=Repos&color=blue&style=flat-square)
-![Releases](https://img.shields.io/badge/Releases-600+-green?style=flat-square)
-![Commits](https://img.shields.io/badge/Commits-8500+-purple?style=flat-square)
-![Live Sites](https://img.shields.io/badge/Live_Sites-16-orange?style=flat-square)
+![Releases](https://img.shields.io/badge/Releases-560+-green?style=flat-square)
+![Commits](https://img.shields.io/badge/Commits-8700+-purple?style=flat-square)
+![Live Sites](https://img.shields.io/badge/Live_Sites-17-orange?style=flat-square)
 [![GitHub Stars](https://img.shields.io/github/stars/sauravbhattacharya001?style=flat-square&label=Stars&color=yellow)](https://github.com/sauravbhattacharya001)
 [![License: MIT](https://img.shields.io/badge/License-MIT-brightgreen?style=flat-square)](LICENSE)
 ![Last Commit](https://img.shields.io/github/last-commit/sauravbhattacharya001/sauravbhattacharya001?style=flat-square&label=Last+Commit&color=blue)
@@ -35,7 +36,7 @@ I build software at Microsoft, research AI agent governance, and create tools fo
 
 ## 🔭 Currently
 
-- 🧬 Building **[AgentLens](https://github.com/sauravbhattacharya001/agentlens)** — observability for AI agents ("Datadog for AI agents") · **v1.64.0** — AgentLoopDetector, TraceCompletionAdvisor, SLOBurnRateAdvisor, ModelMigrationAdvisor
+- 🧬 Building **[AgentLens](https://github.com/sauravbhattacharya001/agentlens)** — observability for AI agents ("Datadog for AI agents") · **v1.65.0** — PyPI publishing live (Python 3.9 compat) + agentic advisor suite
 - 🛡️ Building **[WinSentinel](https://github.com/sauravbhattacharya001/WinSentinel)** — always-on Windows security agent · **v1.19.1** live · 13 audit modules, AI-powered threat detection
 - 📱 Building **[FeedReader](https://github.com/sauravbhattacharya001/FeedReader)** — intelligent iOS RSS reader with 330+ Swift modules · **v1.15.0** — quiet hours, outage forecasting & goal tracking
 - 🧪 Building **[agent-eval](https://github.com/sauravbhattacharya001/agent-eval)** — lightweight TypeScript framework for testing AI agent outputs — hallucination detection, drift monitoring, pass/fail assertions
@@ -55,7 +56,7 @@ I build software at Microsoft, research AI agent governance, and create tools fo
 
 | Project | What it does | Release | Live |
 |---|---|---|---|
-| **[AgentLens](https://github.com/sauravbhattacharya001/agentlens)** ⭐ 2 | Observability & explainability platform for AI agents — trace, debug, and understand agent behavior at scale. Python SDK + Node.js backend + dashboard. Loop detection, SLO burn-rate, model migration advisor. | [![v1.64.0](https://img.shields.io/badge/release-v1.64.0-blue?style=flat)](https://github.com/sauravbhattacharya001/agentlens/releases/tag/v1.64.0) | [📄 Docs](https://sauravbhattacharya001.github.io/agentlens/) |
+| **[AgentLens](https://github.com/sauravbhattacharya001/agentlens)** ⭐ 2 | Observability & explainability platform for AI agents — trace, debug, and understand agent behavior at scale. Python SDK (live on PyPI) + Node.js backend + dashboard. Loop detection, SLO burn-rate, model migration advisor. | [![v1.65.0](https://img.shields.io/badge/release-v1.65.0-blue?style=flat)](https://github.com/sauravbhattacharya001/agentlens/releases/tag/v1.65.0) | [📄 Docs](https://sauravbhattacharya001.github.io/agentlens/) |
 | **[agent-eval](https://github.com/sauravbhattacharya001/agent-eval)** ⭐ 1 | Lightweight TypeScript framework for testing and evaluating AI agent outputs — prompt chain testing, hallucination detection, drift monitoring, and pass/fail assertions for agentic workflows. | [![New](https://img.shields.io/badge/status-new-brightgreen?style=flat)](https://github.com/sauravbhattacharya001/agent-eval) | — |
 | **[agentic-recipes](https://github.com/sauravbhattacharya001/agentic-recipes)** ⭐ 1 | Canonical agentic pipeline examples built on prompt-lib — linear chains, fan-out/fan-in, middleware pipelines. Reference patterns for building composable AI agent workflows in C#/.NET. | [![New](https://img.shields.io/badge/status-new-brightgreen?style=flat)](https://github.com/sauravbhattacharya001/agentic-recipes) | — |
 | **[AgentBox](https://github.com/sauravbhattacharya001/getagentbox)** | AI agents as a service — personal AI assistants accessible via messaging. Open access, 20 msg/day free tier. | [![Live](https://img.shields.io/badge/status-live-green?style=flat)](https://sauravbhattacharya001.github.io/getagentbox/) | [🌐 Site](https://sauravbhattacharya001.github.io/getagentbox/) |
@@ -92,8 +93,8 @@ I build software at Microsoft, research AI agent governance, and create tools fo
 | **[FeedReader](https://github.com/sauravbhattacharya001/FeedReader)** ⭐ 5 | Intelligent RSS reader for iOS — AI-powered feed analysis, knowledge graphs, sentiment radar, trend forecasting, narrative tracking, autonomous reading. 330+ Swift modules. | [![v1.15.0](https://img.shields.io/badge/release-v1.15.0-blue?style=flat)](https://github.com/sauravbhattacharya001/FeedReader/releases/tag/v1.15.0) | [🌐 Site](https://sauravbhattacharya001.github.io/FeedReader/) |
 | **[everything](https://github.com/sauravbhattacharya001/everything)** | Full-stack Flutter/Dart productivity hub — event management with calendar view, recurring events, conflict detection, activity heatmap, time budgets, streak tracking, agentic advisors, security hardening. BLoC pattern, SQLite persistence. | [![v7.36.0](https://img.shields.io/badge/release-v7.36.0-blue?style=flat)](https://github.com/sauravbhattacharya001/everything/releases/tag/v7.36.0) | [🌐 App](https://sauravbhattacharya001.github.io/everything/) |
 | **[OCaml Samples](https://github.com/sauravbhattacharya001/Ocaml-sample-code)** ⭐ 4 | 214 OCaml implementations — data structures, algorithms, interpreters, theorem provers, neural networks, distributed systems, cryptography, formal methods. String-search algorithms, BWT/LCS. | [![v1.10.0](https://img.shields.io/badge/release-v1.10.0-blue?style=flat)](https://github.com/sauravbhattacharya001/Ocaml-sample-code/releases/tag/v1.10.0) | [📄 Site](https://sauravbhattacharya001.github.io/Ocaml-sample-code/) |
-| **[BioBots](https://github.com/sauravbhattacharya001/BioBots)** | 3D bioprinter analytics — 11 metrics, anomaly detection (Z-Score + IQR), interactive data explorer with histograms, scatter plots, regression. | [![v1.0.0](https://img.shields.io/badge/release-v1.0.0-blue?style=flat)](https://github.com/sauravbhattacharya001/BioBots/releases/tag/v1.0.0) | [🌐 Site](https://sauravbhattacharya001.github.io/BioBots/) |
-| **[Vidly](https://github.com/sauravbhattacharya001/Vidly)** ⭐ 2 | Video rental management (C# / ASP.NET MVC) — CRUD, 4-tier membership, rental checkout/returns, late fees. | [![v1.0.0](https://img.shields.io/badge/release-v1.0.0-blue?style=flat)](https://github.com/sauravbhattacharya001/Vidly/releases/tag/v1.0.0) | [🌐 Site](https://sauravbhattacharya001.github.io/Vidly/) |
+| **[BioBots](https://github.com/sauravbhattacharya001/BioBots)** | 3D bioprinter analytics — 11 metrics, anomaly detection (Z-Score + IQR), interactive data explorer with histograms, scatter plots, regression. | [![v1.47.0](https://img.shields.io/badge/release-v1.47.0-blue?style=flat)](https://github.com/sauravbhattacharya001/BioBots/releases/tag/v1.47.0) | [🌐 Site](https://sauravbhattacharya001.github.io/BioBots/) |
+| **[Vidly](https://github.com/sauravbhattacharya001/Vidly)** ⭐ 2 | Video rental management (C# / ASP.NET MVC) — CRUD, 4-tier membership, rental checkout/returns, late fees. | [![v2.20.0](https://img.shields.io/badge/release-v2.20.0-blue?style=flat)](https://github.com/sauravbhattacharya001/Vidly/releases/tag/v2.20.0) | [🌐 Site](https://sauravbhattacharya001.github.io/Vidly/) |
 
 ---
 
