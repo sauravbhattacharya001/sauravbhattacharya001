@@ -15,8 +15,8 @@
 <br/>
 
 ![Repos](https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Fapi.github.com%2Fusers%2Fsauravbhattacharya001&query=%24.public_repos&label=Repos&color=blue&style=flat-square)
-![Releases](https://img.shields.io/badge/Releases-560+-green?style=flat-square)
-![Commits](https://img.shields.io/badge/Commits-8700+-purple?style=flat-square)
+![Releases](https://img.shields.io/badge/Releases-580+-green?style=flat-square)
+![Commits](https://img.shields.io/badge/Commits-8750+-purple?style=flat-square)
 ![Live Sites](https://img.shields.io/badge/Live_Sites-17-orange?style=flat-square)
 [![GitHub Stars](https://img.shields.io/github/stars/sauravbhattacharya001?style=flat-square&label=Stars&color=yellow)](https://github.com/sauravbhattacharya001)
 [![License: MIT](https://img.shields.io/badge/License-MIT-brightgreen?style=flat-square)](LICENSE)
@@ -108,7 +108,7 @@ I build software at Microsoft, research AI agent governance, and create tools fo
 - **ICGIS 2026** Editor & Chair — June 27–28, 2026
   - ICGIS 2025: 49 papers accepted · [Springer proceedings](https://link.springer.com/book/10.1007/978-3-032-02853-2)
   - Themes: AI, Smart Infrastructure, Climate, Renewable Energy, Cybersecurity, Digital Health
-- Published in **IEEE** and **Springer**
+- Published in **IEEE** and **Springer** — [📄 Selected papers](https://github.com/sauravbhattacharya001/papers)
 
 ---
 
