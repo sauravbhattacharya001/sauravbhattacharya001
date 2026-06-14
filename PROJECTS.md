@@ -211,35 +211,6 @@ Detailed technical overview of all public repositories. For a quick summary, see
 
 ## 📱 Apps
 
-### [everything](https://github.com/sauravbhattacharya001/everything)
-
-> Full-stack Flutter/Dart application with event management.
-
-| | |
-|---|---|
-| **Language** | Dart / Flutter |
-| **Architecture** | BLoC pattern → SQLite → Material Design 3 |
-| **Release** | [v1.0.0](https://github.com/sauravbhattacharya001/everything/releases/tag/v1.0.0) |
-| **App** | [sauravbhattacharya001.github.io/everything](https://sauravbhattacharya001.github.io/everything/) |
-
-**What it does:**
-- **Event CRUD** with date/time picker and 4 priority levels
-- **Recurring events** with flexible recurrence rules (daily, weekly, monthly)
-- **Event templates** for quick creation from saved configurations
-- **Smart conflict detection** — scheduling proximity analysis with resolution suggestions
-- **Search, filter & sort** with combinable criteria
-- **Activity heatmap** — year-at-a-glance event density visualization
-- **Weekly agenda digest** — formatted event summaries for upcoming days
-- **Streak tracker** — consecutive-day activity analysis with motivational messages
-- **Time budget analysis** — time allocation across tags, priorities, and weekdays with budget targets
-- **Event location** support with venue tracking
-- **SQLite persistence** with proper BLoC state management
-- **Docker-ready** with multi-stage Dockerfile
-
-**Infrastructure:** CI (analyze + test + build), CodeQL (Dart static analysis), Dependabot, Docker workflow, branch protection, auto-labeler.
-
----
-
 ### [FeedReader](https://github.com/sauravbhattacharya001/FeedReader)
 
 > RSS feed reader for BBC World News (Swift/iOS).
