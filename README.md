@@ -95,14 +95,13 @@ I build software at Microsoft, research AI agent governance, and create tools fo
 
 ---
 
-## 🔬 Research & Publications
+## 🔬 Research
 
 - **AI Agent Identity & Accountability** — frameworks for governing autonomous agents in distributed systems
 - **AI Self-Replication Safety** — contract-enforced sandboxes to study and contain agent replication behaviors
 - **Metacognitive Byzantine Fault Tolerance (mBFT)** — consensus-driven metacognition for multi-agent systems
 - **AI Agent Evaluation** — testing frameworks for hallucination detection, drift monitoring, staleness/no-op detection, and behavioral assertions, with CI gating for agent runs
 - **Agentic Pipeline Patterns** — composable chain architectures for reliable multi-step AI workflows
-- Published in **IEEE** and **Springer** — [📄 Selected papers](https://github.com/sauravbhattacharya001/papers)
 
 ---
 
