@@ -53,39 +53,6 @@ Detailed technical overview of all public repositories. For a quick summary, see
 
 ---
 
-### [AgenticChat](https://github.com/sauravbhattacharya001/agenticchat)
-
-> Agentic conversation framework with multi-agent collaboration.
-
-| | |
-|---|---|
-| **Language** | JavaScript (vanilla, no frameworks) |
-| **Architecture** | Modular ES6 (ChatConfig, ConversationManager, ApiKeyManager, UIController, SandboxRunner) |
-| **Release** | [v1.0.0](https://github.com/sauravbhattacharya001/agenticchat/releases/tag/v1.0.0) |
-| **Demo** | [sauravbhattacharya001.github.io/agenticchat](https://sauravbhattacharya001.github.io/agenticchat/) |
-
-**What it does:**
-- Client-side agentic chat with GPT-4o integration
-- **30+ modular features** built as revealing-module-pattern IIFEs
-- **Sandboxed code execution** via postMessage-based iframe isolation
-- **Session management** with auto-save, import/export, and conversation tags
-- **Slash commands** for quick actions (/focus, /tags, /timing, etc.)
-- **Message search** with highlight navigation and match counting
-- **Bookmarks & pinning** for important messages
-- **Message annotations** and **conversation chapters** for organization
-- **Conversation timeline**, **summarizer**, and **fork** support
-- **Voice input**, **read aloud**, and **message diff** comparison
-- **Prompt templates** across 4 categories (Data & Charts, Web & APIs, Utilities, Fun & Creative)
-- **Conversation history** panel with Markdown/JSON export
-- **Token usage tracking** with cost estimation
-- **Focus/zen mode** for distraction-free writing
-- **Persona presets** and **model selector** for different AI configurations
-- **Scratchpad**, **quick replies**, **input history**, and **response time badges**
-
-**Infrastructure:** CI (HTMLHint + ESLint + secret scanning), CodeQL, 100+ Jest tests, Docker workflow, npm publishing, branch protection, documentation site.
-
----
-
 ### [AgentBox](https://github.com/sauravbhattacharya001/getagentbox)
 
 > AI agents as a service — personal AI assistants accessible via messaging.
@@ -177,38 +144,6 @@ Detailed technical overview of all public repositories. For a quick summary, see
 
 ---
 
-### [GraphVisual](https://github.com/sauravbhattacharya001/GraphVisual)
-
-> Graph application to study community evolution in student communities.
-
-| | |
-|---|---|
-| **Language** | Java (Swing GUI) |
-| **Architecture** | PostgreSQL → Java data pipeline → graph model → Swing visualization |
-| **Release** | [v1.0.0](https://github.com/sauravbhattacharya001/GraphVisual/releases/tag/v1.0.0) |
-
-**What it does:**
-- **Network statistics panel**: node/edge counts, density, degree distribution, hub detection
-- **Shortest path finder**: BFS (hop-optimal) and Dijkstra (weight-optimal) with visual path highlighting
-- **Meeting extraction algorithm** from PostgreSQL communication data
-- **Relationship classification** with configurable thresholds
-- **Timeline visualization** for community evolution
-- **Minimum spanning tree** — Kruskal and Prim algorithms with visual highlighting
-- **Graph coloring** — greedy coloring with chromatic number analysis
-- **Community detection** — modularity-based community identification
-- **GraphML export** — standard graph format for interoperability with Gephi, NetworkX, etc.
-- **Degree distribution analyzer** — statistical analysis of node degree distributions
-- **Graph diameter & eccentricity** — computes diameter, radius, center, and periphery vertices
-- **Link prediction** — Jaccard coefficient, Adamic-Adar, common neighbours for predicting future edges
-- **Graph generator** — 10 topologies (complete, cycle, star, grid, tree, path, bipartite, Petersen, wheel, random)
-- **Topological sort** — Kahn's algorithm with cycle detection for DAGs
-- **Influence spread simulation** — Independent Cascade (IC), Linear Threshold (LT), and SIR models with cached neighbor lookups
-- **Graph similarity** — spectral comparison via Jacobi eigenvalue decomposition
-
-**Infrastructure:** CI (Java 11/17), CodeQL, Dependabot, auto-labeler, branch protection. 2400+ tests.
-
----
-
 ## 📱 Apps
 
 ### [FeedReader](https://github.com/sauravbhattacharya001/FeedReader)
@@ -230,69 +165,6 @@ Detailed technical overview of all public repositories. For a quick summary, see
 - **Hardened ATS** with URL scheme allowlist and HTML sanitization
 
 **Infrastructure:** CI, CodeQL (Swift), Dependabot, Docker workflow, 20+ security tests.
-
----
-
-### [Vidly](https://github.com/sauravbhattacharya001/Vidly)
-
-> Video rental management app (C# / ASP.NET MVC).
-
-| | |
-|---|---|
-| **Language** | C# / .NET Framework 4.8 |
-| **Architecture** | MVC → Repository Pattern (thread-safe, in-memory) → Razor Views |
-| **Release** | [v1.0.0](https://github.com/sauravbhattacharya001/Vidly/releases/tag/v1.0.0) |
-| **Docs** | [sauravbhattacharya001.github.io/Vidly](https://sauravbhattacharya001.github.io/Vidly/) |
-
-**What it does:**
-- **Movie management**: CRUD, genres (10 types), 5-star ratings, search/filter/sort
-- **Customer management**: CRUD, 4-tier membership, search, statistics dashboard
-- **Rental system**: checkout/return workflow, $1.50/day late fees, overdue tracking
-- **Security**: CSP headers, httpOnly cookies, debug disabled, custom errors
-
-**Infrastructure:** CI (MSBuild), CodeQL, code coverage (coverlet), Docker (Windows container), NuGet publishing, branch protection, auto-labeler, 11-section docs site.
-
----
-
-### [BioBots](https://github.com/sauravbhattacharya001/BioBots)
-
-> 3D printer run statistics and monitoring tool.
-
-| | |
-|---|---|
-| **Language** | C# (backend) + JavaScript (frontend) |
-| **Architecture** | ASP.NET Web API → JSON file cache (Lazy\<T\>) → Chart.js dashboard |
-| **Release** | [v1.0.0](https://github.com/sauravbhattacharya001/BioBots/releases/tag/v1.0.0) |
-| **Site** | [sauravbhattacharya001.github.io/BioBots](https://sauravbhattacharya001.github.io/BioBots/) |
-
-**What it does:**
-- **11 bioprint metrics** with RESTful query API (int + double aggregation)
-- **MetricDescriptor registry** — unified, boilerplate-free endpoint routing
-- **Interactive data explorer** with histograms, scatter plots, regression analysis
-- **Interactive data table** with sorting, search, numeric filtering, CSV export
-
-**Infrastructure:** CI (MSBuild + JSON/whitespace lint), Dependabot, Docker workflow, NuGet publishing, GitHub Pages analytics demo.
-
----
-
-### [gif-captcha](https://github.com/sauravbhattacharya001/gif-captcha)
-
-> GIF-based CAPTCHA research — animated visual puzzles for human verification.
-
-| | |
-|---|---|
-| **Language** | HTML/JavaScript |
-| **Architecture** | Static site with research data + interactive demos |
-| **Release** | [v1.0.0](https://github.com/sauravbhattacharya001/gif-captcha/releases/tag/v1.0.0) |
-| **Demo** | [sauravbhattacharya001.github.io/gif-captcha](https://sauravbhattacharya001.github.io/gif-captcha/) |
-
-**What it does:**
-- **7 interactive research tools**: visual puzzle demo, research analysis dashboard, AI response simulator, temporal challenge explorer, benchmark suite, cognitive load analyzer (6-dimension complexity scoring), CAPTCHA generator
-- **Research analysis** — 6-category CAPTCHA taxonomy, human vs AI radar chart, multi-model comparison
-- **Cognitive load analysis** — visual processing, temporal reasoning, cultural context, humor/irony, spatial awareness, narrative comprehension scoring
-- **Security**: CSP headers, noopener/noreferrer, nginx hardened config, non-root Docker container
-
-**Infrastructure:** CI (HTML validation + security audit), Docker workflow (nginx:alpine), Dependabot, branch protection.
 
 ---
 
@@ -336,4 +208,4 @@ All repositories follow consistent DevOps practices:
 
 ---
 
-*Last updated: March 2026*
+*Last updated: June 2026*
