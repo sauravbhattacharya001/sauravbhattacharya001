@@ -674,10 +674,10 @@ describe("filterProjects", () => {
     });
 
     test("filters by text query matching description", () => {
-        win._filterState.query = "bioprinter";
+        win._filterState.query = "Monte Carlo";
         const results = win.filterProjects();
         expect(results.length).toBeGreaterThan(0);
-        expect(results.some(p => p.repo === "BioBots")).toBe(true);
+        expect(results.some(p => p.repo === "ai")).toBe(true);
     });
 
     test("combines category and text filters (AND)", () => {

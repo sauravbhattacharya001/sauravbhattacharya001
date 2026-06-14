@@ -38,16 +38,6 @@ var PROJECTS = [
     },
     {
         category: "AI & Agents",
-        icon: "💬", repo: "agenticchat", title: "AgenticChat",
-        desc: "Agentic conversation framework — GPT-4o chat with sandboxed code execution, 30+ modular features including voice input, session management, conversation tags, search, bookmarks, annotations, focus mode.",
-        tags: ["JavaScript", "GPT-4o", "Code Execution"],
-        links: [
-            { label: "Code", url: "https://github.com/sauravbhattacharya001/agenticchat" },
-            { label: "Demo", url: "https://sauravbhattacharya001.github.io/agenticchat/" }
-        ]
-    },
-    {
-        category: "AI & Agents",
         icon: "🛡️", repo: "ai", title: "AI Safety Research",
         desc: "Contract-enforced sandbox for studying AI agent self-replication safety — 34 analysis modules including Monte Carlo simulation, game-theory modeling, alignment drift detection, and interactive reports.",
         tags: ["Python", "AI Safety", "Monte Carlo"],
@@ -91,16 +81,6 @@ var PROJECTS = [
             { label: "Docs", url: "https://sauravbhattacharya001.github.io/prompt/" }
         ]
     },
-    {
-        category: "Languages & Tools",
-        icon: "🎭", repo: "gif-captcha", title: "gif-captcha",
-        desc: "GIF-based CAPTCHA research — 8 interactive tools: visual puzzles, temporal challenges, AI simulator, cognitive load analyzer, accessibility audit.",
-        tags: ["HTML/JS", "Research", "Security"],
-        links: [
-            { label: "Code", url: "https://github.com/sauravbhattacharya001/gif-captcha" },
-            { label: "Demo", url: "https://sauravbhattacharya001.github.io/gif-captcha/" }
-        ]
-    },
 
     // --- Visualization & Data ---
     {
@@ -113,28 +93,8 @@ var PROJECTS = [
             { label: "Demo", url: "https://sauravbhattacharya001.github.io/VoronoiMap/" }
         ]
     },
-    {
-        category: "Visualization & Data",
-        icon: "🔗", repo: "GraphVisual", title: "GraphVisual",
-        desc: "Graph visualization for community evolution — centrality (Brandes'), MST, graph coloring, community detection, shortest path, link prediction, graph generation, topological sort, influence spread simulation, GraphML export. 2400+ tests.",
-        tags: ["Java", "Graph Theory", "Visualization"],
-        links: [
-            { label: "Code", url: "https://github.com/sauravbhattacharya001/GraphVisual" },
-            { label: "Site", url: "https://sauravbhattacharya001.github.io/GraphVisual/" }
-        ]
-    },
 
     // --- Apps & More ---
-    {
-        category: "Apps & More",
-        icon: "📅", repo: "everything", title: "everything",
-        desc: "Full-stack Flutter/Dart app — event management with calendar view, recurring events, conflict detection, activity heatmap, time budgets, streak tracking, BLoC pattern, SQLite persistence.",
-        tags: ["Dart", "Flutter", "BLoC"],
-        links: [
-            { label: "Code", url: "https://github.com/sauravbhattacharya001/everything" },
-            { label: "App", url: "https://sauravbhattacharya001.github.io/everything/" }
-        ]
-    },
     {
         category: "Apps & More",
         icon: "📰", repo: "FeedReader", title: "FeedReader",
@@ -143,26 +103,6 @@ var PROJECTS = [
         links: [
             { label: "Code", url: "https://github.com/sauravbhattacharya001/FeedReader" },
             { label: "Site", url: "https://sauravbhattacharya001.github.io/FeedReader/" }
-        ]
-    },
-    {
-        category: "Apps & More",
-        icon: "🧬", repo: "BioBots", title: "BioBots",
-        desc: "3D bioprinter analytics — 11 metrics, anomaly detection (Z-Score + IQR), interactive data explorer with histograms & regression.",
-        tags: ["JavaScript", "Analytics", "Data Viz"],
-        links: [
-            { label: "Code", url: "https://github.com/sauravbhattacharya001/BioBots" },
-            { label: "Site", url: "https://sauravbhattacharya001.github.io/BioBots/" }
-        ]
-    },
-    {
-        category: "Apps & More",
-        icon: "🎬", repo: "Vidly", title: "Vidly",
-        desc: "Video rental management (C# / ASP.NET MVC) — CRUD, 4-tier membership, rental checkout/returns, late fees.",
-        tags: ["C#", "ASP.NET", "MVC"],
-        links: [
-            { label: "Code", url: "https://github.com/sauravbhattacharya001/Vidly" },
-            { label: "Site", url: "https://sauravbhattacharya001.github.io/Vidly/" }
         ]
     },
     {
