@@ -7,7 +7,6 @@
 
 [![LinkedIn](https://img.shields.io/badge/LinkedIn-0A66C2?style=for-the-badge&logo=linkedin&logoColor=white)](https://www.linkedin.com/in/sauravbhattacharya001/)
 [![Email](https://img.shields.io/badge/Email-EA4335?style=for-the-badge&logo=gmail&logoColor=white)](mailto:online.saurav@gmail.com)
-[![ICGIS 2026](https://img.shields.io/badge/ICGIS_2026-June_27--28-4B0082?style=for-the-badge)](#-research--publications)
 [![AgentBox](https://img.shields.io/badge/AgentBox-Live-00C853?style=for-the-badge&logo=probot&logoColor=white)](https://sauravbhattacharya001.github.io/getagentbox/)
 [![AgentLens](https://img.shields.io/badge/AgentLens-v1.65.0-58A6FF?style=for-the-badge&logo=python&logoColor=white)](https://github.com/sauravbhattacharya001/agentlens)
 [![WinSentinel](https://img.shields.io/badge/WinSentinel-v1.19.1-FF6F00?style=for-the-badge&logo=windows&logoColor=white)](https://winsentinel.ai)
@@ -43,7 +42,6 @@ I build software at Microsoft, research AI agent governance, and create tools fo
 - 🔗 Building **[agentic-recipes](https://github.com/sauravbhattacharya001/agentic-recipes)** — canonical agentic pipeline patterns on prompt-lib: plan-and-execute, self-consistency voting, multi-agent debate, fan-out/fan-in, middleware pipelines
 - 🤖 Running **[AgentBox](https://sauravbhattacharya001.github.io/getagentbox/)** — AI agents as a service, open access
 - 🔤 Evolving **[sauravcode](https://github.com/sauravbhattacharya001/sauravcode)** — my own programming language with f-strings, try/catch, and zero noise · **v7.10.0** — code immune system & security hardening
-- 📋 Chairing **ICGIS 2026** (June 27–28) — international conference on global innovations
 - 🔬 Researching AI agent identity, accountability & self-replication safety · **v3.15.0** — agentic advisors, SLA monitor refactor & 190 new tests
 - 🧠 Building **[mBFT](https://github.com/sauravbhattacharya001/metacognition)** — Metacognitive Byzantine Fault Tolerance · **v1.8.0** — circuit breaker for consensus fault isolation
 - 💬 Building **[AgenticChat](https://github.com/sauravbhattacharya001/agenticchat)** — agentic conversation framework · **v2.46.0** — deadline-tracker perf, SW LRU bound, sandbox hardening
@@ -104,9 +102,6 @@ I build software at Microsoft, research AI agent governance, and create tools fo
 - **Metacognitive Byzantine Fault Tolerance (mBFT)** — consensus-driven metacognition for multi-agent systems
 - **AI Agent Evaluation** — testing frameworks for hallucination detection, drift monitoring, staleness/no-op detection, and behavioral assertions, with CI gating for agent runs
 - **Agentic Pipeline Patterns** — composable chain architectures for reliable multi-step AI workflows
-- **ICGIS 2026** Editor & Chair — June 27–28, 2026
-  - ICGIS 2025: 49 papers accepted · [Springer proceedings](https://link.springer.com/book/10.1007/978-3-032-02853-2)
-  - Themes: AI, Smart Infrastructure, Climate, Renewable Energy, Cybersecurity, Digital Health
 - Published in **IEEE** and **Springer** — [📄 Selected papers](https://github.com/sauravbhattacharya001/papers)
 
 ---
