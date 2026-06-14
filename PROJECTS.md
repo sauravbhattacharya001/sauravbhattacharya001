@@ -6,6 +6,45 @@ Detailed technical overview of all public repositories. For a quick summary, see
 
 ## 🤖 AI & Agents
 
+### [agent-eval](https://github.com/sauravbhattacharya001/agent-eval)
+
+> Zero-dependency TypeScript toolkit for evaluating AI agent outputs - in tests, in production transcripts, and as a CI gate.
+
+| | |
+|---|---|
+| **Language** | TypeScript (Node.js) |
+| **Architecture** | Pure cores (no IO) + thin runner/wiring layers; single public barrel |
+| **Dependencies** | Zero runtime dependencies |
+
+**Three ways to use it:**
+- **Eval framework** - Jest/Vitest-style assertions on an independence-first 3-tier pyramid (deterministic -> heuristic -> model-as-judge), with hallucination, drift, completeness, and actionability checks.
+- **Fleet monitoring** - score a directory of run transcripts, track score trends over time, and roll them up into a health scorecard.
+- **CI quality gate** - block a GitHub Action when an agent's output is empty, stale, off-task, or contradicts the run's real outcome (ground-truth verification).
+
+**Infrastructure:** CI build + `tsc --noEmit` + full unit suite green on every push.
+
+---
+
+### [Agentic Recipes](https://github.com/sauravbhattacharya001/agentic-recipes)
+
+> Canonical agentic pipeline examples built on [`promptlib`](https://github.com/sauravbhattacharya001/prompt) - composable prompt building blocks become autonomous multi-step agents.
+
+| | |
+|---|---|
+| **Language** | C# / .NET 8 |
+| **Built on** | promptlib (NuGet) |
+| **Patterns** | 12 orchestration recipes |
+
+**Recipes:**
+- **Research -> Summarize -> Format** (`PromptChain`), **Multi-Perspective Analysis** (`PromptOrchestrator`), **Code Review Pipeline** (`PromptPipeline`)
+- **Tool Agent Loop** (ReAct), **Conditional Router**, **Iterative Refinement** (critic loop)
+- **Guardrailed Pipeline** (inspect/decide/act), **Memory-Augmented Chain** (RAG with working memory), **RAG Pipeline** (TF-IDF + citations + abstention)
+- **Plan-and-Execute** (decompose/execute/adapt), **Self-Consistency** (sample/vote/decide), **Multi-Agent Debate** (argue/rebut/judge)
+
+**Infrastructure:** CI, CodeQL, codecov, branch protection.
+
+---
+
 ### [AgentLens](https://github.com/sauravbhattacharya001/agentlens)
 
 > Observability and explainability for AI agents — the "Datadog for AI agents."

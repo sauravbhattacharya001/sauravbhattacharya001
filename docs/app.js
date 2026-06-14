@@ -28,6 +28,24 @@ var PROJECTS = [
     },
     {
         category: "AI & Agents",
+        icon: "🧪", repo: "agent-eval", title: "agent-eval",
+        desc: "Zero-dependency TypeScript toolkit for evaluating AI agent outputs - in tests, in production transcripts, and as a CI gate. Three pillars: eval framework (3-tier assertion pyramid), fleet monitoring (score transcripts + trends + health scorecard), and a CI quality gate.",
+        tags: ["TypeScript", "Evals", "CI", "Monitoring"],
+        links: [
+            { label: "Code", url: "https://github.com/sauravbhattacharya001/agent-eval" }
+        ]
+    },
+    {
+        category: "AI & Agents",
+        icon: "📚", repo: "agentic-recipes", title: "Agentic Recipes",
+        desc: "Canonical agentic pipeline examples built on promptlib (.NET) - 12 orchestration patterns from linear chains and fan-out/fan-in to tool-agent ReAct loops, RAG, plan-and-execute, and multi-agent debate.",
+        tags: ["C#", ".NET 8", "Pipelines", "Patterns"],
+        links: [
+            { label: "Code", url: "https://github.com/sauravbhattacharya001/agentic-recipes" }
+        ]
+    },
+    {
+        category: "AI & Agents",
         icon: "🤖", repo: "getagentbox", title: "AgentBox",
         desc: "AI agents as a service — personal AI assistants accessible via messaging. Open access, 20 msg/day free tier.",
         tags: ["JavaScript", "AI Agents", "SaaS"],
