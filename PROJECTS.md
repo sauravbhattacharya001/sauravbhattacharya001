@@ -6,6 +6,29 @@ Detailed technical overview of all public repositories. For a quick summary, see
 
 ## 🤖 AI & Agents
 
+> **The agent stack** — the throughline is *write patterns (recipes) → gate outputs (eval) → observe runs (lens)*. `promptlib` (the `prompt` repo) is the .NET library underneath the recipes.
+
+### [Agentic Recipes](https://github.com/sauravbhattacharya001/agentic-recipes)
+
+> Canonical agentic pipeline examples built on [`promptlib`](https://github.com/sauravbhattacharya001/prompt) - composable prompt building blocks become autonomous multi-step agents.
+
+| | |
+|---|---|
+| **Language** | C# / .NET 8 |
+| **Built on** | promptlib (NuGet) |
+| **Patterns** | 14 orchestration recipes |
+
+**Recipes:**
+- **Research -> Summarize -> Format** (`PromptChain`), **Multi-Perspective Analysis** (`PromptOrchestrator`), **Code Review Pipeline** (`PromptPipeline`)
+- **Tool Agent Loop** (ReAct), **Conditional Router**, **Iterative Refinement** (critic loop)
+- **Guardrailed Pipeline** (inspect/decide/act), **Memory-Augmented Chain** (RAG with working memory), **RAG Pipeline** (TF-IDF + citations + abstention)
+- **Plan-and-Execute** (decompose/execute/adapt), **Self-Consistency** (sample/vote/decide), **Multi-Agent Debate** (argue/rebut/judge)
+- **Reflexion** (attempt/evaluate/reflect/retry), **Tree-of-Thoughts** (expand/evaluate/search)
+
+**Infrastructure:** CI, CodeQL, codecov, branch protection.
+
+---
+
 ### [agent-eval](https://github.com/sauravbhattacharya001/agent-eval)
 
 > Zero-dependency TypeScript toolkit for evaluating AI agent outputs - in tests, in production transcripts, and as a CI gate.
@@ -25,45 +48,25 @@ Detailed technical overview of all public repositories. For a quick summary, see
 
 ---
 
-### [Agentic Recipes](https://github.com/sauravbhattacharya001/agentic-recipes)
-
-> Canonical agentic pipeline examples built on [`promptlib`](https://github.com/sauravbhattacharya001/prompt) - composable prompt building blocks become autonomous multi-step agents.
-
-| | |
-|---|---|
-| **Language** | C# / .NET 8 |
-| **Built on** | promptlib (NuGet) |
-| **Patterns** | 12 orchestration recipes |
-
-**Recipes:**
-- **Research -> Summarize -> Format** (`PromptChain`), **Multi-Perspective Analysis** (`PromptOrchestrator`), **Code Review Pipeline** (`PromptPipeline`)
-- **Tool Agent Loop** (ReAct), **Conditional Router**, **Iterative Refinement** (critic loop)
-- **Guardrailed Pipeline** (inspect/decide/act), **Memory-Augmented Chain** (RAG with working memory), **RAG Pipeline** (TF-IDF + citations + abstention)
-- **Plan-and-Execute** (decompose/execute/adapt), **Self-Consistency** (sample/vote/decide), **Multi-Agent Debate** (argue/rebut/judge)
-
-**Infrastructure:** CI, CodeQL, codecov, branch protection.
-
----
-
 ### [AgentLens](https://github.com/sauravbhattacharya001/agentlens)
 
-> Observability and explainability for AI agents — the "Datadog for AI agents."
+> Observability and explainability for AI agents — "Datadog meets Chain-of-Thought."
 
 | | |
 |---|---|
-| **Language** | JavaScript (Node.js backend) + Python (SDK) |
+| **Language** | Python (SDK) + JavaScript (Node.js backend) |
 | **Architecture** | Python SDK → Node.js API → SQLite → React Dashboard |
-| **Release** | [v1.0.0](https://github.com/sauravbhattacharya001/agentlens/releases/tag/v1.0.0) |
+| **Release** | [v1.65.0](https://github.com/sauravbhattacharya001/agentlens/releases/tag/v1.65.0) |
 | **Docs** | [sauravbhattacharya001.github.io/agentlens](https://sauravbhattacharya001.github.io/agentlens/) |
 
 **What it does:**
-- **Python SDK** with decorators (`@trace_agent`, `@trace_tool`) for zero-config instrumentation
+- **Python SDK** with decorators (`@trace_agent`, `@trace_tool`) for zero-config instrumentation (live on PyPI)
 - **Session tracking** with hierarchical agent → tool → sub-agent spans
 - **Explainability engine** — understands *why* an agent made a decision, not just *what* it did
 - **Real-time dashboard** with session timeline, event stream, and token usage analytics
+- **Operational intelligence** — loop detection, SLO burn-rate alerts, and a model-migration advisor
 - **Session comparison** — side-by-side diff of two agent runs with visual charts
 - **Export** — JSON/CSV session export for offline analysis
-- **LangChain integration** as first target
 
 **Infrastructure:** CI (Node 18/20/22 + Python 3.9-3.13), CodeQL, Dependabot, branch protection, Docker workflow.
 
@@ -71,21 +74,21 @@ Detailed technical overview of all public repositories. For a quick summary, see
 
 ### [AI Safety Research](https://github.com/sauravbhattacharya001/ai)
 
-> Contract-enforced sandbox for studying AI agent self-replication safety.
+> Contract-enforced sandbox for studying AI agent self-replication safety — 144 modules, 100+ CLI commands, zero external dependencies.
 
 | | |
 |---|---|
 | **Language** | Python |
 | **Architecture** | Controller → Workers (sandboxed agents) with HMAC-signed manifests |
-| **Release** | [v1.0.0](https://github.com/sauravbhattacharya001/ai/releases/tag/v1.0.0) |
+| **Release** | [v3.15.0](https://github.com/sauravbhattacharya001/ai/releases/tag/v3.15.0) |
 | **Docs** | [sauravbhattacharya001.github.io/ai](https://sauravbhattacharya001.github.io/ai/) |
 
 **What it does:**
 - Studies how AI agents attempt self-replication under various containment strategies
-- **5 base replication strategies** (greedy, conservative, random, chain, burst) plus 34 analysis modules for safety policy, chaos testing, forensics, game theory, alignment drift, and incident response
+- **5 base replication strategies** (greedy, conservative, random, chain, burst) plus 144 modules spanning safety policy, chaos testing, forensics, game theory, alignment & escalation drift, agentic advisors, SLA monitoring, and incident response
 - **ManifestSigner** with HMAC-SHA256 for cryptographic spawn authorization
 - **Controller** enforces depth limits, resource caps, and kill switches
-- **Simulation Runner CLI** with ASCII worker tree visualization and JSON export
+- **Simulation Runner CLI** (100+ commands) with ASCII worker tree visualization and JSON export
 - **Comparison Runner** for side-by-side strategy analysis with rankings
 
 **Infrastructure:** CI (Python 3.10-3.12, mypy + flake8), CodeQL, Docker (multi-arch amd64+arm64), PyPI publishing, branch protection, MkDocs docs site.
@@ -119,7 +122,7 @@ Detailed technical overview of all public repositories. For a quick summary, see
 |---|---|
 | **Language** | Python (interpreter + compiler) |
 | **Architecture** | Lexer → Parser → AST → Tree-walk Interpreter *or* C code generator → GCC → native binary |
-| **Release** | [v2.0.0](https://github.com/sauravbhattacharya001/sauravcode/releases/tag/v2.0.0) |
+| **Release** | [v7.10.0](https://github.com/sauravbhattacharya001/sauravcode/releases/tag/v7.10.0) |
 | **Docs** | [sauravbhattacharya001.github.io/sauravcode](https://sauravbhattacharya001.github.io/sauravcode/) |
 
 **What it does:**
@@ -128,7 +131,7 @@ Detailed technical overview of all public repositories. For a quick summary, see
 - **Module imports**: `import` statement for `.srv` files with circular dependency detection and diamond dependency handling
 - **Interactive REPL** with persistent state, multi-line blocks, command history
 - **Standard library**: upper/lower/trim/replace/split/join/contains, abs/round/floor/ceil/sqrt/power, type_of/to_string/range/sort
-- **600+ tests** covering interpreter, compiler, REPL, and module imports
+- **2,300+ tests** (40 test modules) covering interpreter, compiler, REPL, and module imports
 
 **Full language specification:** [docs/LANGUAGE.md](https://github.com/sauravbhattacharya001/sauravcode/blob/master/docs/LANGUAGE.md) with EBNF grammar.
 
@@ -138,19 +141,21 @@ Detailed technical overview of all public repositories. For a quick summary, see
 
 ### [prompt](https://github.com/sauravbhattacharya001/prompt)
 
-> Prompt engineering toolkit for reliable LLM interactions in .NET.
+> Comprehensive .NET library for Azure OpenAI prompt engineering — templates, chains, safety guards, token management, and version control.
 
 | | |
 |---|---|
 | **Language** | C# / .NET 8 |
 | **Architecture** | `AzureLLM` client → Azure OpenAI → retry/streaming/conversation management |
-| **Release** | [v2.0.0](https://github.com/sauravbhattacharya001/prompt/releases/tag/v2.0.0) |
+| **Release** | [v5.25.0](https://github.com/sauravbhattacharya001/prompt/releases/tag/v5.25.0) |
+| **Library** | 177 classes across 9 categories (NuGet: `promptlib`) |
 | **Docs** | [sauravbhattacharya001.github.io/prompt](https://sauravbhattacharya001.github.io/prompt/) |
 
 **What it does:**
 - **AzureLLM** wrapper with env-based config, cached client (thread-safe double-checked locking)
 - **Multi-turn Conversation** class with per-conversation parameters (Temperature, MaxTokens, TopP, penalties)
 - **PromptTemplate** with `{{variable}}` placeholders, defaults, strict/non-strict rendering, composition
+- **PromptChain / PromptPipeline** for multi-step orchestration; **PromptGuard** prompt-injection detection; **PromptLibrary** registry
 - **Conversation serialization** — full SaveToJson/LoadFromJson round-trip
 - **Retry logic** with configurable maxRetries (validated, cached)
 
@@ -160,7 +165,7 @@ Detailed technical overview of all public repositories. For a quick summary, see
 
 ## 📊 Visualization & Data
 
-### [VoronoiMap](https://github.com/sauravbhattacharya001/VoronoiMap) ⭐ 3
+### [VoronoiMap](https://github.com/sauravbhattacharya001/VoronoiMap) ⭐ 5
 
 > Voronoi diagram generation and spatial partitioning toolkit.
 
@@ -168,16 +173,18 @@ Detailed technical overview of all public repositories. For a quick summary, see
 |---|---|
 | **Language** | Python |
 | **Architecture** | KDTree spatial index → iterative nearest-neighbor estimation → SVG/HTML/GeoJSON output |
+| **Release** | [v1.56.0](https://github.com/sauravbhattacharya001/VoronoiMap/releases/tag/v1.56.0) |
 | **Demo** | [sauravbhattacharya001.github.io/VoronoiMap](https://sauravbhattacharya001.github.io/VoronoiMap/) |
 
 **What it does:**
+- **Lloyd relaxation** — iterative centroid smoothing for uniform tessellations with animated HTML visualization
 - **6 color schemes** for Voronoi region rendering
 - **SVG visualization** with scipy-backed region computation
 - **Interactive HTML** with Canvas pan/zoom, hover tooltips, theme toggle
-- **GeoJSON export** for GIS tool integration (FeatureCollection with CRS support)
-- **CLI**: `--visualize`, `--interactive`, `--geojson`, `--color-scheme`, `--show-labels`
-- **PyPI publishable** with `pyproject.toml` (hatchling)
-- **143 tests** covering geometry, statistics, visualization, CLI, edge cases
+- **Hotspot detection** — Getis-Ord Gi* statistic with significance testing
+- **Export** — GeoJSON (RFC 7946), KML, GPX, DXF for GIS and fabrication tools (QGIS, Mapbox, Leaflet, ArcGIS)
+- **CLI**: `vormap_viz`, `vormap_geojson`, `vormap_hotspot`, `--color-scheme`, `--show-labels`
+- **PyPI published** with `pyproject.toml` (hatchling)
 
 **Infrastructure:** CI (Python 3.9-3.12 + lint), CodeQL, code coverage (Codecov), Docker workflow (multi-arch), branch protection, MkDocs docs site, PyPI publishing.
 
@@ -187,16 +194,17 @@ Detailed technical overview of all public repositories. For a quick summary, see
 
 ### [FeedReader](https://github.com/sauravbhattacharya001/FeedReader)
 
-> RSS feed reader for BBC World News (Swift/iOS).
+> A native iOS RSS feed reader (Swift) with offline caching and image support.
 
 | | |
 |---|---|
 | **Language** | Swift 5 |
 | **Architecture** | MVC with XMLParser, URLSession, NSCache, NSCoding persistence |
-| **Release** | [v1.0.0](https://github.com/sauravbhattacharya001/FeedReader/releases/tag/v1.0.0) |
+| **Release** | [v1.15.0](https://github.com/sauravbhattacharya001/FeedReader/releases/tag/v1.15.0) |
 
 **What it does:**
 - **Async image loading** with NSCache and cell-reuse guards
+- **Offline caching** of fetched articles for reading without a connection
 - **Bookmarks** — swipe-to-bookmark, persistent storage, dedicated bookmarks view
 - **Pull-to-refresh** and **search/filter** (real-time title + description matching)
 - **Share** via UIActivityViewController
@@ -220,10 +228,11 @@ Detailed technical overview of all public repositories. For a quick summary, see
 | **Docs** | [sauravbhattacharya001.github.io/Ocaml-sample-code](https://sauravbhattacharya001.github.io/Ocaml-sample-code/) |
 
 **What it does:**
-- **17 modules** covering the full spectrum of functional programming
-- **Data structures**: BST, trie, functional hashmap (persistent/immutable), bloom filter (probabilistic set membership), red-black trees (balanced BST), union-find (disjoint sets), leftist heap (priority queue)
-- **Algorithms**: graph algorithms (BFS, DFS, shortest path, components, cycle detection, topological sort), merge sort (tail-recursive), sorting algorithms, regex engine (Thompson's NFA construction)
-- **Functional patterns**: lazy streams, parser combinators, higher-order functions
+- **187 self-contained programs** covering the full spectrum of functional programming
+- **Data structures**: BST, trie, functional hashmap (persistent/immutable), bloom filter (probabilistic set membership), red-black trees (balanced BST), union-find (disjoint sets), leftist heap (priority queue), finger trees, ropes, HAMT, skip lists
+- **Algorithms**: graph algorithms (BFS, DFS, shortest path, components, cycle detection, topological sort), network flow, Myers diff, Huffman coding, HyperLogLog, sorting, regex engine (Thompson's NFA construction)
+- **Languages & logic**: lambda calculus, type inference, SAT solvers, theorem proving, Datalog engines, Earley/PEG parsers, abstract interpretation, model checking
+- **Advanced**: automatic differentiation, neural networks, probability monads, Monte Carlo, ray tracing, FFT/signal processing, behavior trees & autonomous agent task planning
 - **Learning path**: basics → recursion → pattern matching → modules/functors → advanced data structures → graph algorithms
 
 **Infrastructure:** CodeQL, Docker (multi-stage, native binaries), docs site with syntax-highlighted code.

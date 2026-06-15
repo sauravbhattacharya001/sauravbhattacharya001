@@ -18,12 +18,12 @@ var PROJECTS = [
     {
         category: "AI & Agents",
         icon: "🔍", repo: "agentlens", title: "AgentLens",
-        desc: "Observability & explainability platform for AI agents — trace, debug, and understand agent behavior at scale. Python SDK + Node.js backend + dashboard.",
+        desc: "Observability & explainability for AI agents — \"Datadog meets Chain-of-Thought.\" See how an agent got to its answer: trace runs, debug tool calls, and understand behavior at scale. Python SDK (PyPI) + Node.js backend + dashboard, loop detection and SLO burn-rate.",
         tags: ["Python", "Node.js", "Observability", "AI Agents"],
         links: [
             { label: "Code", url: "https://github.com/sauravbhattacharya001/agentlens" },
             { label: "Docs", url: "https://sauravbhattacharya001.github.io/agentlens/" },
-            { label: "v1.0.0", url: "https://github.com/sauravbhattacharya001/agentlens/releases/tag/v1.0.0" }
+            { label: "v1.65.0", url: "https://github.com/sauravbhattacharya001/agentlens/releases/tag/v1.65.0" }
         ]
     },
     {
@@ -38,7 +38,7 @@ var PROJECTS = [
     {
         category: "AI & Agents",
         icon: "📚", repo: "agentic-recipes", title: "Agentic Recipes",
-        desc: "Canonical agentic pipeline examples built on promptlib (.NET) - 12 orchestration patterns from linear chains and fan-out/fan-in to tool-agent ReAct loops, RAG, plan-and-execute, and multi-agent debate.",
+        desc: "Canonical agentic pipeline patterns built on promptlib (.NET) - 14 orchestration recipes from research/summarize chains to tool-agent ReAct loops, RAG, plan-and-execute, self-consistency voting, multi-agent debate, reflexion, and tree-of-thoughts. The 'write patterns' layer of the agent stack.",
         tags: ["C#", ".NET 8", "Pipelines", "Patterns"],
         links: [
             { label: "Code", url: "https://github.com/sauravbhattacharya001/agentic-recipes" }
@@ -57,7 +57,7 @@ var PROJECTS = [
     {
         category: "AI & Agents",
         icon: "🛡️", repo: "ai", title: "AI Safety Research",
-        desc: "Contract-enforced sandbox for studying AI agent self-replication safety — 34 analysis modules including Monte Carlo simulation, game-theory modeling, alignment drift detection, and interactive reports.",
+        desc: "Contract-enforced sandbox for studying AI agent self-replication safety — 144 modules and 100+ CLI commands covering Monte Carlo simulation, game-theory modeling, alignment drift detection, and interactive reports. Zero external dependencies.",
         tags: ["Python", "AI Safety", "Monte Carlo"],
         links: [
             { label: "Code", url: "https://github.com/sauravbhattacharya001/ai" },
@@ -69,12 +69,12 @@ var PROJECTS = [
     {
         category: "Security",
         icon: "🔒", repo: "WinSentinel", title: "WinSentinel",
-        desc: "Always-on Windows security agent — real-time monitoring, AI-powered threat detection, auto-remediation, 24 audit modules, compliance profiles.",
+        desc: "Always-on Windows security agent — real-time monitoring, AI-powered correlation, auto-remediation, 34 audit modules, compliance profiles, plugin system.",
         tags: ["C#", ".NET 8", "WPF", "Security"],
         links: [
             { label: "Code", url: "https://github.com/sauravbhattacharya001/WinSentinel" },
-            { label: "Docs", url: "https://sauravbhattacharya001.github.io/WinSentinel/" },
-            { label: "v1.1.0", url: "https://github.com/sauravbhattacharya001/WinSentinel/releases/tag/v1.1.0" }
+            { label: "Site", url: "https://winsentinel.ai" },
+            { label: "v1.19.1", url: "https://github.com/sauravbhattacharya001/WinSentinel/releases/tag/v1.19.1" }
         ]
     },
 
@@ -82,7 +82,7 @@ var PROJECTS = [
     {
         category: "Languages & Tools",
         icon: "🔤", repo: "sauravcode", title: "sauravcode",
-        desc: "A programming language with zero noise — no parens, no commas, no semicolons. Interpreter + compiler (.srv → C → native). 600+ tests.",
+        desc: "A programming language with zero noise — no parens, no commas, no semicolons. Interpreter + compiler (.srv → C → native). F-strings, try/catch, module imports, 2,300+ tests.",
         tags: ["Python", "C", "Compiler", "Language Design"],
         links: [
             { label: "Code", url: "https://github.com/sauravbhattacharya001/sauravcode" },
@@ -104,7 +104,7 @@ var PROJECTS = [
     {
         category: "Visualization & Data",
         icon: "📐", repo: "VoronoiMap", title: "VoronoiMap",
-        desc: "Voronoi diagram generation & spatial partitioning — Lloyd relaxation, neighbourhood graphs, 6 color schemes, GeoJSON export. 285 tests.",
+        desc: "Voronoi diagram generation & spatial partitioning — Lloyd relaxation, KDE density fields, neighbourhood graphs, 6 color schemes, hotspot detection, and fabrication-ready export (SVG, GeoJSON, KML, GPX, DXF).",
         tags: ["Python", "Algorithms", "Geometry"],
         links: [
             { label: "Code", url: "https://github.com/sauravbhattacharya001/VoronoiMap" },
@@ -116,7 +116,7 @@ var PROJECTS = [
     {
         category: "Apps & More",
         icon: "📰", repo: "FeedReader", title: "FeedReader",
-        desc: "RSS feed reader (Swift/iOS) — read/unread tracking, reading stats dashboard, bookmarks, search, offline support.",
+        desc: "A native iOS RSS feed reader (Swift) with offline caching and image support — AI-powered feed analysis, bookmarks, search, pull-to-refresh, and hardened networking.",
         tags: ["Swift", "iOS", "RSS"],
         links: [
             { label: "Code", url: "https://github.com/sauravbhattacharya001/FeedReader" },
@@ -126,7 +126,7 @@ var PROJECTS = [
     {
         category: "Apps & More",
         icon: "🐫", repo: "Ocaml-sample-code", title: "OCaml Samples",
-        desc: "45-module functional programming collection — BST, trie, hashmap, bloom filter, red-black trees, union-find, graph algorithms, regex engine, type inference, lambda calculus, SAT solver, and more.",
+        desc: "187 self-contained OCaml programs — BST, trie, hashmap, bloom filter, red-black trees, union-find, graph algorithms, regex engine, type inference, lambda calculus, SAT solver, theorem proving, neural networks, and more.",
         tags: ["OCaml", "Functional", "Data Structures"],
         links: [
             { label: "Code", url: "https://github.com/sauravbhattacharya001/Ocaml-sample-code" },
