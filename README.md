@@ -4,7 +4,7 @@
 
 **Software Engineer · AI Agent Tooling & Security**
 
-[![LinkedIn](https://img.shields.io/badge/LinkedIn-0A66C2?style=for-the-badge&logo=linkedin&logoColor=white)](https://www.linkedin.com/in/sauravbhattacharya/)
+[![LinkedIn](https://img.shields.io/badge/LinkedIn-0A66C2?style=for-the-badge&logo=linkedin&logoColor=white)](https://www.linkedin.com/in/saurav-bhattacharya/)
 [![Email](https://img.shields.io/badge/Email-EA4335?style=for-the-badge&logo=gmail&logoColor=white)](mailto:online.saurav@gmail.com)
 [![WinSentinel](https://img.shields.io/badge/WinSentinel-Live-FF6F00?style=for-the-badge&logo=windows&logoColor=white)](https://winsentinel.ai)
 
