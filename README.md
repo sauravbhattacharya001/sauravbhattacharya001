@@ -27,8 +27,6 @@ A focused toolchain for building and operating AI agents: **write patterns → g
 | **[prompt](https://github.com/sauravbhattacharya001/prompt)** | Prompt engineering toolkit — template engine, prompt chaining, injection detection, and bias checks. *(write the patterns)* | C# / .NET |
 | **[agentic-recipes](https://github.com/sauravbhattacharya001/agentic-recipes)** | Canonical agentic pipeline patterns — summarization chains, tool-agent ReAct loops, RAG, plan-and-execute, self-consistency, multi-agent debate, reflexion, tree-of-thoughts. *(compose the patterns)* | C# / .NET |
 
-> **Direction:** consolidating `agent-eval` + `AgentLens` into a single unopinionated TypeScript product — trace your agent and gate its output from any backend.
-
 ---
 
 ## 🛡️ WinSentinel
