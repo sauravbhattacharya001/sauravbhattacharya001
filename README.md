@@ -18,11 +18,11 @@ I build tooling for AI agents — the layer that makes autonomous systems **obse
 
 ## 🤖 The Agent Stack
 
-A focused toolchain for building and operating AI agents: **write patterns → gate outputs → observe runs.**
+A focused toolchain for building and operating AI agents: **write patterns → diagnose the runs → observe behavior.**
 
 | Project | What it does | Stack |
 |---|---|---|
-| **[agent-eval](https://github.com/sauravbhattacharya001/agent-eval)** | Zero-dependency toolkit for evaluating AI agent **outputs** — an eval framework (hallucination, drift, staleness, contradiction checks), fleet monitoring, and a CI quality gate that blocks on empty/stale/off-task output. *(gate the outputs)* | TypeScript |
+| **[agent-eval](https://github.com/sauravbhattacharya001/agent-eval)** | Zero-dependency toolkit for evaluating AI agent **outputs**. Post-hoc and report-only: it reads the traces an agent already produced, finds the runs that failed the *process* — timed out, ran away, stalled, or *lied about their own outcome* — worst-first, and hands back the diagnostic data. It **reduces the search space** for a fix; it never gates a build. *(diagnose the runs)* | TypeScript |
 | **[AgentLens](https://github.com/sauravbhattacharya001/agentlens)** | Observability & explainability for AI agents — trace **how** an agent reached its answer: capture every model + tool step, debug, and understand behavior. SDK + collector + dashboard. *(observe the runs)* | TypeScript |
 | **[prompt](https://github.com/sauravbhattacharya001/prompt)** | Prompt engineering toolkit — template engine, prompt chaining, injection detection, and bias checks. *(write the patterns)* | C# / .NET |
 | **[agentic-recipes](https://github.com/sauravbhattacharya001/agentic-recipes)** | Canonical agentic pipeline patterns — summarization chains, tool-agent ReAct loops, RAG, plan-and-execute, self-consistency, multi-agent debate, reflexion, tree-of-thoughts. *(compose the patterns)* | C# / .NET |
