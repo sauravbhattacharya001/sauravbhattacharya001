@@ -28,15 +28,6 @@ A focused toolchain for building and operating AI agents: **write patterns → d
 
 ---
 
-## 🛡️ WinSentinel
-
-| Project | What it does | Live |
-|---|---|---|
-| **[WinSentinel](https://github.com/sauravbhattacharya001/WinSentinel)** | Always-on Windows security agent — real-time monitoring, AI-powered correlation, auto-remediation, and audit modules with compliance profiles. | [winsentinel.ai](https://winsentinel.ai) |
-| **[WinSentinel Pro](https://github.com/sauravbhattacharya001/winsentinel-pro)** | Pro tier — license server, fleet management, and advanced modules for organizations. | [Site](https://winsentinel.ai) |
-
----
-
 ## 🛠️ Tech
 
 <div align="center">
