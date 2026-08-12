@@ -12,7 +12,7 @@
 
 ---
 
-I build tooling for AI agents — the layer that makes autonomous systems **observable, testable, and reliable** — plus an always-on Windows security agent. Two focused areas, no side quests.
+I build tooling for AI agents — the layer that makes autonomous systems **observable, testable, and reliable**.
 
 ---
 
