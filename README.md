@@ -46,15 +46,6 @@ A focused toolchain for building and operating AI agents: **write patterns → d
 
 <div align="center">
 
-<img src="https://github-readme-stats.vercel.app/api?username=sauravbhattacharya001&show_icons=true&theme=github_dark&hide_border=true&count_private=true&include_all_commits=true" height="170" />
-<img src="https://github-readme-stats.vercel.app/api/top-langs/?username=sauravbhattacharya001&layout=compact&theme=github_dark&hide_border=true&langs_count=8" height="170" />
-
-</div>
-
----
-
-<div align="center">
-
 *Building tools that make intelligent systems observable, accountable, and reliable.*
 
 </div>
