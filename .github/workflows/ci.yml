@@ -16,7 +16,7 @@ jobs:
     name: Markdown Lint
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
 
       - name: Lint README.md
         uses: DavidAnson/markdownlint-cli2-action@v23
@@ -28,7 +28,7 @@ jobs:
     name: Link Validation
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
 
       - name: Check links in README
         uses: lycheeverse/lychee-action@v2
@@ -53,7 +53,7 @@ jobs:
     name: Badge Validation
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
 
       - name: Extract and validate badge URLs
         run: |
@@ -84,7 +84,7 @@ jobs:
     name: Structure Validation
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
 
       - name: Validate README structure
         run: |
